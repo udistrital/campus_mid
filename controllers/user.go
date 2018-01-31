@@ -1,8 +1,10 @@
 package controllers
 
 import (
-	"github.com/udistrital/campus_mid/models"
 	"encoding/json"
+
+	"github.com/udistrital/campus_mid/models"
+	"github.com/udistrital/campus_mid/tools"
 
 	"github.com/astaxie/beego"
 )
@@ -31,8 +33,12 @@ func (u *UserController) Post() {
 // @Success 200 {object} models.User
 // @router / [get]
 func (u *UserController) GetAll() {
-	users := models.GetAllUsers()
-	u.Data["json"] = users
+	//users := models.GetAllUsers()
+	tool := new(tools.EntornoReglas)
+	tool.Agregar_dominio("FuenteFinanciamiento")
+	tool.Obtener_predicados()
+	tool.Agregar_predicado("NUEVO PREDICADO.")
+	u.Data["json"] = tool.Obtener_predicados()
 	u.ServeJSON()
 }
 
@@ -116,4 +122,3 @@ func (u *UserController) Logout() {
 	u.Data["json"] = "logout success"
 	u.ServeJSON()
 }
-
