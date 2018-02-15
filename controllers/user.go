@@ -35,10 +35,20 @@ func (u *UserController) Post() {
 func (u *UserController) GetAll() {
 	//users := models.GetAllUsers()
 	tool := new(tools.EntornoReglas)
-	tool.Agregar_dominio("FuenteFinanciamiento")
-	tool.Obtener_predicados()
-	tool.Agregar_predicado("NUEVO PREDICADO.")
-	u.Data["json"] = tool.Obtener_predicados()
+	tool.Agregar_dominio("CampusVirtual")
+	//tool.Obtener_predicados()
+	//tool.Agregar_predicado("NUEVO PREDICADO.")
+	var v interface{}
+	if err := tools.GetJson(beego.AppConfig.String("personasCrud")+"/persona", &v); err != nil {
+		println(beego.AppConfig.String("personasCrud"))
+		v = nil
+		println(err.Error())
+	}
+	println(v, beego.AppConfig.String("personasCrud"))
+	//var regla string = `descuento_postgrado(monitoria,X).`
+	//var resultado string
+	//tool.Ejecutar_result(regla, resultado)
+	u.Data["json"] = v
 	u.ServeJSON()
 }
 
