@@ -3,10 +3,10 @@ package controllers
 import (
 	"encoding/json"
 
-	"github.com/udistrital/campus_mid/models"
-	"github.com/udistrital/campus_mid/tools"
-
 	"github.com/astaxie/beego"
+	"github.com/udistrital/campus_mid/models"
+	"github.com/udistrital/utils_oas/request"
+	"github.com/udistrital/utils_oas/ruler"
 )
 
 // Operations about Users
@@ -34,12 +34,12 @@ func (u *UserController) Post() {
 // @router / [get]
 func (u *UserController) GetAll() {
 	//users := models.GetAllUsers()
-	tool := new(tools.EntornoReglas)
+	tool := new(ruler.EntornoReglas)
 	tool.Agregar_dominio("CampusVirtual")
 	//tool.Obtener_predicados()
 	//tool.Agregar_predicado("NUEVO PREDICADO.")
 	var v interface{}
-	if err := tools.GetJson(beego.AppConfig.String("personasCrud")+"/persona", &v); err != nil {
+	if err := request.GetJson(beego.AppConfig.String("personasCrud")+"/persona", &v); err != nil {
 		println(beego.AppConfig.String("personasCrud"))
 		v = nil
 		println(err.Error())
