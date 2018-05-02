@@ -6,19 +6,21 @@ import (
 	"github.com/astaxie/beego"
 )
 
+// PersonaController ...
 type PersonaController struct {
 	beego.Controller
 }
 
+// URLMapping ...
 func (c *PersonaController) URLMapping() {
 	c.Mapping("GuardarPersona", c.GuardarPersona)
 }
 
-// Get ...
+// GuardarPersona ...
 // @Title PostPersona
 // @Description Guardar Persona
 // @Param	body		body 	models.PersonaCompleta	true		"body for Guardar Persona content"
-// @Success 201 {int} models.PersonaCompleta
+// @Success 200 {string} models.Persona.Id
 // @Failure 403 body is empty
 // @router /GuardarPersona [post]
 func (c *PersonaController) GuardarPersona() {
