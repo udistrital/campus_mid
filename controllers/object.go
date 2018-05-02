@@ -1,17 +1,19 @@
 package controllers
 
 import (
-	"github.com/udistrital/campus_mid/models"
 	"encoding/json"
+
+	"github.com/udistrital/campus_mid/models"
 
 	"github.com/astaxie/beego"
 )
 
-// Operations about object
+// ObjectController ...
 type ObjectController struct {
 	beego.Controller
 }
 
+// Post ...
 // @Title Create
 // @Description create object
 // @Param	body		body 	models.Object	true		"The object content"
@@ -26,9 +28,10 @@ func (o *ObjectController) Post() {
 	o.ServeJSON()
 }
 
+// Get ...
 // @Title Get
-// @Description find object by objectid
-// @Param	objectId		path 	string	true		"the objectid you want to get"
+// @Description find object by objectId
+// @Param	objectId		path 	string	true		"the objectId you want to get"
 // @Success 200 {object} models.Object
 // @Failure 403 :objectId is empty
 // @router /:objectId [get]
@@ -45,6 +48,7 @@ func (o *ObjectController) Get() {
 	o.ServeJSON()
 }
 
+// GetAll ...
 // @Title GetAll
 // @Description get all objects
 // @Success 200 {object} models.Object
@@ -56,9 +60,10 @@ func (o *ObjectController) GetAll() {
 	o.ServeJSON()
 }
 
+// Put ...
 // @Title Update
 // @Description update the object
-// @Param	objectId		path 	string	true		"The objectid you want to update"
+// @Param	objectId		path 	string	true		"The objectId you want to update"
 // @Param	body		body 	models.Object	true		"The body"
 // @Success 200 {object} models.Object
 // @Failure 403 :objectId is empty
@@ -77,6 +82,7 @@ func (o *ObjectController) Put() {
 	o.ServeJSON()
 }
 
+// Delete ...
 // @Title Delete
 // @Description delete the object
 // @Param	objectId		path 	string	true		"The objectId you want to delete"
@@ -89,4 +95,3 @@ func (o *ObjectController) Delete() {
 	o.Data["json"] = "delete success!"
 	o.ServeJSON()
 }
-
