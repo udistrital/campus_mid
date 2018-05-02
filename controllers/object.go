@@ -36,9 +36,9 @@ func (o *ObjectController) Post() {
 // @Failure 403 :objectId is empty
 // @router /:objectId [get]
 func (o *ObjectController) Get() {
-	objectId := o.Ctx.Input.Param(":objectId")
-	if objectId != "" {
-		ob, err := models.GetOne(objectId)
+	objectID := o.Ctx.Input.Param(":objectId")
+	if objectID != "" {
+		ob, err := models.GetOne(objectID)
 		if err != nil {
 			o.Data["json"] = err.Error()
 		} else {
@@ -69,11 +69,11 @@ func (o *ObjectController) GetAll() {
 // @Failure 403 :objectId is empty
 // @router /:objectId [put]
 func (o *ObjectController) Put() {
-	objectId := o.Ctx.Input.Param(":objectId")
+	objectID := o.Ctx.Input.Param(":objectId")
 	var ob models.Object
 	json.Unmarshal(o.Ctx.Input.RequestBody, &ob)
 
-	err := models.Update(objectId, ob.Score)
+	err := models.Update(objectID, ob.Score)
 	if err != nil {
 		o.Data["json"] = err.Error()
 	} else {
@@ -90,8 +90,8 @@ func (o *ObjectController) Put() {
 // @Failure 403 objectId is empty
 // @router /:objectId [delete]
 func (o *ObjectController) Delete() {
-	objectId := o.Ctx.Input.Param(":objectId")
-	models.Delete(objectId)
+	objectID := o.Ctx.Input.Param(":objectId")
+	models.Delete(objectID)
 	o.Data["json"] = "delete success!"
 	o.ServeJSON()
 }
