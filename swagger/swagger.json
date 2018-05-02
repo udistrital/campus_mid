@@ -150,6 +150,34 @@
                 }
             }
         },
+        "/persona/GuardarPersona": {
+            "post": {
+                "tags": [
+                    "persona"
+                ],
+                "description": "Guardar Persona",
+                "operationId": "PersonaController.PostPersona",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Guardar Persona content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.PersonaCompleta"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "{int} models.PersonaCompleta"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/user/": {
             "get": {
                 "tags": [
@@ -331,6 +359,58 @@
         }
     },
     "definitions": {
+        "models.EstadoCivil": {
+            "title": "EstadoCivil",
+            "type": "object",
+            "properties": {
+                "Activo": {
+                    "type": "boolean"
+                },
+                "CodigoAbreviacion": {
+                    "type": "string"
+                },
+                "Descripcion": {
+                    "type": "string"
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Nombre": {
+                    "type": "string"
+                },
+                "NumeroOrden": {
+                    "type": "number",
+                    "format": "double"
+                }
+            }
+        },
+        "models.Genero": {
+            "title": "Genero",
+            "type": "object",
+            "properties": {
+                "Activo": {
+                    "type": "boolean"
+                },
+                "CodigoAbreviacion": {
+                    "type": "string"
+                },
+                "Descripcion": {
+                    "type": "string"
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Nombre": {
+                    "type": "string"
+                },
+                "NumeroOrden": {
+                    "type": "number",
+                    "format": "double"
+                }
+            }
+        },
         "models.Object": {
             "title": "Object",
             "type": "object",
@@ -344,6 +424,48 @@
                 "Score": {
                     "type": "integer",
                     "format": "int64"
+                }
+            }
+        },
+        "models.PersonaCompleta": {
+            "title": "PersonaCompleta",
+            "type": "object",
+            "properties": {
+                "Ente": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "EstadoCivil": {
+                    "$ref": "#/definitions/models.EstadoCivil"
+                },
+                "FechaNacimiento": {
+                    "type": "string",
+                    "format": "string"
+                },
+                "Foto": {
+                    "type": "string"
+                },
+                "Genero": {
+                    "$ref": "#/definitions/models.Genero"
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "PrimerApellido": {
+                    "type": "string"
+                },
+                "PrimerNombre": {
+                    "type": "string"
+                },
+                "SegundoApellido": {
+                    "type": "string"
+                },
+                "SegundoNombre": {
+                    "type": "string"
+                },
+                "Usuario": {
+                    "type": "string"
                 }
             }
         },
