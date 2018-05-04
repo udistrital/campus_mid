@@ -21,13 +21,13 @@ func (c *PersonaController) URLMapping() {
 // GuardarPersona ...
 // @Title PostPersona
 // @Description Guardar Persona
-// @Param	body		body 	models.PersonaCompleta	true		"body for Guardar Persona content"
+// @Param	body		body 	models.PersonaDatosBasicos	true		"body for Guardar Persona content"
 // @Success 200 {string} models.Persona.Id
 // @Failure 403 body is empty
 // @router /GuardarPersona [post]
 func (c *PersonaController) GuardarPersona() {
 	// persona datos que entran a la funcion GuardarPersona
-	var persona models.PersonaCompleta
+	var persona models.PersonaDatosBasicos
 
 	// alerta que retorna la funcion Guardar persona
 	var alerta models.Alert

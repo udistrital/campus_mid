@@ -23,7 +23,7 @@ paths:
         description: body for Guardar Persona content
         required: true
         schema:
-          $ref: '#/definitions/models.PersonaCompleta'
+          $ref: '#/definitions/models.PersonaDatosBasicos'
       responses:
         "200":
           description: '{string} models.Persona.Id'
@@ -66,8 +66,8 @@ definitions:
       NumeroOrden:
         type: number
         format: double
-  models.PersonaCompleta:
-    title: PersonaCompleta
+  models.PersonaDatosBasicos:
+    title: PersonaDatosBasicos
     type: object
     properties:
       Ente:

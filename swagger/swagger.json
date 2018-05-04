@@ -29,7 +29,7 @@
                         "description": "body for Guardar Persona content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.PersonaCompleta"
+                            "$ref": "#/definitions/models.PersonaDatosBasicos"
                         }
                     }
                 ],
@@ -97,8 +97,8 @@
                 }
             }
         },
-        "models.PersonaCompleta": {
-            "title": "PersonaCompleta",
+        "models.PersonaDatosBasicos": {
+            "title": "PersonaDatosBasicos",
             "type": "object",
             "properties": {
                 "Ente": {

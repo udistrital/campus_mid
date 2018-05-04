@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type PersonaCompleta struct {
+type PersonaDatosBasicos struct {
 	Id              int
 	PrimerNombre    string
 	SegundoNombre   string
