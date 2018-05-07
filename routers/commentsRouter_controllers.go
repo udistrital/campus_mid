@@ -9,7 +9,7 @@ func init() {
 
 	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"],
 		beego.ControllerComments{
-			Method: "GuardarPersona",
+			Method: "GuardarPersonai",
 			Router: `/GuardarPersona`,
 			AllowHTTPMethods: []string{"post"},
 			MethodParams: param.Make(),
