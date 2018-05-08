@@ -15,6 +15,34 @@
     },
     "basePath": "/v1",
     "paths": {
+        "/persona/ActualizarPersona": {
+            "put": {
+                "tags": [
+                    "persona"
+                ],
+                "description": "Actualizar Persona",
+                "operationId": "PersonaController.ActualizarPersona",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Actualizar Persona content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.PersonaDatosBasicos"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} models.Persona.Id"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/persona/GuardarPersona": {
             "post": {
                 "tags": [
@@ -29,7 +57,7 @@
                         "description": "body for Guardar Persona content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.PersonaDatosBasicos"
+                            "$ref": "#/definitions/.PersonaDatosBasicos"
                         }
                     }
                 ],
@@ -45,99 +73,8 @@
         }
     },
     "definitions": {
-        "models.EstadoCivil": {
-            "title": "EstadoCivil",
-            "type": "object",
-            "properties": {
-                "Activo": {
-                    "type": "boolean"
-                },
-                "CodigoAbreviacion": {
-                    "type": "string"
-                },
-                "Descripcion": {
-                    "type": "string"
-                },
-                "Id": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "Nombre": {
-                    "type": "string"
-                },
-                "NumeroOrden": {
-                    "type": "number",
-                    "format": "double"
-                }
-            }
-        },
-        "models.Genero": {
-            "title": "Genero",
-            "type": "object",
-            "properties": {
-                "Activo": {
-                    "type": "boolean"
-                },
-                "CodigoAbreviacion": {
-                    "type": "string"
-                },
-                "Descripcion": {
-                    "type": "string"
-                },
-                "Id": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "Nombre": {
-                    "type": "string"
-                },
-                "NumeroOrden": {
-                    "type": "number",
-                    "format": "double"
-                }
-            }
-        },
-        "models.PersonaDatosBasicos": {
-            "title": "PersonaDatosBasicos",
-            "type": "object",
-            "properties": {
-                "Ente": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "EstadoCivil": {
-                    "$ref": "#/definitions/models.EstadoCivil"
-                },
-                "FechaNacimiento": {
-                    "type": "string",
-                    "format": "string"
-                },
-                "Foto": {
-                    "type": "string"
-                },
-                "Genero": {
-                    "$ref": "#/definitions/models.Genero"
-                },
-                "Id": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "PrimerApellido": {
-                    "type": "string"
-                },
-                "PrimerNombre": {
-                    "type": "string"
-                },
-                "SegundoApellido": {
-                    "type": "string"
-                },
-                "SegundoNombre": {
-                    "type": "string"
-                },
-                "Usuario": {
-                    "type": "string"
-                }
-            }
+        ".PersonaDatosBasicos": {
+            "type": "object"
         }
     },
     "tags": [
