@@ -143,11 +143,9 @@ func (c *PersonaController) ActualizarPersona() {
 
 			//obtener id persona_genero
 			if err := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_genero/?query=persona:"+fmt.Sprintf("%.f", persona["Id"].(float64)), &personaGenero); err == nil {
-				fmt.Println(personaGenero[0]["Id"])
 				//actualizar genero
 				personaGenero[0]["Genero"] = persona["Genero"]
 				errGenero := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_genero/"+fmt.Sprintf("%.f", personaGenero[0]["Id"].(float64)), "PUT", &resultado2, personaGenero[0])
-				fmt.Println(resultado2)
 				if errGenero != nil {
 					alertas = alertas + " ERROR persona_genero "
 					alerta.Type = "error"
@@ -159,14 +157,10 @@ func (c *PersonaController) ActualizarPersona() {
 
 			//obtener id persona_estado_civil
 			if err := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_estado_civil/?query=persona:"+fmt.Sprintf("%.f", persona["Id"].(float64)), &personaEstadoCivil); err == nil {
-				fmt.Println(personaEstadoCivil[0]["Id"])
 				//actualizar estado_civil
 				personaEstadoCivil[0]["EstadoCivil"] = persona["EstadoCivil"]
-				fmt.Println(personaEstadoCivil[0]["EstadoCivil"])
 				errEstadoCivil := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_estado_civil/"+fmt.Sprintf("%.f", personaEstadoCivil[0]["Id"].(float64)), "PUT", &resultado3, personaEstadoCivil[0])
-				fmt.Println(resultado3)
 				if errEstadoCivil != nil {
-					fmt.Println(errEstadoCivil)
 					alertas = alertas + " ERROR persona_estado_civil "
 					alerta.Type = "error"
 					alerta.Code = "400"
@@ -186,7 +180,6 @@ func (c *PersonaController) ActualizarPersona() {
 		}
 
 	} else {
-		fmt.Println(err)
 		alerta.Type = "error"
 		alerta.Code = "400"
 		alerta.Body = "ERROR formato incorrecto" + err.Error()
