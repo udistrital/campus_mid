@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "github.com/udistrital/campus_mid/routers"
+	apistatus "github.com/udistrital/utils_oas/apiStatusLib"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -26,6 +27,12 @@ func main() {
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 	}))
-	logs.SetLogger(logs.AdapterFile, `{"filename":"/var/log/beego/campusMid.log"}`)
+
+	logPath := "{\"filename\":\""
+	logPath += beego.AppConfig.String("logPath")
+	logPath += "\"}"
+	logs.SetLogger(logs.AdapterFile, logPath)
+
+	apistatus.Init()
 	beego.Run()
 }
