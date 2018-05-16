@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.0"><file name="models/alerta_model.go"><error column="6" line="3" message="exported type Alert should have comment or be unexported" severity="warning" source="golint"></error></file><file name="routers/router.go"><error column="1" line="1" message="package comment should be of the form &#34;Package routers ...&#34;" severity="warning" source="golint"></error></file></checkstyle>

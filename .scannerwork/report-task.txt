@@ -1,0 +1,6 @@
+projectKey=scaner:campus_mid20180516
+serverUrl=http://10.20.0.77:9000
+serverVersion=7.0.0.36138
+dashboardUrl=http://10.20.0.77:9000/dashboard/index/scaner:campus_mid20180516
+ceTaskId=AWNp4FXNehz9wCZ_SCQc
+ceTaskUrl=http://10.20.0.77:9000/api/ce/task?id=AWNp4FXNehz9wCZ_SCQc

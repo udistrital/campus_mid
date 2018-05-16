@@ -190,3 +190,44 @@ func (c *PersonaController) ActualizarPersona() {
 	c.ServeJSON()
 
 }
+
+// ConsultaPersona ...
+// @Title Get One
+// @Description get consultapersona by userid
+// @Param	id		path 	string	true		"The key for staticblock"
+// @Success 200 {
+// @Failure 403 :id is empty
+// @router /consultapersona/:id [get]
+func (c *PersonaController) ConsultaPersona() {
+	// alerta que retorna la funcion ConsultaPersona
+
+	var alerta models.Alert
+	idStr := c.Ctx.Input.Param(":id")
+	var resultado map[string]interface{}
+
+	errPersona := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona/full/?userid="+idStr, &resultado)
+	if errPersona == nil {
+		nuevapersona := map[string]interface{}{
+			"FechaNacimiento": resultado["Persona"].(map[string]interface{})["FechaNacimiento"],
+			"Foto":            resultado["Persona"].(map[string]interface{})["Foto"],
+			"PrimerApellido":  resultado["Persona"].(map[string]interface{})["PrimerApellido"],
+			"PrimerNombre":    resultado["Persona"].(map[string]interface{})["PrimerNombre"],
+			"SegundoApellido": resultado["Persona"].(map[string]interface{})["SegundoApellido"],
+			"SegundoNombre":   resultado["Persona"].(map[string]interface{})["SegundoNombre"],
+			"Usuario":         resultado["Persona"].(map[string]interface{})["Usuario"],
+			"Id":              resultado["Persona"].(map[string]interface{})["Id"],
+			"EstadoCivil":     resultado["EstadoCivil"],
+			"Genero":          resultado["Genero"],
+		}
+
+		c.Data["json"] = nuevapersona
+		c.ServeJSON()
+	} else {
+		alerta.Type = "error"
+		alerta.Code = "400"
+		alerta.Body = errPersona
+		c.Data["json"] = alerta
+		c.ServeJSON()
+	}
+
+}
