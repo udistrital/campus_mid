@@ -17,17 +17,17 @@ func init() {
 
 	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"],
 		beego.ControllerComments{
-			Method: "GuardarPersona",
-			Router: `/GuardarPersona`,
-			AllowHTTPMethods: []string{"post"},
+			Method: "ConsultaPersona",
+			Router: `/ConsultaPersona/:id`,
+			AllowHTTPMethods: []string{"get"},
 			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"],
 		beego.ControllerComments{
-			Method: "ConsultaPersona",
-			Router: `/consultapersona/:id`,
-			AllowHTTPMethods: []string{"get"},
+			Method: "GuardarPersona",
+			Router: `/GuardarPersona`,
+			AllowHTTPMethods: []string{"post"},
 			MethodParams: param.Make(),
 			Params: nil})
 

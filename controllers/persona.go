@@ -193,11 +193,11 @@ func (c *PersonaController) ActualizarPersona() {
 
 // ConsultaPersona ...
 // @Title Get One
-// @Description get consultapersona by userid
+// @Description get ConsultaPersona by userid
 // @Param	id		path 	string	true		"The key for staticblock"
 // @Success 200 {
 // @Failure 403 :id is empty
-// @router /consultapersona/:id [get]
+// @router /ConsultaPersona/:id [get]
 func (c *PersonaController) ConsultaPersona() {
 	// alerta que retorna la funcion ConsultaPersona
 
