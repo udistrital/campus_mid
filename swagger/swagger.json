@@ -43,6 +43,34 @@
                 }
             }
         },
+        "/persona/DatosComplementariosPersona": {
+            "post": {
+                "tags": [
+                    "persona"
+                ],
+                "description": "Guardar Persona",
+                "operationId": "PersonaController.PostPersona",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Guardar Persona content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.PersonaDatosBasicos"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} models.Persona.Id"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/persona/GuardarPersona": {
             "post": {
                 "tags": [
@@ -67,6 +95,32 @@
                     },
                     "403": {
                         "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/persona/consultapersona/{id}": {
+            "get": {
+                "tags": [
+                    "persona"
+                ],
+                "description": "get consultapersona by userid",
+                "operationId": "PersonaController.Get One",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{"
+                    },
+                    "403": {
+                        "description": ":id is empty"
                     }
                 }
             }

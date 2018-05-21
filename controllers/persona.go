@@ -18,6 +18,8 @@ type PersonaController struct {
 func (c *PersonaController) URLMapping() {
 	c.Mapping("GuardarPersona", c.GuardarPersona)
 	c.Mapping("ActualizarPersona", c.ActualizarPersona)
+	c.Mapping("ConsultaPersona", c.ConsultaPersona)
+	c.Mapping("DatosComplementariosPersona", c.DatosComplementariosPersona)
 }
 
 // GuardarPersona ...
@@ -230,4 +232,105 @@ func (c *PersonaController) ConsultaPersona() {
 		c.ServeJSON()
 	}
 
+}
+
+//http://localhost:8080/v1/persona/?query=Ente:2&fields=Id
+
+// DatosComplementariosPersona ...
+// @Title PostPersona
+// @Description Guardar Persona
+// @Param	body		body 	models.PersonaDatosBasicos	true		"body for Guardar Persona content"
+// @Success 200 {string} models.Persona.Id
+// @Failure 403 body is empty
+// @router /DatosComplementariosPersona [post]
+func (c *PersonaController) DatosComplementariosPersona() {
+	// alerta que retorna la funcion ConsultaPersona
+
+	var alerta models.Alert
+	var persona map[string]interface{}
+
+	var GrupoEtnico map[string]interface{}
+	GrupoEtnico = make(map[string]interface{})
+	var Discapacidad map[string]interface{}
+	Discapacidad = make(map[string]interface{})
+	var GrupoSanguineo map[string]interface{}
+	GrupoSanguineo = make(map[string]interface{})
+	var resultado []map[string]interface{}
+	//var discapacidad []map[string]interface{}
+	var resultado2 map[string]interface{}
+
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &persona); err == nil {
+		fmt.Println("el Id del ente: ", persona["Ente"])
+       
+		errPersona := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona/?query=Ente:"+fmt.Sprintf("%.f", persona["Ente"].(float64))+"&fields=Id", &resultado)
+		if errPersona == nil {
+			fmt.Println("resultado de la consulta del ente ", resultado)
+			personaID := resultado[0]["Id"].(float64)
+
+			fmt.Println("Id persona: ", personaID)
+			GrupoEtnico["GrupoEtnico"] = persona["GrupoEtnico"]
+			GrupoEtnico["Persona"] = resultado[0]
+			fmt.Println("el grupo etinico", GrupoEtnico)
+			errGrupoEtnico := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_grupo_etnico", "POST", &resultado2, GrupoEtnico)
+			if errGrupoEtnico != nil || resultado2["Id"] == 0 {
+
+				alerta.Body = errGrupoEtnico
+				alerta.Type = "error"
+				alerta.Code = "400"
+			} else {
+				c.Data["json"] = resultado2
+				c.ServeJSON()
+			}
+			if persona["GrupoSanguineo"] == "O" || persona["GrupoSanguineo"] == "A" || persona["GrupoSanguineo"] == "AB" || persona["GrupoSanguineo"] == "B" && persona["Rh"] == "+" || persona["Rh"] == "-" {
+				fmt.Println("el grupo sanguineo es correcto:", persona["GrupoSanguineo"],persona["Rh"])
+				GrupoSanguineo["Persona"] = resultado[0]
+				GrupoSanguineo["FactorRh"]=  persona["Rh"]
+				GrupoSanguineo["GrupoSanguineo"]=  persona["GrupoSanguineo"]
+                fmt.Println(GrupoSanguineo)
+				errGrupoSanguineo := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/grupo_sanguineo_persona", "POST", &resultado2, GrupoSanguineo)
+                if errGrupoSanguineo == nil {
+                       fmt.Println(resultado2)
+				}else {
+                      fmt.Println(errGrupoSanguineo)
+				}
+			} else {
+				fmt.Println("el grupo sanguineo es incorrecto:", persona["GrupoSanguineo"], persona["Rh"])
+			}
+			
+            
+            discapacidad := persona["TipoDiscapacidad"].([]interface{})
+      
+			for i := 0; i < len(discapacidad); i++ {
+				
+				Discapacidad["Persona"] = resultado[0]
+				Discapacidad["TipoDiscapacidad"] = discapacidad[i]
+				fmt.Println("la discapacidad ", Discapacidad)
+				errDiscapacidad := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_tipo_discapacidad", "POST", &resultado2, Discapacidad)
+			if errDiscapacidad != nil || resultado2["Id"] == 0 {
+
+				alerta.Body = Discapacidad
+				alerta.Type = "error"
+				alerta.Code = "400"
+			} else {
+				c.Data["json"] = resultado2
+				c.ServeJSON()
+			}
+			}
+			
+		} else {
+
+			alerta.Type = "error"
+			alerta.Code = "400"
+			alerta.Body = errPersona
+			c.Data["json"] = alerta
+			c.ServeJSON()
+		}
+	} else {
+		c.Ctx.Output.SetStatus(400)
+		alerta.Type = "error"
+		alerta.Code = "401"
+		alerta.Body = err
+		c.Data["json"] = alerta
+		c.ServeJSON()
+	}
 }

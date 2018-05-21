@@ -31,4 +31,12 @@ func init() {
 			MethodParams:     param.Make(),
 			Params:           nil})
 
+			beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"],
+				beego.ControllerComments{
+					Method: "DatosComplementariosPersona",
+					Router: `/DatosComplementariosPersona`,
+					AllowHTTPMethods: []string{"post"},
+					MethodParams: param.Make(),
+					Params: nil})
+
 }
