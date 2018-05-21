@@ -35,7 +35,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "{string} models.Persona.Id"
+                        "description": "{}"
                     },
                     "403": {
                         "description": "body is empty"
@@ -61,7 +61,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "{"
+                        "description": "{}"
                     },
                     "403": {
                         "description": ":id is empty"
@@ -89,7 +89,35 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "{string} models.Persona.Id"
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/persona/RegistrarUbicaciones": {
+            "post": {
+                "tags": [
+                    "persona"
+                ],
+                "description": "Registrar Ubicaciones",
+                "operationId": "PersonaController.RegistrarUbicaciones",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Registrar Ubicaciones content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.PersonaDatosBasicos"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
                     },
                     "403": {
                         "description": "body is empty"

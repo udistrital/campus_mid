@@ -18,13 +18,15 @@ type PersonaController struct {
 func (c *PersonaController) URLMapping() {
 	c.Mapping("GuardarPersona", c.GuardarPersona)
 	c.Mapping("ActualizarPersona", c.ActualizarPersona)
+	c.Mapping("ConsultaPersona", c.ConsultaPersona)
+	c.Mapping("RegistrarUbicaciones", c.RegistrarUbicaciones)
 }
 
 // GuardarPersona ...
 // @Title PostPersona
 // @Description Guardar Persona
 // @Param	body		body 	models.PersonaDatosBasicos	true		"body for Guardar Persona content"
-// @Success 200 {string} models.Persona.Id
+// @Success 200 {}
 // @Failure 403 body is empty
 // @router /GuardarPersona [post]
 func (c *PersonaController) GuardarPersona() {
@@ -112,7 +114,7 @@ func (c *PersonaController) GuardarPersona() {
 // @Title ActualizarPersona
 // @Description Actualizar Persona
 // @Param	body		body 	models.PersonaDatosBasicos	true		"body for Actualizar Persona content"
-// @Success 200 {string} models.Persona.Id
+// @Success 200 {}
 // @Failure 403 body is empty
 // @router /ActualizarPersona [put]
 func (c *PersonaController) ActualizarPersona() {
@@ -195,7 +197,7 @@ func (c *PersonaController) ActualizarPersona() {
 // @Title Get One
 // @Description get ConsultaPersona by userid
 // @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {
+// @Success 200 {}
 // @Failure 403 :id is empty
 // @router /ConsultaPersona/:id [get]
 func (c *PersonaController) ConsultaPersona() {
@@ -229,5 +231,16 @@ func (c *PersonaController) ConsultaPersona() {
 		c.Data["json"] = alerta
 		c.ServeJSON()
 	}
+
+}
+
+// RegistrarUbicaciones ...
+// @Title RegistrarUbicaciones
+// @Description Registrar Ubicaciones
+// @Param	body		body 	models.PersonaDatosBasicos	true		"body for Registrar Ubicaciones content"
+// @Success 200 {}
+// @Failure 403 body is empty
+// @router /RegistrarUbicaciones [post]
+func (c *PersonaController) RegistrarUbicaciones() {
 
 }
