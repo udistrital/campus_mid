@@ -231,7 +231,6 @@ func (c *PersonaController) ConsultaPersona() {
 		c.Data["json"] = alerta
 		c.ServeJSON()
 	}
-
 }
 
 // RegistrarUbicaciones ...
@@ -242,5 +241,50 @@ func (c *PersonaController) ConsultaPersona() {
 // @Failure 403 body is empty
 // @router /RegistrarUbicaciones [post]
 func (c *PersonaController) RegistrarUbicaciones() {
+	// persona datos que entran a la funcion ActualizarPersona
+	var ubicacionPersona map[string]interface{}
+	var ubicacion map[string]interface{}
+
+	// alerta que retorna la funcion Guardar persona
+	var alerta models.Alert
+	//acumulado de alertas
+	var alertas string
+
+	//valida que el JSON de entrada sea correcto
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &ubicacionPersona); err == nil {
+		fmt.Println(ubicacionPersona["Ente"])
+		ubicacion = make(map[string]interface{})
+
+		ubicacion["Ente"] = map[string]interface{}{"Id": ubicacionPersona["Ente"]}
+		ubicacion["Lugar"] = 3
+		ubicacion["TipoRelacionUbicacionEnte"] = map[string]interface{}{"Id": 1}
+
+		// resultado registro ubicacion_ente
+		var resultado map[string]interface{}
+
+		//funcion que realiza  de la  peticion POST /ubicacion_ente
+		errUbicacionEnte := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/ubicacion_ente", "POST", &resultado, ubicacion)
+		fmt.Println(resultado)
+		fmt.Println(errUbicacionEnte)
+		if errUbicacionEnte != nil {
+
+			alertas = alertas + " ERROR ubicacion_ente "
+			alerta.Type = "error"
+			alerta.Code = "400"
+		} else {
+			alertas = alertas + " OK ubicacion_ente "
+		}
+		c.Data["json"] = alertas
+		c.ServeJSON()
+
+	} else {
+		alerta.Type = "error"
+		alerta.Code = "400"
+		alerta.Body = "ERROR formato incorrecto " + err.Error()
+		c.Data["json"] = alerta
+		c.ServeJSON()
+	}
+
+	c.ServeJSON()
 
 }
