@@ -244,6 +244,7 @@ func (c *PersonaController) RegistrarUbicaciones() {
 	// persona datos que entran a la funcion ActualizarPersona
 	var ubicacionPersona map[string]interface{}
 	var ubicacion map[string]interface{}
+	var valorAtributoUbicacion map[string]interface{}
 
 	// alerta que retorna la funcion Guardar persona
 	var alerta models.Alert
@@ -252,27 +253,55 @@ func (c *PersonaController) RegistrarUbicaciones() {
 
 	//valida que el JSON de entrada sea correcto
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &ubicacionPersona); err == nil {
-		fmt.Println(ubicacionPersona["Ente"])
-		ubicacion = make(map[string]interface{})
 
+		ubicacion = make(map[string]interface{})
 		ubicacion["Ente"] = map[string]interface{}{"Id": ubicacionPersona["Ente"]}
-		ubicacion["Lugar"] = 3
-		ubicacion["TipoRelacionUbicacionEnte"] = map[string]interface{}{"Id": 1}
+		ubicacion["Lugar"] = ubicacionPersona["Lugar"]
+		ubicacion["TipoRelacionUbicacionEnte"] = map[string]interface{}{"Id": ubicacionPersona["TipoRelacionUbicacionEnte"]}
+		ubicacion["Activo"] = true
 
 		// resultado registro ubicacion_ente
 		var resultado map[string]interface{}
+		var resultado2 map[string]interface{}
 
 		//funcion que realiza  de la  peticion POST /ubicacion_ente
 		errUbicacionEnte := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/ubicacion_ente", "POST", &resultado, ubicacion)
-		fmt.Println(resultado)
-		fmt.Println(errUbicacionEnte)
-		if errUbicacionEnte != nil {
+		if errUbicacionEnte == nil && resultado["Type"] == "success" {
+			alertas = alertas + " OK ubicacion_ente "
+			//recorrer arreglo de atributos y registrarlos
+			atributos := ubicacionPersona["Atributos"].([]interface{})
+			if len(atributos) > 0 {
+				for i := 0; i < len(atributos); i++ {
 
-			alertas = alertas + " ERROR ubicacion_ente "
+					atributo := atributos[i].(map[string]interface{})
+					valorAtributoUbicacion = make(map[string]interface{})
+					valorAtributoUbicacion["UbicacionEnte"] = resultado["Body"]
+					valorAtributoUbicacion["AtributoUbicacion"] = map[string]interface{}{"Id": atributo["AtributoUbicacion"]}
+					valorAtributoUbicacion["Valor"] = atributo["Valor"]
+
+					//funcion que realiza  de la  peticion POST /ubicacion_ente
+					errAtributoUbicacion := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/valor_atributo_ubicacion", "POST", &resultado2, valorAtributoUbicacion)
+					fmt.Println(errAtributoUbicacion)
+					fmt.Println(resultado2)
+					if errAtributoUbicacion == nil && resultado2["Type"] == "success" {
+
+						alertas = alertas + " OK atributo_ubicacion "
+					} else {
+						alertas = alertas + " ERROR atributo_ubicacion: " + resultado2["Body"].(string)
+						alerta.Type = "error"
+						alerta.Code = "400"
+					}
+
+				}
+			}
+
+			c.Data["json"] = alertas
+			c.ServeJSON()
+
+		} else {
+			alertas = alertas + " ERROR ubicacion_ente: " + resultado["Body"].(string)
 			alerta.Type = "error"
 			alerta.Code = "400"
-		} else {
-			alertas = alertas + " OK ubicacion_ente "
 		}
 		c.Data["json"] = alertas
 		c.ServeJSON()
