@@ -15,6 +15,34 @@
     },
     "basePath": "/v1",
     "paths": {
+        "/persona/ActualizarDatosContacto": {
+            "put": {
+                "tags": [
+                    "persona"
+                ],
+                "description": "Actualizar Datos de Contacto",
+                "operationId": "PersonaController.ActualizarDatosContacto",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Actualizar Persona content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.PersonaDatosBasicos"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} models.Persona.Id"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/persona/ActualizarPersona": {
             "put": {
                 "tags": [
@@ -35,7 +63,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "{string} models.Persona.Id"
+                        "description": "{}"
                     },
                     "403": {
                         "description": "body is empty"
@@ -61,10 +89,38 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "{"
+                        "description": "{}"
                     },
                     "403": {
                         "description": ":id is empty"
+                    }
+                }
+            }
+        },
+        "/persona/GuardarDatosContacto": {
+            "post": {
+                "tags": [
+                    "persona"
+                ],
+                "description": "Guardar Datos de Contacto",
+                "operationId": "PersonaController.PostDatosContacto",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Guardar datos contacto content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.PersonaDatosBasicos"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} models.Persona.Id"
+                    },
+                    "403": {
+                        "description": "body is empty"
                     }
                 }
             }
@@ -89,7 +145,35 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "{string} models.Persona.Id"
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/persona/RegistrarUbicaciones": {
+            "post": {
+                "tags": [
+                    "persona"
+                ],
+                "description": "Registrar Ubicaciones",
+                "operationId": "PersonaController.RegistrarUbicaciones",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Registrar Ubicaciones content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.PersonaDatosBasicos"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
                     },
                     "403": {
                         "description": "body is empty"
