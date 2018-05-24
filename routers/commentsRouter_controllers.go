@@ -9,6 +9,14 @@ func init() {
 
 	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"],
 		beego.ControllerComments{
+			Method: "ActualizarDatosContacto",
+			Router: `/ActualizarDatosContacto`,
+			AllowHTTPMethods: []string{"put"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"],
+		beego.ControllerComments{
 			Method: "ActualizarPersona",
 			Router: `/ActualizarPersona`,
 			AllowHTTPMethods: []string{"put"},
@@ -20,6 +28,14 @@ func init() {
 			Method: "ConsultaPersona",
 			Router: `/ConsultaPersona/:id`,
 			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"],
+		beego.ControllerComments{
+			Method: "GuardarDatosContacto",
+			Router: `/GuardarDatosContacto`,
+			AllowHTTPMethods: []string{"post"},
 			MethodParams: param.Make(),
 			Params: nil})
 

@@ -15,6 +15,34 @@
     },
     "basePath": "/v1",
     "paths": {
+        "/persona/ActualizarDatosContacto": {
+            "put": {
+                "tags": [
+                    "persona"
+                ],
+                "description": "Actualizar Datos de Contacto",
+                "operationId": "PersonaController.ActualizarDatosContacto",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Actualizar Persona content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.PersonaDatosBasicos"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} models.Persona.Id"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/persona/ActualizarPersona": {
             "put": {
                 "tags": [
@@ -65,6 +93,34 @@
                     },
                     "403": {
                         "description": ":id is empty"
+                    }
+                }
+            }
+        },
+        "/persona/GuardarDatosContacto": {
+            "post": {
+                "tags": [
+                    "persona"
+                ],
+                "description": "Guardar Datos de Contacto",
+                "operationId": "PersonaController.PostDatosContacto",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Guardar datos contacto content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.PersonaDatosBasicos"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} models.Persona.Id"
+                    },
+                    "403": {
+                        "description": "body is empty"
                     }
                 }
             }
