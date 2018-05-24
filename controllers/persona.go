@@ -208,7 +208,7 @@ func (c *PersonaController) ConsultaPersona() {
 	var resultado map[string]interface{}
 
 	errPersona := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona/full/?userid="+idStr, &resultado)
-	if errPersona == nil {
+	if errPersona == nil && resultado["Type"] != "error" {
 		nuevapersona := map[string]interface{}{
 			"FechaNacimiento": resultado["Persona"].(map[string]interface{})["FechaNacimiento"],
 			"Foto":            resultado["Persona"].(map[string]interface{})["Foto"],
@@ -225,10 +225,17 @@ func (c *PersonaController) ConsultaPersona() {
 		c.Data["json"] = nuevapersona
 		c.ServeJSON()
 	} else {
-		alerta.Type = "error"
-		alerta.Code = "400"
-		alerta.Body = errPersona
-		c.Data["json"] = alerta
+		if errPersona != nil {
+			alerta.Type = "error"
+			alerta.Code = "400"
+			alerta.Body = errPersona
+			c.Data["json"] = alerta
+		} else {
+			alerta.Type = "error"
+			alerta.Code = "400"
+			alerta.Body = resultado["Body"]
+			c.Data["json"] = alerta
+		}
 		c.ServeJSON()
 	}
 }
