@@ -11,6 +11,24 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 basePath: /v1
 paths:
+  /persona/ActualizarDatosComplementarios:
+    put:
+      tags:
+      - persona
+      description: Guardar Persona
+      operationId: PersonaController.PostPersona
+      parameters:
+      - in: body
+        name: body
+        description: body for Guardar Persona content
+        required: true
+        schema:
+          $ref: '#/definitions/.PersonaDatosBasicos'
+      responses:
+        "200":
+          description: '{string} models.Persona.Id'
+        "403":
+          description: body is empty
   /persona/ActualizarPersona:
     put:
       tags:
