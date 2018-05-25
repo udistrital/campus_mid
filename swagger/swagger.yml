@@ -29,6 +29,24 @@ paths:
           description: '{string} models.Persona.Id'
         "403":
           description: body is empty
+  /persona/ActualizarDatosContacto:
+    put:
+      tags:
+      - persona
+      description: Actualizar Datos de Contacto
+      operationId: PersonaController.ActualizarDatosContacto
+      parameters:
+      - in: body
+        name: body
+        description: body for Actualizar Persona content
+        required: true
+        schema:
+          $ref: '#/definitions/.PersonaDatosBasicos'
+      responses:
+        "200":
+          description: '{string} models.Persona.Id'
+        "403":
+          description: body is empty
   /persona/ActualizarPersona:
     put:
       tags:
@@ -44,9 +62,26 @@ paths:
           $ref: '#/definitions/.PersonaDatosBasicos'
       responses:
         "200":
-          description: '{string} models.Persona.Id'
+          description: '{}'
         "403":
           description: body is empty
+  /persona/ConsultaPersona/{id}:
+    get:
+      tags:
+      - persona
+      description: get ConsultaPersona by userid
+      operationId: PersonaController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: :id is empty
   /persona/DatosComplementariosPersona:
     post:
       tags:
@@ -57,6 +92,24 @@ paths:
       - in: body
         name: body
         description: body for Guardar Persona content
+        required: true
+        schema:
+          $ref: '#/definitions/.PersonaDatosBasicos'
+      responses:
+        "200":
+          description: '{string} models.Persona.Id'
+        "403":
+          description: body is empty
+  /persona/GuardarDatosContacto:
+    post:
+      tags:
+      - persona
+      description: Guardar Datos de Contacto
+      operationId: PersonaController.PostDatosContacto
+      parameters:
+      - in: body
+        name: body
+        description: body for Guardar datos contacto content
         required: true
         schema:
           $ref: '#/definitions/.PersonaDatosBasicos'
@@ -80,28 +133,31 @@ paths:
           $ref: '#/definitions/.PersonaDatosBasicos'
       responses:
         "200":
-          description: '{string} models.Persona.Id'
+          description: '{}'
         "403":
           description: body is empty
-  /persona/consultapersona/{id}:
-    get:
+  /persona/RegistrarUbicaciones:
+    post:
       tags:
       - persona
-      description: get consultapersona by userid
-      operationId: PersonaController.Get One
+      description: Registrar Ubalertasicaciones
+      operationId: PersonaController.RegistrarUbicacionalertases
       parameters:
-      - in: path
-        name: id
-        description: The key for staticblock
+      - in: body
+        name: body
+        description: body for Registrar Ubicaciones content
         required: true
-        type: string
+        schema:
+          $ref: '#/definitions/.map[string]interface{}'
       responses:
         "200":
-          description: '{'
+          description: '{}'
         "403":
-          description: :id is empty
+          description: body is empty
 definitions:
   .PersonaDatosBasicos:
+    type: object
+  .map[string]interface{}:
     type: object
 tags:
 - name: persona
