@@ -195,7 +195,7 @@
                         "description": "body for Guardar Persona content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.PersonaDatosBasicos"
+                            "$ref": "#/definitions/.{}"
                         }
                     }
                 ],
@@ -243,6 +243,9 @@
             "type": "object"
         },
         ".map[string]interface{}": {
+            "type": "object"
+        },
+        ".{}": {
             "type": "object"
         }
     },
