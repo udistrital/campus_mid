@@ -15,6 +15,34 @@
     },
     "basePath": "/v1",
     "paths": {
+        "/persona/ActualizarDatosComplementarios": {
+            "put": {
+                "tags": [
+                    "persona"
+                ],
+                "description": "Guardar Persona",
+                "operationId": "PersonaController.PostPersona",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Guardar Persona content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.PersonaDatosBasicos"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} models.Persona.Id"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/persona/ActualizarDatosContacto": {
             "put": {
                 "tags": [
@@ -97,6 +125,34 @@
                 }
             }
         },
+        "/persona/DatosComplementariosPersona": {
+            "post": {
+                "tags": [
+                    "persona"
+                ],
+                "description": "Guardar Persona",
+                "operationId": "PersonaController.PostPersona",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Guardar Persona content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.PersonaDatosBasicos"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} models.Persona.Id"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/persona/GuardarDatosContacto": {
             "post": {
                 "tags": [
@@ -139,7 +195,7 @@
                         "description": "body for Guardar Persona content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.PersonaDatosBasicos"
+                            "$ref": "#/definitions/.{}"
                         }
                     }
                 ],
@@ -158,8 +214,8 @@
                 "tags": [
                     "persona"
                 ],
-                "description": "Registrar Ubicaciones",
-                "operationId": "PersonaController.RegistrarUbicaciones",
+                "description": "Registrar Ubalertasicaciones",
+                "operationId": "PersonaController.RegistrarUbicacionalertases",
                 "parameters": [
                     {
                         "in": "body",
@@ -167,7 +223,7 @@
                         "description": "body for Registrar Ubicaciones content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.PersonaDatosBasicos"
+                            "$ref": "#/definitions/.map[string]interface{}"
                         }
                     }
                 ],
@@ -184,6 +240,12 @@
     },
     "definitions": {
         ".PersonaDatosBasicos": {
+            "type": "object"
+        },
+        ".map[string]interface{}": {
+            "type": "object"
+        },
+        ".{}": {
             "type": "object"
         }
     },
