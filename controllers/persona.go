@@ -211,9 +211,9 @@ func (c *PersonaController) ConsultaPersona() {
 	var alerta models.Alert
 	idStr := c.Ctx.Input.Param(":id")
 	var resultado map[string]interface{}
-
+	alertas := append([]interface{}{"acumulado de alertas"})
 	errPersona := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona/full/?userid="+idStr, &resultado)
-	if errPersona == nil && resultado["Type"] != "error" {
+	if errPersona == nil && resultado["Type"] != "error" && resultado != nil {
 		nuevapersona := map[string]interface{}{
 			"FechaNacimiento": resultado["Persona"].(map[string]interface{})["FechaNacimiento"],
 			"Foto":            resultado["Persona"].(map[string]interface{})["Foto"],
@@ -233,12 +233,12 @@ func (c *PersonaController) ConsultaPersona() {
 		if errPersona != nil {
 			alerta.Type = "error"
 			alerta.Code = "400"
-			alerta.Body = errPersona
+			alerta.Body = append(alertas, []interface{}{"entro al error de persona"}, []interface{}{errPersona.Error()})
 			c.Data["json"] = alerta
 		} else {
 			alerta.Type = "error"
-			alerta.Code = "400"
-			alerta.Body = resultado["Body"]
+			alerta.Code = "401"
+			alerta.Body = append(alertas, []interface{}{"entro al error de respuesta"}, []interface{}{resultado["Body"]})
 			c.Data["json"] = alerta
 		}
 		c.ServeJSON()
