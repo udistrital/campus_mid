@@ -21,7 +21,7 @@ func (c *PersonaController) URLMapping() {
 	c.Mapping("ConsultaPersona", c.ConsultaPersona)
 	c.Mapping("DatosComplementariosPersona", c.DatosComplementariosPersona)
 	c.Mapping("ActualizarDatosComplementarios", c.ActualizarDatosComplementarios)
-
+	c.Mapping("DatosContacto", c.DatosContacto)
 }
 
 // GuardarPersona ...
@@ -315,8 +315,8 @@ func RegistroUbicaciones(ubicaciones map[string]interface{}) models.Alert {
 }
 
 // RegistrarUbicaciones ...
-// @Title RegistrarUbicacionalertases
-// @Description Registrar Ubalertasicaciones
+// @Title RegistrarUbicaciones
+// @Description Registrar Ubicaciones
 // @Param	body		body 	map[string]interface{}	true		"body for Registrar Ubicaciones content"
 // @Success 200 {}
 // @Failure 403 body is empty
@@ -791,4 +791,15 @@ func (c *PersonaController) ActualizarDatosComplementarios() {
 		c.Data["json"] = alerta
 		c.ServeJSON()
 	}
+}
+
+// DatosContacto ...
+// @Title DatosContacto
+// @Description Datos de contacto
+// @Param	body		body 	map[string]interface{}	true		"body for Datos contacto content"
+// @Success 200 {}
+// @Failure 403 body is empty
+// @router /DatosContacto [get]
+func (c *PersonaController) DatosContacto() {
+
 }

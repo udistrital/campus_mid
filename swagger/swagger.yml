@@ -100,6 +100,24 @@ paths:
           description: '{string} models.Persona.Id'
         "403":
           description: body is empty
+  /persona/DatosContacto:
+    get:
+      tags:
+      - persona
+      description: Datos de contacto
+      operationId: PersonaController.DatosContacto
+      parameters:
+      - in: body
+        name: body
+        description: body for Datos contacto content
+        required: true
+        schema:
+          $ref: '#/definitions/.map[string]interface{}'
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: body is empty
   /persona/GuardarDatosContacto:
     post:
       tags:
@@ -140,8 +158,8 @@ paths:
     post:
       tags:
       - persona
-      description: Registrar Ubalertasicaciones
-      operationId: PersonaController.RegistrarUbicacionalertases
+      description: Registrar Ubicaciones
+      operationId: PersonaController.RegistrarUbicaciones
       parameters:
       - in: body
         name: body
