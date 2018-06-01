@@ -21,7 +21,7 @@ func (c *PersonaController) URLMapping() {
 	c.Mapping("ConsultaPersona", c.ConsultaPersona)
 	c.Mapping("DatosComplementariosPersona", c.DatosComplementariosPersona)
 	c.Mapping("ActualizarDatosComplementarios", c.ActualizarDatosComplementarios)
-
+	c.Mapping("consultadatoscomplementarios", c.ConsultaDatosComplementarios)
 }
 
 // GuardarPersona ...
@@ -498,6 +498,89 @@ func (c *PersonaController) ActualizarDatosContacto() {
 	}
 
 	c.ServeJSON()
+}
+
+// ConsultaDatosComplementarios ...
+// @Title Getdatoscomplementarios
+// @Description conultar datos complementarios
+// @Param	body		body 	models.PersonaDatosBasicos	true		"body for Guardar Persona content"
+// @Success 200 {string} models.Persona.Id
+// @Failure 403 body is empty
+// @router /ConsultaDatosComplementarios/:id [get]
+func (c *PersonaController) ConsultaDatosComplementarios() {
+	var alerta models.Alert
+	idStr := c.Ctx.Input.Param(":id")
+	var GrupoEtnico []map[string]interface{}
+	var TipoGrupoEtnico interface{}
+	var TipoGrupoSanguineo interface{}
+	var TipoRh interface{}
+
+	var Discapacidades []map[string]interface{}
+	var Lugar map[string]interface{}
+	var GrupoSanguineo []map[string]interface{}
+	var UbicacionEnte []map[string]interface{}
+	var TipoDiscapacidad [3]interface{}
+	errores := append([]interface{}{"acumulado de alertas"})
+	//var persona map[string]interface{}
+
+	errGrupoEtnico := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_grupo_etnico/?query=Persona:"+idStr, &GrupoEtnico)
+	errDiscapacidades := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_tipo_discapacidad/?query=Persona:"+idStr, &Discapacidades)
+	errUbicacionEnte := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/ubicacion_ente/?query=Ente:"+fmt.Sprintf("%.f", GrupoEtnico[0]["Persona"].(map[string]interface{})["Ente"].(float64)), &UbicacionEnte)
+	errGrupoSanguineo := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/grupo_sanguineo_persona/?query=Persona:"+idStr, &GrupoSanguineo)
+
+	if UbicacionEnte == nil {
+
+	} else {
+
+		errLugar := request.GetJson("http://"+beego.AppConfig.String("UbicacionesService")+"/lugar/"+fmt.Sprintf("%.f", UbicacionEnte[0]["Lugar"].(float64)), &Lugar)
+		fmt.Println("la url: ", "http://"+beego.AppConfig.String("UbicacionesService")+"/lugar/"+fmt.Sprintf("%.f", UbicacionEnte[0]["Lugar"].(float64)))
+		fmt.Println("el lugar: ", Lugar)
+		if errLugar != nil {
+			fmt.Println("el error de lugar", errLugar)
+		}
+	}
+
+	for i := 0; i < len(Discapacidades); i++ {
+
+		TipoDiscapacidad[i] = Discapacidades[i]["TipoDiscapacidad"]
+	}
+
+	if errDiscapacidades == nil && errGrupoEtnico == nil && errGrupoSanguineo == nil && errUbicacionEnte == nil {
+		if GrupoEtnico == nil {
+			TipoGrupoEtnico = nil
+		} else {
+			TipoGrupoEtnico = GrupoEtnico[0]["GrupoEtnico"]
+		}
+		if GrupoSanguineo == nil {
+			TipoGrupoSanguineo = nil
+		} else {
+			TipoGrupoSanguineo = GrupoSanguineo[0]["GrupoSanguineo"]
+			TipoRh = GrupoSanguineo[0]["FactorRh"]
+		}
+
+		nuevapersona := map[string]interface{}{
+			"GrupoEtnico":      TipoGrupoEtnico,
+			"TipoDiscapacidad": TipoDiscapacidad,
+			"PaisNacimiento":   Lugar,
+			"GrupoSanguineo":   TipoGrupoSanguineo,
+			"Rh":               TipoRh,
+
+			//"Foto":            resultado["Persona"].(map[string]interface{})["Foto"],
+
+		}
+
+		c.Data["json"] = nuevapersona
+		c.ServeJSON()
+	} else {
+		errores = append(errores, []interface{}{"otro error "})
+		alerta.Type = "sucess"
+		alerta.Code = "400"
+		alerta.Body = errores
+		c.Data["json"] = alerta
+		c.ServeJSON()
+
+	}
+
 }
 
 // DatosComplementariosPersona ...

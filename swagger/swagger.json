@@ -99,6 +99,34 @@
                 }
             }
         },
+        "/persona/ConsultaDatosComplementarios/{id}": {
+            "get": {
+                "tags": [
+                    "persona"
+                ],
+                "description": "conultar datos complementarios",
+                "operationId": "PersonaController.Getdatoscomplementarios",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Guardar Persona content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.PersonaDatosBasicos"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} models.Persona.Id"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/persona/ConsultaPersona/{id}": {
             "get": {
                 "tags": [
