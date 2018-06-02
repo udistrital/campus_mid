@@ -153,7 +153,7 @@
                 }
             }
         },
-        "/persona/DatosContacto": {
+        "/persona/DatosContacto/{id}": {
             "get": {
                 "tags": [
                     "persona"
@@ -162,13 +162,11 @@
                 "operationId": "PersonaController.DatosContacto",
                 "parameters": [
                     {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for Datos contacto content",
+                        "in": "path",
+                        "name": "id",
+                        "description": "The key for staticblock",
                         "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/.map[string]interface{}"
-                        }
+                        "type": "string"
                     }
                 ],
                 "responses": {

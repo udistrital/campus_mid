@@ -100,19 +100,18 @@ paths:
           description: '{string} models.Persona.Id'
         "403":
           description: body is empty
-  /persona/DatosContacto:
+  /persona/DatosContacto/{id}:
     get:
       tags:
       - persona
       description: Datos de contacto
       operationId: PersonaController.DatosContacto
       parameters:
-      - in: body
-        name: body
-        description: body for Datos contacto content
+      - in: path
+        name: id
+        description: The key for staticblock
         required: true
-        schema:
-          $ref: '#/definitions/.map[string]interface{}'
+        type: string
       responses:
         "200":
           description: '{}'
