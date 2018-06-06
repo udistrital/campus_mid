@@ -11,24 +11,6 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 basePath: /v1
 paths:
-  /persona/ActualizarDatosContacto:
-    put:
-      tags:
-      - persona
-      description: Actualizar Datos de Contacto
-      operationId: PersonaController.ActualizarDatosContacto
-      parameters:
-      - in: body
-        name: body
-        description: body for Actualizar Persona content
-        required: true
-        schema:
-          $ref: '#/definitions/.PersonaDatosBasicos'
-      responses:
-        "200":
-          description: '{string} models.Persona.Id'
-        "403":
-          description: body is empty
   /persona/ActualizarPersona:
     put:
       tags:
@@ -116,24 +98,24 @@ paths:
           description: '{string} models.Persona.Id'
         "403":
           description: body is empty
-  /persona/DatosContacto/{id}:
-    get:
+  /persona/DatosContacto:
+    put:
       tags:
       - persona
-      description: Datos de contacto
-      operationId: PersonaController.DatosContacto
+      description: Actualizar Datos de Contacto
+      operationId: PersonaController.ActualizarDatosContacto
       parameters:
-      - in: path
-        name: id
-        description: The key for staticblock
+      - in: body
+        name: body
+        description: body for Actualizar Persona content
         required: true
-        type: string
+        schema:
+          $ref: '#/definitions/.PersonaDatosBasicos'
       responses:
         "200":
-          description: '{}'
+          description: '{string} models.Persona.Id'
         "403":
           description: body is empty
-  /persona/GuardarDatosContacto:
     post:
       tags:
       - persona
@@ -149,6 +131,23 @@ paths:
       responses:
         "200":
           description: '{string} models.Persona.Id'
+        "403":
+          description: body is empty
+  /persona/DatosContacto/{id}:
+    get:
+      tags:
+      - persona
+      description: Datos de contacto
+      operationId: PersonaController.DatosContacto
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{}'
         "403":
           description: body is empty
   /persona/GuardarPersona:
