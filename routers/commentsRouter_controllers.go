@@ -9,14 +9,6 @@ func init() {
 
 	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"],
 		beego.ControllerComments{
-			Method: "ActualizarDatosComplementarios",
-			Router: `/ActualizarDatosComplementarios`,
-			AllowHTTPMethods: []string{"put"},
-			MethodParams: param.Make(),
-			Params: nil})
-
-	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"],
-		beego.ControllerComments{
 			Method: "ActualizarDatosContacto",
 			Router: `/ActualizarDatosContacto`,
 			AllowHTTPMethods: []string{"put"},
@@ -33,14 +25,6 @@ func init() {
 
 	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"],
 		beego.ControllerComments{
-			Method: "ConsultaDatosComplementarios",
-			Router: `/ConsultaDatosComplementarios/:id`,
-			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
-			Params: nil})
-
-	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"],
-		beego.ControllerComments{
 			Method: "ConsultaPersona",
 			Router: `/ConsultaPersona/:id`,
 			AllowHTTPMethods: []string{"get"},
@@ -50,8 +34,24 @@ func init() {
 	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"],
 		beego.ControllerComments{
 			Method: "DatosComplementariosPersona",
-			Router: `/DatosComplementariosPersona`,
+			Router: `/DatosComplementarios`,
 			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"],
+		beego.ControllerComments{
+			Method: "ActualizarDatosComplementarios",
+			Router: `/DatosComplementarios`,
+			AllowHTTPMethods: []string{"put"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"],
+		beego.ControllerComments{
+			Method: "ConsultaDatosComplementarios",
+			Router: `/DatosComplementarios/:id`,
+			AllowHTTPMethods: []string{"get"},
 			MethodParams: param.Make(),
 			Params: nil})
 

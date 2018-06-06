@@ -15,34 +15,6 @@
     },
     "basePath": "/v1",
     "paths": {
-        "/persona/ActualizarDatosComplementarios": {
-            "put": {
-                "tags": [
-                    "persona"
-                ],
-                "description": "Guardar Persona",
-                "operationId": "PersonaController.PostPersona",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for Guardar Persona content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/.PersonaDatosBasicos"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} models.Persona.Id"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
         "/persona/ActualizarDatosContacto": {
             "put": {
                 "tags": [
@@ -99,34 +71,6 @@
                 }
             }
         },
-        "/persona/ConsultaDatosComplementarios/{id}": {
-            "get": {
-                "tags": [
-                    "persona"
-                ],
-                "description": "conultar datos complementarios",
-                "operationId": "PersonaController.Getdatoscomplementarios",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for Guardar Persona content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/.PersonaDatosBasicos"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} models.Persona.Id"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
         "/persona/ConsultaPersona/{id}": {
             "get": {
                 "tags": [
@@ -153,7 +97,33 @@
                 }
             }
         },
-        "/persona/DatosComplementariosPersona": {
+        "/persona/DatosComplementarios": {
+            "put": {
+                "tags": [
+                    "persona"
+                ],
+                "description": "Guardar Persona",
+                "operationId": "PersonaController.PostPersona",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Guardar Persona content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.PersonaDatosBasicos"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} models.Persona.Id"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "persona"
@@ -169,6 +139,32 @@
                         "schema": {
                             "$ref": "#/definitions/.PersonaDatosBasicos"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} models.Persona.Id"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/persona/DatosComplementarios/{id}": {
+            "get": {
+                "tags": [
+                    "persona"
+                ],
+                "description": "conultar datos complementarios",
+                "operationId": "PersonaController.Getdatoscomplementarios",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
                     }
                 ],
                 "responses": {
