@@ -11,42 +11,6 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 basePath: /v1
 paths:
-  /persona/ActualizarDatosComplementarios:
-    put:
-      tags:
-      - persona
-      description: Guardar Persona
-      operationId: PersonaController.PostPersona
-      parameters:
-      - in: body
-        name: body
-        description: body for Guardar Persona content
-        required: true
-        schema:
-          $ref: '#/definitions/.PersonaDatosBasicos'
-      responses:
-        "200":
-          description: '{string} models.Persona.Id'
-        "403":
-          description: body is empty
-  /persona/ActualizarDatosContacto:
-    put:
-      tags:
-      - persona
-      description: Actualizar Datos de Contacto
-      operationId: PersonaController.ActualizarDatosContacto
-      parameters:
-      - in: body
-        name: body
-        description: body for Actualizar Persona content
-        required: true
-        schema:
-          $ref: '#/definitions/.PersonaDatosBasicos'
-      responses:
-        "200":
-          description: '{string} models.Persona.Id'
-        "403":
-          description: body is empty
   /persona/ActualizarPersona:
     put:
       tags:
@@ -63,24 +27,6 @@ paths:
       responses:
         "200":
           description: '{}'
-        "403":
-          description: body is empty
-  /persona/ConsultaDatosComplementarios/{id}:
-    get:
-      tags:
-      - persona
-      description: conultar datos complementarios
-      operationId: PersonaController.Getdatoscomplementarios
-      parameters:
-      - in: body
-        name: body
-        description: body for Guardar Persona content
-        required: true
-        schema:
-          $ref: '#/definitions/.PersonaDatosBasicos'
-      responses:
-        "200":
-          description: '{string} models.Persona.Id'
         "403":
           description: body is empty
   /persona/ConsultaPersona/{id}:
@@ -100,7 +46,24 @@ paths:
           description: '{}'
         "403":
           description: :id is empty
-  /persona/DatosComplementariosPersona:
+  /persona/DatosComplementarios:
+    put:
+      tags:
+      - persona
+      description: Guardar Persona
+      operationId: PersonaController.PostPersona
+      parameters:
+      - in: body
+        name: body
+        description: body for Guardar Persona content
+        required: true
+        schema:
+          $ref: '#/definitions/.PersonaDatosBasicos'
+      responses:
+        "200":
+          description: '{string} models.Persona.Id'
+        "403":
+          description: body is empty
     post:
       tags:
       - persona
@@ -110,6 +73,58 @@ paths:
       - in: body
         name: body
         description: body for Guardar Persona content
+        required: true
+        schema:
+          $ref: '#/definitions/.PersonaDatosBasicos'
+      responses:
+        "200":
+          description: '{string} models.Persona.Id'
+        "403":
+          description: body is empty
+  /persona/DatosComplementarios/{id}:
+    get:
+      tags:
+      - persona
+      description: conultar datos complementarios
+      operationId: PersonaController.Getdatoscomplementarios
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} models.Persona.Id'
+        "403":
+          description: body is empty
+  /persona/DatosContacto:
+    put:
+      tags:
+      - persona
+      description: Actualizar Datos de Contacto
+      operationId: PersonaController.ActualizarDatosContacto
+      parameters:
+      - in: body
+        name: body
+        description: body for Actualizar Persona content
+        required: true
+        schema:
+          $ref: '#/definitions/.PersonaDatosBasicos'
+      responses:
+        "200":
+          description: '{string} models.Persona.Id'
+        "403":
+          description: body is empty
+    post:
+      tags:
+      - persona
+      description: Guardar Datos de Contacto
+      operationId: PersonaController.PostDatosContacto
+      parameters:
+      - in: body
+        name: body
+        description: body for Guardar datos contacto content
         required: true
         schema:
           $ref: '#/definitions/.PersonaDatosBasicos'
@@ -133,24 +148,6 @@ paths:
       responses:
         "200":
           description: '{}'
-        "403":
-          description: body is empty
-  /persona/GuardarDatosContacto:
-    post:
-      tags:
-      - persona
-      description: Guardar Datos de Contacto
-      operationId: PersonaController.PostDatosContacto
-      parameters:
-      - in: body
-        name: body
-        description: body for Guardar datos contacto content
-        required: true
-        schema:
-          $ref: '#/definitions/.PersonaDatosBasicos'
-      responses:
-        "200":
-          description: '{string} models.Persona.Id'
         "403":
           description: body is empty
   /persona/GuardarPersona:
