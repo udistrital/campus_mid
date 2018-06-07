@@ -433,7 +433,7 @@ func (c *PersonaController) ActualizarDatosContacto() {
 		contactos := datos["ContactoEnte"].([]interface{})
 		for i := 0; i < len(contactos); i++ {
 			contacto := contactos[i].(map[string]interface{})
-			if errContacto := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/contacto_ente/"+fmt.Sprintf("%.f", contacto["Id"].(float64)), "PUT", &resultado, contacto); errContacto == nil {
+			if errContacto := request.SendJson("http://"+beego.AppConfig.String("EnteService")+"/contacto_ente/"+fmt.Sprintf("%.f", contacto["Id"].(float64)), "PUT", &resultado, contacto); errContacto == nil {
 				if resultado["Type"].(string) == "error" {
 					alertas = append(alertas, []interface{}{"Error en la actualización del contacto: ", resultado["Body"].(string)})
 				} else {
@@ -452,7 +452,9 @@ func (c *PersonaController) ActualizarDatosContacto() {
 
 		//actualización ubicaciones
 		UbicacionEnte := datos["UbicacionEnte"].(map[string]interface{})
-		if errUbicacionEnte := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/ubicacion_ente/"+fmt.Sprintf("%.f", UbicacionEnte["Id"].(float64)), "PUT", &resultado2, UbicacionEnte); errUbicacionEnte == nil {
+		lugar := UbicacionEnte["Lugar"].(map[string]interface{})
+		UbicacionEnte["Lugar"] = lugar["Id"]
+		if errUbicacionEnte := request.SendJson("http://"+beego.AppConfig.String("EnteService")+"/ubicacion_ente/"+fmt.Sprintf("%.f", UbicacionEnte["Id"].(float64)), "PUT", &resultado2, UbicacionEnte); errUbicacionEnte == nil {
 
 			if resultado2["Type"].(string) == "error" {
 				alertas = append(alertas, []interface{}{"Error ubicacion_ente: ", resultado2["Body"].(string)})
@@ -467,7 +469,7 @@ func (c *PersonaController) ActualizarDatosContacto() {
 
 				for i := 0; i < len(atributos); i++ {
 					atributo := atributos[i].(map[string]interface{})
-					if errAtributoUbicacion := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/valor_atributo_ubicacion/"+fmt.Sprintf("%.f", atributo["Id"].(float64)), "PUT", &resultado3, atributo); errAtributoUbicacion == nil {
+					if errAtributoUbicacion := request.SendJson("http://"+beego.AppConfig.String("EnteService")+"/valor_atributo_ubicacion/"+fmt.Sprintf("%.f", atributo["Id"].(float64)), "PUT", &resultado3, atributo); errAtributoUbicacion == nil {
 						if resultado3["Type"].(string) == "error" {
 							alertas = append(alertas, []interface{}{"Error en la actualización de de los atributos: ", resultado3["Body"].(string)})
 						} else {
@@ -835,7 +837,8 @@ func (c *PersonaController) ActualizarDatosComplementarios() {
 			var ubicacion map[string]interface{}
 			ubicacion = make(map[string]interface{})
 			ubicacion["Ente"] = map[string]interface{}{"Id": persona["Ente"]}
-			ubicacion["Lugar"] = persona["Lugar"]
+			lugar := persona["Lugar"].(map[string]interface{})
+			ubicacion["Lugar"] = lugar["Id"]
 			ubicacion["TipoRelacionUbicacionEnte"] = map[string]interface{}{"Id": persona["TipoRelacionUbicacionEnte"]}
 			ubicacion["Activo"] = true
 			if errUbicacionEnte := request.SendJson("http://"+beego.AppConfig.String("EnteService")+"/ubicacion_ente/"+fmt.Sprintf("%.f", id_ubicacion_ente[0]["Id"].(float64)), "PUT", &resultado2, ubicacion); errUbicacionEnte == nil {
