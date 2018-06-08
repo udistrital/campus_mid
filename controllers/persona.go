@@ -894,7 +894,7 @@ func (c *PersonaController) DatosContacto() {
 	var ContactoEnte []map[string]interface{}
 	var UbicacionEnte []map[string]interface{}
 
-	if errContactoEnte := request.GetJson("http://"+beego.AppConfig.String("EnteService")+"/contacto_ente/?query=Ente.Id:"+idStr+"&fields=TipoContacto,Valor", &ContactoEnte); errContactoEnte == nil {
+	if errContactoEnte := request.GetJson("http://"+beego.AppConfig.String("EnteService")+"/contacto_ente/?query=Ente.Id:"+idStr+"&fields=Id,TipoContacto,Valor", &ContactoEnte); errContactoEnte == nil {
 
 		if errUbicacionEnte := request.GetJson("http://"+beego.AppConfig.String("EnteService")+"/ubicacion_ente/?query=Ente.Id:"+idStr+"&fields=Id,Lugar,TipoRelacionUbicacionEnte", &UbicacionEnte); errUbicacionEnte == nil {
 
