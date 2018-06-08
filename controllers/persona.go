@@ -903,7 +903,7 @@ func (c *PersonaController) DatosContacto() {
 			var Lugar map[string]interface{}
 			for i := 0; i < len(UbicacionEnte); i++ {
 				s := fmt.Sprintf("%.f", UbicacionEnte[i]["Id"].(float64))
-				if errAtributosUbicacion := request.GetJson("http://"+beego.AppConfig.String("EnteService")+"/valor_atributo_ubicacion?query=UbicacionEnte.Id:"+s+"&fields=AtributoUbicacion,Valor", &AtributosEnte); errAtributosUbicacion == nil {
+				if errAtributosUbicacion := request.GetJson("http://"+beego.AppConfig.String("EnteService")+"/valor_atributo_ubicacion?query=UbicacionEnte.Id:"+s+"&fields=Id,AtributoUbicacion,Valor", &AtributosEnte); errAtributosUbicacion == nil {
 					UbicacionEnte[i]["Atributos"] = AtributosEnte
 				} else {
 					alertas = append(alertas, errAtributosUbicacion.Error())
