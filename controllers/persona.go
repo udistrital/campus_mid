@@ -549,20 +549,20 @@ func (c *PersonaController) ConsultaDatosComplementarios() {
 		errGrupoSanguineo := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/grupo_sanguineo_persona/?query=Persona:"+fmt.Sprintf("%.f", Persona[0]["Id"].(float64)), &GrupoSanguineo)
 
 		if UbicacionEnte != nil {
+			for i := 0; i < len(UbicacionEnte); i++ {
+				//buscar relaciones del lugar
+				l := fmt.Sprintf("%.f", UbicacionEnte[i]["Lugar"].(float64))
 
-			//buscar relaciones del lugar
-			l := fmt.Sprintf("%.f", UbicacionEnte[0]["Lugar"].(float64))
-
-			if errJerarquiaLugar := request.GetJson("http://"+beego.AppConfig.String("UbicacionesService")+"/relacion_lugares/jerarquia_lugar/"+l, &Lugar); errJerarquiaLugar == nil {
-				UbicacionEnte[0]["Lugar"] = Lugar
-
-			} else {
-				errores = append(errores, errJerarquiaLugar.Error())
-				alerta.Type = "error"
-				alerta.Code = "400"
-				alerta.Body = errores
-				c.Data["json"] = alerta
-				c.ServeJSON()
+				if errJerarquiaLugar := request.GetJson("http://"+beego.AppConfig.String("UbicacionesService")+"/relacion_lugares/jerarquia_lugar/"+l, &Lugar); errJerarquiaLugar == nil {
+					UbicacionEnte[i]["Lugar"] = Lugar
+				} else {
+					errores = append(errores, errJerarquiaLugar.Error())
+					alerta.Type = "error"
+					alerta.Code = "400"
+					alerta.Body = errores
+					c.Data["json"] = alerta
+					c.ServeJSON()
+				}
 			}
 		}
 
