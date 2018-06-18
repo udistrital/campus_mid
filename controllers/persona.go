@@ -542,7 +542,7 @@ func (c *PersonaController) ConsultaDatosComplementarios() {
 	//buscar persona con el ente
 	errPersona := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona/?query=Ente:"+idStr, &Persona)
 
-	if errPersona == nil {
+	if errPersona == nil && Persona != nil {
 		errGrupoEtnico := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_grupo_etnico/?query=Persona:"+fmt.Sprintf("%.f", Persona[0]["Id"].(float64)), &GrupoEtnico)
 		errDiscapacidades := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_tipo_discapacidad/?query=Persona:"+fmt.Sprintf("%.f", Persona[0]["Id"].(float64)), &Discapacidades)
 		errUbicacionEnte := request.GetJson("http://"+beego.AppConfig.String("EnteService")+"/ubicacion_ente/?query=Ente:"+idStr+"&fields=Id,TipoRelacionUbicacionEnte,Lugar", &UbicacionEnte)
@@ -605,6 +605,14 @@ func (c *PersonaController) ConsultaDatosComplementarios() {
 			c.ServeJSON()
 
 		}
+	} else {
+		errores = append(errores, []interface{}{"La persona no existe"})
+		alerta.Type = "error"
+		alerta.Code = "400"
+		alerta.Body = errores
+		c.Data["json"] = alerta
+		c.ServeJSON()
+
 	}
 
 }
