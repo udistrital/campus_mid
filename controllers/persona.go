@@ -3,6 +3,8 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
+	"strings"
 
 	"github.com/astaxie/beego"
 	"github.com/udistrital/campus_mid/models"
@@ -520,10 +522,27 @@ func (c *PersonaController) ActualizarDatosContacto() {
 // @Title Getdatoscomplementarios
 // @Description conultar datos complementarios
 // @Param	id		path 	string	true		"The key for staticblock"
+// @Param	query	query	string	false	"Filter. e.g. col1:v1,col2:v2 ..."
 // @Success 200 {string} models.Persona.Id
 // @Failure 403 body is empty
 // @router /DatosComplementarios/:id [get]
 func (c *PersonaController) ConsultaDatosComplementarios() {
+	var query = make(map[string]string)
+	// query: k:v,k:v
+	if v := c.GetString("query"); v != "" {
+		for _, cond := range strings.Split(v, ",") {
+			kv := strings.SplitN(cond, ":", 2)
+			if len(kv) != 2 {
+				c.Data["json"] = models.Alert{Type: "error", Code: "S_400", Body: "Error: invalid query key/value pair"}
+				c.ServeJSON()
+				return
+			}
+			k, v := kv[0], kv[1]
+			query[k] = v
+
+		}
+	}
+
 	var alerta models.Alert
 	idStr := c.Ctx.Input.Param(":id")
 	var Persona []map[string]interface{}
@@ -541,11 +560,20 @@ func (c *PersonaController) ConsultaDatosComplementarios() {
 
 	//buscar persona con el ente
 	errPersona := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona/?query=Ente:"+idStr, &Persona)
+	var s string
+	if query != nil {
+		for key, val := range query {
+			valInt, _ := strconv.Atoi(val)
+			s = fmt.Sprintf(",%s:%d", key, valInt)
+		}
+	}
+
+	fmt.Println("http://" + beego.AppConfig.String("EnteService") + "/ubicacion_ente/?query=Ente:" + idStr + s + "&fields=Id,TipoRelacionUbicacionEnte,Lugar")
 
 	if errPersona == nil {
 		errGrupoEtnico := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_grupo_etnico/?query=Persona:"+fmt.Sprintf("%.f", Persona[0]["Id"].(float64)), &GrupoEtnico)
 		errDiscapacidades := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_tipo_discapacidad/?query=Persona:"+fmt.Sprintf("%.f", Persona[0]["Id"].(float64)), &Discapacidades)
-		errUbicacionEnte := request.GetJson("http://"+beego.AppConfig.String("EnteService")+"/ubicacion_ente/?query=Ente:"+idStr+"&fields=Id,TipoRelacionUbicacionEnte,Lugar", &UbicacionEnte)
+		errUbicacionEnte := request.GetJson("http://"+beego.AppConfig.String("EnteService")+"/ubicacion_ente/?query=Ente:"+idStr+s+"&fields=Id,TipoRelacionUbicacionEnte,Lugar", &UbicacionEnte)
 		errGrupoSanguineo := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/grupo_sanguineo_persona/?query=Persona:"+fmt.Sprintf("%.f", Persona[0]["Id"].(float64)), &GrupoSanguineo)
 
 		if UbicacionEnte != nil {

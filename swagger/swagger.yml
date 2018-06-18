@@ -93,6 +93,10 @@ paths:
         description: The key for staticblock
         required: true
         type: string
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
       responses:
         "200":
           description: '{string} models.Persona.Id'
