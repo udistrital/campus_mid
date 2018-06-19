@@ -54,13 +54,13 @@ func (c *PersonaController) GuardarPersona() {
 		//fmt.Println("este es el resultado",resultado["Type"])
 		if resultado["Type"] != "error" || errPersona != nil {
 
-			alertas = append(alertas, []interface{}{"Persona creada con Id "}, []interface{}{resultado["Id"]})
+			alertas = append(alertas, []interface{}{"Persona creada con Id "}, []interface{}{resultado["Body"].(map[string]interface{})["Id"]})
 			alerta.Type = "OK"
 			alerta.Code = "201"
 
 			var estadoCivil map[string]interface{}
 			estadoCivil = make(map[string]interface{})
-			estadoCivil["Persona"] = resultado
+			estadoCivil["Persona"] = resultado["Body"]
 			//fmt.Println("estado", estadoCivil)
 			estadoCivil["EstadoCivil"] = persona["EstadoCivil"]
 
@@ -77,7 +77,7 @@ func (c *PersonaController) GuardarPersona() {
 
 			var genero map[string]interface{}
 			genero = make(map[string]interface{})
-			genero["Persona"] = resultado
+			genero["Persona"] = resultado["Body"]
 			genero["Genero"] = persona["Genero"]
 
 			//funcion que realiza  de la  peticion POST /persona_genero
