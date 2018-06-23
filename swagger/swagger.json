@@ -15,6 +15,110 @@
     },
     "basePath": "/v1",
     "paths": {
+        "/formacion/formacionacademica": {
+            "put": {
+                "tags": [
+                    "formacion"
+                ],
+                "description": "Modificar Formacion Academica",
+                "operationId": "FormacionController.PutFormacionAcademica",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Modificar Formacion Academica content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "formacion"
+                ],
+                "description": "Agregar Formacion Academica",
+                "operationId": "FormacionController.PostFormacionAcademica",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Agregar Formacion Academica content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/formacion/formacionacademica/{id}": {
+            "get": {
+                "tags": [
+                    "formacion"
+                ],
+                "description": "consultar Fromacion Academica por userid",
+                "operationId": "FormacionController.GetFormacionAcademica",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": ":id is empty"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "formacion"
+                ],
+                "description": "elimonar Fromacion Academica por userid",
+                "operationId": "FormacionController.DeleteFormacionAcademica",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": ":id is empty"
+                    }
+                }
+            }
+        },
         "/persona/ActualizarPersona": {
             "put": {
                 "tags": [
@@ -307,6 +411,10 @@
         {
             "name": "persona",
             "description": "PersonaController ...\n"
+        },
+        {
+            "name": "formacion",
+            "description": "FormacionController ...\n"
         }
     ]
 }
