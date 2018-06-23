@@ -152,23 +152,30 @@ func (c *FormacionController) GetFormacionAcademica() {
 	errFormacion := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica/?query=Persona:"+idStr, &resultado)
 	//fmt.Println("el resultado de la consulta es: ", resultado)
 	if errFormacion == nil {
+		c.Data["json"] = resultado
+		for i := 0; i < len(resultado); i++ {
+			errFormacionAdicional := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/?query=FormacionAcademica:"+fmt.Sprintf("%.f", resultado[i]["Id"].(float64)), &resultado2)
+			//fmt.Println("la URL es: ", "http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/?query=FormacionAcademica:"+fmt.Sprintf("%.f", resultado[0]["Id"].(float64)))
+			if errFormacionAdicional == nil {
+				fmt.Println("el dato adicional de la formacion es: ", resultado2)
 
-		errFormacionAdicional := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/?query=FormacionAcademica:"+fmt.Sprintf("%.f", resultado[0]["Id"].(float64)), &resultado2)
-		//fmt.Println("la URL es: ", "http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/?query=FormacionAcademica:"+fmt.Sprintf("%.f", resultado[0]["Id"].(float64)))
-		if errFormacionAdicional == nil {
-			fmt.Println("el dato adicional de la formacion es: ", resultado2)
-			alertas = append(alertas, resultado2)
-		} else {
-			alertas = append(alertas, errFormacionAdicional.Error())
+			} else {
+				alertas = append(alertas, errFormacionAdicional.Error())
+				alerta.Code = "400"
+				alerta.Type = "error"
+				alerta.Body = alertas
+				c.Data["json"] = alerta
+			}
 		}
 
 	} else {
 		alertas = append(alertas, errFormacion.Error())
+		alerta.Code = "400"
+		alerta.Type = "error"
+		alerta.Body = alertas
+		c.Data["json"] = alerta
 	}
-	alerta.Code = "200"
-	alerta.Type = "success"
-	alerta.Body = alertas
-	c.Data["json"] = alerta
+
 	c.ServeJSON()
 }
 
