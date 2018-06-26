@@ -50,7 +50,7 @@ func init() {
 	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"],
 		beego.ControllerComments{
 			Method: "ConsultaPersona",
-			Router: `/ConsultaPersona/:id`,
+			Router: `/ConsultaPersona/`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams: param.Make(),
 			Params: nil})

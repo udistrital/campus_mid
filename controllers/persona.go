@@ -204,18 +204,36 @@ func (c *PersonaController) ActualizarPersona() {
 // ConsultaPersona ...
 // @Title Get One
 // @Description get ConsultaPersona by userid
-// @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {}
+// @Param	id	query	string	false	"Filter model by id"
+// @Param	userid	query	string	false	"Filter model by usuario"
+// @Success 200 {object} interface{}
 // @Failure 403 :id is empty
-// @router /ConsultaPersona/:id [get]
+// @router /ConsultaPersona/ [get]
 func (c *PersonaController) ConsultaPersona() {
 	// alerta que retorna la funcion ConsultaPersona
 
 	var alerta models.Alert
-	idStr := c.Ctx.Input.Param(":id")
+	//idStr := c.Ctx.Input.Param(":id")
 	var resultado map[string]interface{}
 	alertas := append([]interface{}{"acumulado de alertas"})
-	errPersona := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona/full/?userid="+idStr, &resultado)
+
+	var id = 0
+	var uid = ""
+	id, _ = c.GetInt("id")
+	uid = c.GetString("userid")
+	var errPersona error
+
+	if id != 0 && uid == "" {
+		//fmt.Println("es un id")
+		id := c.GetString("id")
+		errPersona = request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona/full/?id="+id, &resultado)
+
+		//fmt.Println("http://" + beego.AppConfig.String("PersonaService") + "/persona/full/?id=" + id)
+	} else if id == 0 && uid != "" {
+		//fmt.Println("es un userid")
+		errPersona = request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona/full/?userid="+uid, &resultado)
+	}
+	//fmt.Println(resultado)
 	if errPersona == nil && resultado["Type"] != "error" && resultado != nil {
 		nuevapersona := map[string]interface{}{
 			"FechaNacimiento": resultado["Persona"].(map[string]interface{})["FechaNacimiento"],

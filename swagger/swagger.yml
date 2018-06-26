@@ -97,21 +97,26 @@ paths:
           description: '{}'
         "403":
           description: body is empty
-  /persona/ConsultaPersona/{id}:
+  /persona/ConsultaPersona/:
     get:
       tags:
       - persona
       description: get ConsultaPersona by userid
       operationId: PersonaController.Get One
       parameters:
-      - in: path
+      - in: query
         name: id
-        description: The key for staticblock
-        required: true
+        description: Filter model by id
+        type: string
+      - in: query
+        name: userid
+        description: Filter model by usuario
         type: string
       responses:
         "200":
-          description: '{}'
+          description: ""
+          schema:
+            $ref: '#/definitions/.interface{}'
         "403":
           description: :id is empty
   /persona/DatosComplementarios:
@@ -262,6 +267,8 @@ definitions:
   .{}:
     type: object
   .PersonaDatosBasicos:
+    type: object
+  .interface{}:
     type: object
   .map[string]interface{}:
     type: object
