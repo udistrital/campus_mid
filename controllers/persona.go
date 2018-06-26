@@ -556,6 +556,7 @@ func (c *PersonaController) ConsultaDatosComplementarios() {
 	var GrupoSanguineo []map[string]interface{}
 	var UbicacionEnte []map[string]interface{}
 	var TipoDiscapacidad []map[string]interface{}
+	var IdentificacionEnte []map[string]interface{}
 	errores := append([]interface{}{"acumulado de alertas"})
 
 	//buscar persona con el ente
@@ -568,14 +569,19 @@ func (c *PersonaController) ConsultaDatosComplementarios() {
 		}
 	}
 
-	fmt.Println("http://" + beego.AppConfig.String("EnteService") + "/ubicacion_ente/?query=Ente:" + idStr + s + "&fields=Id,TipoRelacionUbicacionEnte,Lugar")
+	//fmt.Println("http://" + beego.AppConfig.String("EnteService") + "/ubicacion_ente/?query=Ente:" + idStr + s + "&fields=Id,TipoRelacionUbicacionEnte,Lugar")
 
 	if errPersona == nil && Persona != nil {
 		errGrupoEtnico := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_grupo_etnico/?query=Persona:"+fmt.Sprintf("%.f", Persona[0]["Id"].(float64)), &GrupoEtnico)
 		errDiscapacidades := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_tipo_discapacidad/?query=Persona:"+fmt.Sprintf("%.f", Persona[0]["Id"].(float64)), &Discapacidades)
 		errUbicacionEnte := request.GetJson("http://"+beego.AppConfig.String("EnteService")+"/ubicacion_ente/?query=Ente:"+idStr+s+"&fields=Id,TipoRelacionUbicacionEnte,Lugar", &UbicacionEnte)
 		errGrupoSanguineo := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/grupo_sanguineo_persona/?query=Persona:"+fmt.Sprintf("%.f", Persona[0]["Id"].(float64)), &GrupoSanguineo)
-
+		errIdentificacion := request.GetJson("http://"+beego.AppConfig.String("EnteService")+"/identificacion/?query=Ente:"+idStr+s+"&fields=Id,TipoIdentificacion,NumeroIdentificacion,FechaExpedicion,LugarExpedicion", &IdentificacionEnte)
+		if errIdentificacion != nil {
+			fmt.Println("error de identifiacion", errIdentificacion.Error())
+		} else {
+			fmt.Println(IdentificacionEnte)
+		}
 		if UbicacionEnte != nil {
 			for i := 0; i < len(UbicacionEnte); i++ {
 				//buscar relaciones del lugar
@@ -595,7 +601,7 @@ func (c *PersonaController) ConsultaDatosComplementarios() {
 		}
 
 		for i := 0; i < len(Discapacidades); i++ {
-			fmt.Println(Discapacidades[i]["TipoDiscapacidad"])
+			//fmt.Println(Discapacidades[i]["TipoDiscapacidad"])
 			d := Discapacidades[i]["TipoDiscapacidad"].(map[string]interface{})
 			TipoDiscapacidad = append(TipoDiscapacidad, d)
 		}
@@ -619,6 +625,7 @@ func (c *PersonaController) ConsultaDatosComplementarios() {
 				"Lugar":            UbicacionEnte,
 				"GrupoSanguineo":   TipoGrupoSanguineo,
 				"Rh":               TipoRh,
+				"Identifiacion":    IdentificacionEnte,
 				//"Foto":            resultado["Persona"].(map[string]interface{})["Foto"],
 			}
 
@@ -737,6 +744,33 @@ func (c *PersonaController) DatosComplementariosPersona() {
 					alerta.Code = "200"
 				}
 			}
+			//agregar identifiacion
+
+			fmt.Println("la identifiacion es: ", persona["Identificacion"])
+			var identificacion map[string]interface{}
+			identificacion = make(map[string]interface{})
+			var ente2 map[string]interface{}
+			ente2 = make(map[string]interface{})
+			ente2["Id"] = persona["Ente"]
+			identificacion["Ente"] = ente2
+			identificacion["FechaExpedicion"] = persona["Identificacion"].(map[string]interface{})["FechaExpedicion"]
+			identificacion["LugarExpedicion"] = persona["Identificacion"].(map[string]interface{})["LugarExpedicion"]
+			identificacion["NumeroIdentificacion"] = persona["Identificacion"].(map[string]interface{})["NumeroIdentificacion"]
+			identificacion["TipoIdentificacion"] = persona["Identificacion"].(map[string]interface{})["TipoIdentificacion"]
+			fmt.Println("la identifiacion nueva es: ", identificacion)
+			var resultadoid map[string]interface{}
+			if errIdentificacionEnte := request.SendJson("http://"+beego.AppConfig.String("EnteService")+"/identificacion/", "POST", &resultadoid, identificacion); errIdentificacionEnte == nil {
+				fmt.Println("el resultado de la identificacion es: ", resultadoid)
+				if resultadoid["Type"] == "error" {
+					errores = append(errores, []interface{}{"La Identificacion tuvo el error ", resultadoid["Type"]})
+
+				} else {
+					errores = append(errores, []interface{}{"OK identificacion"})
+				}
+
+			} else {
+				errores = append(errores, []interface{}{"error identifiacion: ", errIdentificacionEnte.Error()})
+			}
 
 			//registro del lugar
 			var ubicacion map[string]interface{}
@@ -745,7 +779,7 @@ func (c *PersonaController) DatosComplementariosPersona() {
 			ubicacion["Lugar"] = persona["Lugar"]
 			ubicacion["TipoRelacionUbicacionEnte"] = persona["TipoRelacionUbicacionEnte"]
 
-			fmt.Println(ubicacion)
+			//fmt.Println(ubicacion)
 			errUbicaciones := RegistroUbicaciones(ubicacion)
 			if errUbicaciones.Type != "success" {
 				errores = append(errores, errUbicaciones)
@@ -771,6 +805,7 @@ func (c *PersonaController) DatosComplementariosPersona() {
 			c.Data["json"] = alerta
 			c.ServeJSON()
 		}
+
 	} else {
 
 		errores = append(errores, []interface{}{err.Error()})
@@ -812,10 +847,13 @@ func (c *PersonaController) ActualizarDatosComplementarios() {
 	var idpersona_grupo_sanguineo []map[string]interface{}
 
 	var id_ubicacion_ente []map[string]interface{}
+	var id_identificacion_ente []map[string]interface{}
 	//Resultado de agregar grupo sanguineo y discapacidades
 	var resultado2 map[string]interface{}
 	//Resultado de agregar grupo sanguineo y discapacidades
 	var resultado3 map[string]interface{}
+
+	var resultado4 map[string]interface{}
 	//acumulado de errores
 	errores := append([]interface{}{"acumulado de alertas"})
 	//comprobar que el JSON de entrada sea correcto
@@ -902,6 +940,27 @@ func (c *PersonaController) ActualizarDatosComplementarios() {
 				} else {
 					errores = append(errores, []interface{}{"OK update ubicacion_ente"})
 				}
+			}
+			errIdentifiacionEnte := request.GetJson("http://"+beego.AppConfig.String("EnteService")+"/identificacion/?query=Ente:"+fmt.Sprintf("%.f", persona["Ente"].(float64))+"&fields=Id", &id_identificacion_ente)
+			if errIdentifiacionEnte == nil && id_identificacion_ente[0]["Id"] != nil {
+
+				var Identificacion map[string]interface{}
+				Identificacion = make(map[string]interface{})
+				Identificacion["Ente"] = map[string]interface{}{"Id": persona["Ente"]}
+				Identificacion["TipoIdentificacion"] = persona["Identificacion"].(map[string]interface{})["TipoIdentificacion"]
+				Identificacion["NumeroIdentificacion"] = persona["Identificacion"].(map[string]interface{})["NumeroIdentificacion"]
+				Identificacion["FechaExpedicion"] = persona["Identificacion"].(map[string]interface{})["FechaExpedicion"]
+				Identificacion["LugarExpedicion"] = persona["Identificacion"].(map[string]interface{})["LugarExpedicion"]
+				//fmt.Println("la identificacion que se va en el PUT es: ", Identificacion)
+				if errIdentificacion := request.SendJson("http://"+beego.AppConfig.String("EnteService")+"/identificacion/"+fmt.Sprintf("%.f", id_identificacion_ente[0]["Id"].(float64)), "PUT", &resultado4, Identificacion); errIdentificacion == nil {
+					if resultado4["Type"].(string) == "error" {
+						errores = append(errores, resultado4["Body"])
+					} else {
+						errores = append(errores, []interface{}{"OK update identificacion"})
+					}
+				}
+			} else {
+				errores = append(errores, []interface{}{"error identificacion: ", errIdentifiacionEnte.Error()})
 			}
 
 			alerta.Body = errores
