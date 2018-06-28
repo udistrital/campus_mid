@@ -252,9 +252,10 @@ func (c *PersonaController) ConsultaPersona() {
 	}
 	//fmt.Println(resultado)
 	if errPersona == nil && resultado["Type"] != "error" && resultado != nil {
+
 		nuevapersona := map[string]interface{}{
-			"FechaNacimiento": resultado["Persona"].(map[string]interface{})["FechaNacimiento"],
-			"Foto":            resultado["Persona"].(map[string]interface{})["Foto"],
+			"FechaNacimiento": 	resultado["Persona"].(map[string]interface{})["FechaNacimiento"],
+			"Foto":            	resultado["Persona"].(map[string]interface{})["Foto"],
 			"PrimerApellido":  resultado["Persona"].(map[string]interface{})["PrimerApellido"],
 			"PrimerNombre":    resultado["Persona"].(map[string]interface{})["PrimerNombre"],
 			"SegundoApellido": resultado["Persona"].(map[string]interface{})["SegundoApellido"],
@@ -263,7 +264,8 @@ func (c *PersonaController) ConsultaPersona() {
 			"Id":              resultado["Persona"].(map[string]interface{})["Id"],
 			"EstadoCivil":     resultado["EstadoCivil"],
 			"Genero":          resultado["Genero"],
-			"Identificacion":  resultado["Identificacion"],
+			"TipoIdentificacion":  resultado["Identificacion"].(map[string]interface{})["TipoIdentificacion"],
+			"NumeroDocumento":  resultado["Identificacion"].(map[string]interface{})["NumeroIdentificacion"],
 		}
 
 		c.Data["json"] = nuevapersona
