@@ -768,6 +768,7 @@ func (c *PersonaController) DatosComplementariosPersona() {
 
 				Discapacidad["Persona"] = resultado[0]
 				Discapacidad["TipoDiscapacidad"] = discapacidad[i]
+				Discapacidad["Activo"] = true
 
 				errDiscapacidad := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_tipo_discapacidad", "POST", &resultado2, Discapacidad)
 
@@ -784,13 +785,15 @@ func (c *PersonaController) DatosComplementariosPersona() {
 			}
 			//agregar identifiacion
 
-			fmt.Println("la identifiacion es: ", persona["Identificacion"])
+			fmt.Println("la identificacion es: ", persona["Identificacion"])
 			var identificacion map[string]interface{}
 			identificacion = make(map[string]interface{})
 			var ente2 map[string]interface{}
 			ente2 = make(map[string]interface{})
 			ente2["Id"] = persona["Ente"]
 			identificacion["Ente"] = ente2
+
+      /*evaluar si guardar la libreta militar
 			identificacion["FechaExpedicion"] = persona["Identificacion"].(map[string]interface{})["FechaExpedicion"]
 			identificacion["LugarExpedicion"] = persona["Identificacion"].(map[string]interface{})["LugarExpedicion"]
 			identificacion["NumeroIdentificacion"] = persona["Identificacion"].(map[string]interface{})["NumeroIdentificacion"]
@@ -809,6 +812,7 @@ func (c *PersonaController) DatosComplementariosPersona() {
 			} else {
 				errores = append(errores, []interface{}{"error identifiacion: ", errIdentificacionEnte.Error()})
 			}
+      */
 
 			//registro del lugar
 			var ubicacion map[string]interface{}
