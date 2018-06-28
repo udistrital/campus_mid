@@ -11,6 +11,74 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 basePath: /v1
 paths:
+  /formacion/formacionacademica:
+    put:
+      tags:
+      - formacion
+      description: Modificar Formacion Academica
+      operationId: FormacionController.PutFormacionAcademica
+      parameters:
+      - in: body
+        name: body
+        description: body Modificar Formacion Academica content
+        required: true
+        schema:
+          $ref: '#/definitions/.{}'
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: body is empty
+    post:
+      tags:
+      - formacion
+      description: Agregar Formacion Academica
+      operationId: FormacionController.PostFormacionAcademica
+      parameters:
+      - in: body
+        name: body
+        description: body Agregar Formacion Academica content
+        required: true
+        schema:
+          $ref: '#/definitions/.{}'
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: body is empty
+  /formacion/formacionacademica/{id}:
+    get:
+      tags:
+      - formacion
+      description: consultar Fromacion Academica por userid
+      operationId: FormacionController.GetFormacionAcademica
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: :id is empty
+    delete:
+      tags:
+      - formacion
+      description: elimonar Fromacion Academica por userid
+      operationId: FormacionController.DeleteFormacionAcademica
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: :id is empty
   /persona/ActualizarPersona:
     put:
       tags:
@@ -29,21 +97,26 @@ paths:
           description: '{}'
         "403":
           description: body is empty
-  /persona/ConsultaPersona/{id}:
+  /persona/ConsultaPersona/:
     get:
       tags:
       - persona
       description: get ConsultaPersona by userid
       operationId: PersonaController.Get One
       parameters:
-      - in: path
+      - in: query
         name: id
-        description: The key for staticblock
-        required: true
+        description: Filter model by id
+        type: string
+      - in: query
+        name: userid
+        description: Filter model by usuario
         type: string
       responses:
         "200":
-          description: '{}'
+          description: ""
+          schema:
+            $ref: '#/definitions/.interface{}'
         "403":
           description: :id is empty
   /persona/DatosComplementarios:
@@ -195,9 +268,14 @@ definitions:
     type: object
   .PersonaDatosBasicos:
     type: object
+  .interface{}:
+    type: object
   .map[string]interface{}:
     type: object
 tags:
 - name: persona
   description: |
     PersonaController ...
+- name: formacion
+  description: |
+    FormacionController ...
