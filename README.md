@@ -1,3 +1,3 @@
 # campus_mid
 API mid del proyecto
--With CI- 
+-With CI and notoficatio messages-
