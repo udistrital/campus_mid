@@ -43,6 +43,7 @@ func (c *PersonaController) GuardarPersona() {
 	var resultado2 map[string]interface{}
 	// reultado de la adicion del genero
 	var resultado3 map[string]interface{}
+	var resultadoIdentificacion map[string]interface{}
 	// alerta que retorna la funcion Guardar persona
 	var alerta models.Alert
 	//acumulado de alertas
@@ -59,6 +60,22 @@ func (c *PersonaController) GuardarPersona() {
 			alertas = append(alertas, []interface{}{"Persona creada con Id "}, []interface{}{resultado["Body"].(map[string]interface{})["Id"]})
 			alerta.Type = "OK"
 			alerta.Code = "201"
+
+			var identificacion map[string]interface{}
+      identificacion = make(map[string]interface{})
+      identificacion["Ente"] = map[string]interface{}{"Id": resultado["Body"].(map[string]interface{})["Ente"]}
+      identificacion["TipoIdentificacion"]=map[string]interface{}{"Id": persona["TipoDocumento"]}
+      identificacion["NumeroIdentificacion"]=persona["NumeroDocumento"]
+
+      errIdentificacion := request.SendJson("http://"+beego.AppConfig.String("EnteService")+"/identificacion", "POST", &resultadoIdentificacion, identificacion)
+			if resultadoIdentificacion["Type"] == "error" || errIdentificacion != nil {
+				alertas = append(alertas, resultadoIdentificacion)
+				alerta.Type = "error"
+				alerta.Code = "400"
+			} else {
+				alertas = append(alertas, []interface{}{" OK identificacion "})
+			}
+
 
 			var estadoCivil map[string]interface{}
 			estadoCivil = make(map[string]interface{})
