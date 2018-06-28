@@ -263,6 +263,7 @@ func (c *PersonaController) ConsultaPersona() {
 			"Id":              resultado["Persona"].(map[string]interface{})["Id"],
 			"EstadoCivil":     resultado["EstadoCivil"],
 			"Genero":          resultado["Genero"],
+			"Identificacion":  resultado["Identificacion"],
 		}
 
 		c.Data["json"] = nuevapersona
