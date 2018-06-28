@@ -64,7 +64,7 @@ func (c *PersonaController) GuardarPersona() {
 			var identificacion map[string]interface{}
       identificacion = make(map[string]interface{})
       identificacion["Ente"] = map[string]interface{}{"Id": resultado["Body"].(map[string]interface{})["Ente"]}
-      identificacion["TipoIdentificacion"]=map[string]interface{}{"Id": persona["TipoDocumento"]}
+      identificacion["TipoIdentificacion"]=map[string]interface{}{"Id": persona["TipoIdentificacion"]}
       identificacion["NumeroIdentificacion"]=persona["NumeroDocumento"]
 
       errIdentificacion := request.SendJson("http://"+beego.AppConfig.String("EnteService")+"/identificacion", "POST", &resultadoIdentificacion, identificacion)
