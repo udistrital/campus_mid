@@ -602,8 +602,6 @@ func (c *PersonaController) ConsultaDatosComplementarios() {
 		}
 	}
 
-	//fmt.Println("http://" + beego.AppConfig.String("EnteService") + "/ubicacion_ente/?query=Ente:" + idStr + s + "&fields=Id,TipoRelacionUbicacionEnte,Lugar")
-
 	if errPersona == nil && Persona != nil {
 		errGrupoEtnico := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_grupo_etnico/?query=Persona:"+fmt.Sprintf("%.f", Persona[0]["Id"].(float64)), &GrupoEtnico)
 		errDiscapacidades := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_tipo_discapacidad/?query=Persona:"+fmt.Sprintf("%.f", Persona[0]["Id"].(float64))+",Activo:true", &Discapacidades)
@@ -726,7 +724,6 @@ func (c *PersonaController) DatosComplementariosPersona() {
 
 			GrupoEtnico["GrupoEtnico"] = persona["GrupoEtnico"]
 			GrupoEtnico["Persona"] = resultado[0]
-
 			errGrupoEtnico := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_grupo_etnico", "POST", &resultado2, GrupoEtnico)
 
 			if errGrupoEtnico != nil || resultado2["Id"] == 0 || resultado2["Type"] == "error" {
@@ -735,7 +732,6 @@ func (c *PersonaController) DatosComplementariosPersona() {
 					errores = append(errores, []interface{}{"error grupo etnico: ", errGrupoEtnico.Error()})
 				}
 				if resultado2["Type"] == "error" {
-
 					errores = append(errores, resultado2)
 				}
 
@@ -747,7 +743,6 @@ func (c *PersonaController) DatosComplementariosPersona() {
 				GrupoSanguineo["Persona"] = resultado[0]
 				GrupoSanguineo["FactorRh"] = persona["Rh"]
 				GrupoSanguineo["GrupoSanguineo"] = persona["GrupoSanguineo"]
-
 				errGrupoSanguineo := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/grupo_sanguineo_persona", "POST", &resultado3, GrupoSanguineo)
 
 				if errGrupoSanguineo == nil {
@@ -767,11 +762,9 @@ func (c *PersonaController) DatosComplementariosPersona() {
 				Discapacidad["Persona"] = resultado[0]
 				Discapacidad["TipoDiscapacidad"] = discapacidad[i]
 				Discapacidad["Activo"] = true
-
 				errDiscapacidad := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_tipo_discapacidad", "POST", &resultado2, Discapacidad)
 
 				if errDiscapacidad != nil || resultado2["Type"] == "error" {
-
 					errores = append(errores, []interface{}{"La discapacidad con Id ", discapacidad[i].(map[string]interface{})["Id"], " obtuvo ", resultado2["Type"], " ", resultado2["Body"]})
 					alerta.Type = "error"
 					alerta.Code = "400"
@@ -781,8 +774,8 @@ func (c *PersonaController) DatosComplementariosPersona() {
 					alerta.Code = "200"
 				}
 			}
-			//agregar identifiacion
 
+			//agregar identifiacion
 			fmt.Println("la identificacion es: ", persona["Identificacion"])
 			var identificacion map[string]interface{}
 			identificacion = make(map[string]interface{})
@@ -819,7 +812,6 @@ func (c *PersonaController) DatosComplementariosPersona() {
 			ubicacion["Lugar"] = persona["Lugar"]
 			ubicacion["TipoRelacionUbicacionEnte"] = persona["TipoRelacionUbicacionEnte"]
 
-			//fmt.Println(ubicacion)
 			errUbicaciones := RegistroUbicaciones(ubicacion)
 			if errUbicaciones.Type != "success" {
 				errores = append(errores, errUbicaciones)
@@ -837,7 +829,6 @@ func (c *PersonaController) DatosComplementariosPersona() {
 			}
 			if len(resultado) == 0 {
 				errores = append(errores, []interface{}{"NO existe ninguna persona con este ente"})
-
 			}
 			alerta.Type = "error"
 			alerta.Code = "400"
@@ -884,7 +875,7 @@ func (c *PersonaController) ActualizarDatosComplementarios() {
 
 	var idpersona_grupo_etnico []map[string]interface{}
 	var idpersona_grupo_sanguineo []map[string]interface{}
-	var idpersona_discapacidad []map[string]interface{}
+	var persona_discapacidades []interface{}
 
 	var id_ubicacion_ente []map[string]interface{}
 	//var id_identificacion_ente []map[string]interface{}
@@ -898,7 +889,6 @@ func (c *PersonaController) ActualizarDatosComplementarios() {
 	errores := append([]interface{}{"acumulado de alertas"})
 	//comprobar que el JSON de entrada sea correcto
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &persona); err == nil {
-
 		errPersona := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona/?query=Ente:"+fmt.Sprintf("%.f", persona["Ente"].(float64))+"&fields=Id", &resultado)
 
 		if errPersona == nil && resultado != nil {
@@ -907,7 +897,6 @@ func (c *PersonaController) ActualizarDatosComplementarios() {
 			GrupoEtnico["Persona"] = resultado[0]
 
 			request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_grupo_etnico/?query=persona:"+fmt.Sprintf("%.f", resultado[0]["Id"].(float64)), &idpersona_grupo_etnico)
-
 			errGrupoEtnico := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_grupo_etnico/"+fmt.Sprintf("%.f", idpersona_grupo_etnico[0]["Id"].(float64)), "PUT", &resultado2, GrupoEtnico)
 
 			if errGrupoEtnico != nil || resultado2["Id"] == 0 || resultado2["Type"] == "error" {
@@ -916,7 +905,6 @@ func (c *PersonaController) ActualizarDatosComplementarios() {
 					errores = append(errores, []interface{}{"error grupo etnico: ", errGrupoEtnico.Error()})
 				}
 				if resultado2["Type"] == "error" {
-
 					errores = append(errores, resultado2)
 				}
 
@@ -924,45 +912,110 @@ func (c *PersonaController) ActualizarDatosComplementarios() {
 				errores = append(errores, []interface{}{"OK persona_grupo_etnico"})
 			}
 			if (persona["GrupoSanguineo"] == "O" || persona["GrupoSanguineo"] == "A" || persona["GrupoSanguineo"] == "AB" || persona["GrupoSanguineo"] == "B") && (persona["Rh"] == "+" || persona["Rh"] == "-") {
-
 				GrupoSanguineo["Persona"] = resultado[0]
 				GrupoSanguineo["FactorRh"] = persona["Rh"]
 				GrupoSanguineo["GrupoSanguineo"] = persona["GrupoSanguineo"]
 				request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/grupo_sanguineo_persona/?query=persona:"+fmt.Sprintf("%.f", resultado[0]["Id"].(float64)), &idpersona_grupo_sanguineo)
-
 				errGrupoSanguineo := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/grupo_sanguineo_persona/"+fmt.Sprintf("%.f", idpersona_grupo_sanguineo[0]["Id"].(float64)), "PUT", &resultado3, GrupoSanguineo)
-				//fmt.Println("el resultado del grupo sanguineo: ", resultado3)
+
 				if errGrupoSanguineo == nil {
 					errores = append(errores, []interface{}{"OK grupo_sanquineo_persona"})
 				} else {
 					errores = append(errores, []interface{}{"err grupo_sanquineo_persona", errGrupoSanguineo.Error()})
 				}
 			} else {
-
 				errores = append(errores, []interface{}{"el grupo sanguineo es incorrecto:", persona["GrupoSanguineo"], persona["Rh"]})
 			}
 
 /*####################################################################################*/
-			discapacidad := persona["TipoDiscapacidad"].([]interface{})
-			request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_tipo_discapacidad/?query=persona:"+fmt.Sprintf("%.f", resultado[0]["Id"].(float64)), &idpersona_discapacidad)
+			//discapacidades enviadas en el form
+			discapacidades := persona["TipoDiscapacidad"].([]interface{})
+			//get discapacidades persona
+			request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_tipo_discapacidad/?query=persona:"+fmt.Sprintf("%.f", resultado[0]["Id"].(float64)), &persona_discapacidades)
 
-			for i := 0; i < len(discapacidad); i++ {
-				Discapacidad["Persona"] = resultado[0]
-				Discapacidad["TipoDiscapacidad"] = discapacidad[i]
+			//se pueden actualizar(cambiar de estado) o agregar nuevas
+			var resultado2 map[string]interface{}
 
-				errDiscapacidad := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_tipo_discapacidad/"+fmt.Sprintf("%.f", idpersona_discapacidad[i]["Id"].(float64)), "PUT", &resultado2, Discapacidad)
+			for i := 0; i < len(discapacidades); i++ {
+				discapacidad := discapacidades[i].(map[string]interface{})
 
-				if errDiscapacidad != nil || resultado2["Type"] == "error" {
-					errores = append(errores, []interface{}{"La discapacidad con Id ", discapacidad[i].(map[string]interface{})["Id"], " obtuvo ", resultado2["Type"], " ", resultado2["Body"]})
-					alerta.Type = "error"
-					alerta.Code = "400"
-				} else {
-					errores = append(errores, []interface{}{"La discapacidad con Id ", discapacidad[i].(map[string]interface{})["Id"], " obtuvo el resultado ", resultado2["Type"]})
-					alerta.Type = "sucess"
-					alerta.Code = "200"
+				for j := 0; j < len(persona_discapacidades); j++ {
+					persona_discapacidad := persona_discapacidades[j].(map[string]interface{})
+					d:= persona_discapacidad["TipoDiscapacidad"].(map[string]interface{})
+
+					//está!!
+					if(d["Id"]==discapacidad["Id"]){
+						//verificar que esté activa, si no lo está activarla
+						if(persona_discapacidad["Activo"]==false){
+							Discapacidad["Persona"] = resultado[0]
+							Discapacidad["TipoDiscapacidad"] = persona_discapacidad["TipoDiscapacidad"]
+							Discapacidad["Activo"] = true
+							errDiscapacidad := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_tipo_discapacidad/"+fmt.Sprintf("%.f", persona_discapacidad["Id"].(float64)), "PUT", &resultado2, Discapacidad)
+
+							if errDiscapacidad != nil || resultado2["Type"] == "error" {
+								errores = append(errores, []interface{}{"La discapacidad con Id ", persona_discapacidad["Id"], " obtuvo ", resultado2["Type"], " ", resultado2["Body"]})
+								alerta.Type = "error"
+								alerta.Code = "400"
+							} else {
+								errores = append(errores, []interface{}{"La discapacidad con Id ", persona_discapacidad["Id"], " obtuvo el resultado ", resultado2["Type"]})
+								alerta.Type = "sucess"
+								alerta.Code = "200"
+							}
+
+						}
+					}else{
+						//si no tiene la discapacidad se agrega
+						Discapacidad["Persona"] = resultado[0]
+						Discapacidad["TipoDiscapacidad"] = discapacidad
+						Discapacidad["Activo"] = true
+						errDiscapacidad := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_tipo_discapacidad", "POST", &resultado2, Discapacidad)
+
+						if errDiscapacidad != nil || resultado2["Type"] == "error" {
+							errores = append(errores, []interface{}{"La discapacidad con Id ", discapacidad["Id"], " obtuvo ", resultado2["Type"], " ", resultado2["Body"]})
+							alerta.Type = "error"
+							alerta.Code = "400"
+						} else {
+							errores = append(errores, []interface{}{"La discapacidad con Id ", discapacidad["Id"], " obtuvo el resultado ", resultado2["Type"]})
+							alerta.Type = "sucess"
+							alerta.Code = "200"
+						}
+					}
+
+				}
+			}
+
+			//verificar si se han quitado discapacidades
+			for j := 0; j < len(persona_discapacidades); j++ {
+				persona_discapacidad := persona_discapacidades[j].(map[string]interface{})
+				d:= persona_discapacidad["TipoDiscapacidad"].(map[string]interface{})
+				iguales:=false
+
+				for i := 0; i < len(discapacidades); i++ {
+					discapacidad := discapacidades[i].(map[string]interface{})
+					if(d["Id"]==discapacidad["Id"]){
+						iguales=true
+					}
+				}
+				if(iguales==false){
+					//inactivar discapacidad
+					Discapacidad["Persona"] = resultado[0]
+					Discapacidad["TipoDiscapacidad"] = d
+					Discapacidad["Activo"] = false
+					errDiscapacidad := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_tipo_discapacidad/"+fmt.Sprintf("%.f", persona_discapacidad["Id"].(float64)), "PUT", &resultado2, Discapacidad)
+
+					if errDiscapacidad != nil || resultado2["Type"] == "error" {
+						errores = append(errores, []interface{}{"La discapacidad con Id ", persona_discapacidad["Id"], " obtuvo ", resultado2["Type"], " ", resultado2["Body"]})
+						alerta.Type = "error"
+						alerta.Code = "400"
+					} else {
+						errores = append(errores, []interface{}{"La discapacidad con Id ", persona_discapacidad["Id"], " obtuvo el resultado ", resultado2["Type"]})
+						alerta.Type = "sucess"
+						alerta.Code = "200"
+					}
 				}
 			}
 /*####################################################################################*/
+
 			request.GetJson("http://"+beego.AppConfig.String("EnteService")+"/ubicacion_ente/?query=Ente:"+fmt.Sprintf("%.f", persona["Ente"].(float64))+"&fields=Id", &id_ubicacion_ente)
 			//fmt.Println("el id de la ubicacion ente: ", id_ubicacion_ente)
 			var ubicacion map[string]interface{}
