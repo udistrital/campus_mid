@@ -132,7 +132,8 @@ func (c *FormacionController) PutFormacionAcademica() {
 	//resultado dato adicional formacion academica
 	var resultado2 map[string]interface{}
 	//resultado dato adicional formacion academica
-	//var resultado3 map[string]interface{}
+	var resultado3 []map[string]interface{}
+	var resultado4 map[string]interface{}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &formacion); err == nil {
 		errFormacion := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica/?query=Persona:"+idStr, &resultado)
 		if errFormacion == nil {
@@ -148,39 +149,77 @@ func (c *FormacionController) PutFormacionAcademica() {
 					errFormacion2 := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica/"+fmt.Sprintf("%.f", resultado[i]["Id"].(float64)), "PUT", &resultado2, formacionacademica)
 					if errFormacion2 == nil {
 						if resultado2["Type"] == "success" {
-							alertas = append(alertas, "actualizada la formacion academica")
+							alertas = append(alertas, "OK UPDATE formacion_academica")
 							alerta.Code = "200"
 							alerta.Type = "success"
 							alerta.Body = alertas
 							c.Data["json"] = alerta
 						}
 					} else {
-						fmt.Println("error de formacion", errFormacion2.Error())
+						//fmt.Println("error de formacion", errFormacion2.Error())
 						alertas = append(alertas, errFormacion2.Error())
 						alerta.Code = "400"
 						alerta.Type = "error"
-						alerta.Body = alertas
-						c.Data["json"] = alerta
+
 					}
 
+					errFormacionAdd := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/?query=FormacionAcademica:"+fmt.Sprintf("%.f", resultado[i]["Id"].(float64)), &resultado3)
+					if errFormacionAdd == nil {
+						//fmt.Println("lo adicional es: ", resultado3)
+						for u := 0; u < len(resultado3); u++ {
+							if resultado3[u]["TipoDatoAdicional"].(float64) == 1 {
+								resultado3[u]["Valor"] = formacion["TituloTrabajoGrado"]
+								//fmt.Println("el nuevo titulo es: ", resultado3[u])
+								errFormacionadd2 := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/"+fmt.Sprintf("%.f", resultado3[u]["Id"].(float64)), "PUT", &resultado4, resultado3[u])
+								if errFormacionadd2 == nil {
+									alertas = append(alertas, "OK UPDATE TituloTrabajoGrado ")
+									//fmt.Println("el resultado de actualizar lo adicional es: ", resultado4)
+								} else {
+									//fmt.Println("el error de actualizar lo adicional es:", errFormacionadd2.Error())
+									alertas = append(alertas, errFormacionadd2.Error())
+									alerta.Code = "400"
+									alerta.Type = "error"
+								}
+							}
+							if resultado3[u]["TipoDatoAdicional"].(float64) == 2 {
+								resultado3[u]["Valor"] = formacion["DescripcionTrabajoGrado"]
+								errFormacionadd2 := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/"+fmt.Sprintf("%.f", resultado3[u]["Id"].(float64)), "PUT", &resultado4, resultado3[u])
+								if errFormacionadd2 == nil {
+									alertas = append(alertas, "OK UPDATE DescripcionTrabajoGrado ")
+									//fmt.Println("el resultado de actualizar lo adicional es: ", resultado4)
+								} else {
+									//fmt.Println("el error de actualizar lo adicional es:", errFormacionadd2.Error())
+									alertas = append(alertas, errFormacionadd2.Error())
+									alerta.Code = "400"
+									alerta.Type = "error"
+								}
+							}
+						}
+					} else {
+						//fmt.Println("error adicional: ", errFormacionAdd.Error())
+						alertas = append(alertas, errFormacion.Error())
+						alerta.Code = "400"
+						alerta.Type = "error"
+					}
 				}
+
 			}
 
 		} else {
 			alertas = append(alertas, errFormacion.Error())
 			alerta.Code = "400"
 			alerta.Type = "error"
-			alerta.Body = alertas
-			c.Data["json"] = alerta
+
 		}
 
 	} else {
 		alertas = append(alertas, err.Error())
 		alerta.Code = "400"
 		alerta.Type = "error"
-		alerta.Body = alertas
-		c.Data["json"] = alerta
+
 	}
+	alerta.Body = alertas
+	c.Data["json"] = alerta
 	c.ServeJSON()
 }
 
@@ -221,13 +260,17 @@ func (c *FormacionController) GetFormacionAcademica() {
 				//fmt.Println("la titulacion de esa persona es: ", resultado)
 
 			} else {
-				fmt.Println("el error de la titulacion es: ", errTitulacion.Error())
+				alertas = append(alertas, errTitulacion.Error())
+				alerta.Code = "400"
+				alerta.Type = "error"
+				alerta.Body = alertas
+				c.Data["json"] = alerta
 			}
 
 			errFormacionAdicional := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/?query=FormacionAcademica:"+fmt.Sprintf("%.f", resultado[u]["Id"].(float64))+"&fields=TipoDatoAdicional,Valor,Id", &resultado3)
 
 			if errFormacionAdicional == nil {
-				fmt.Println("los datos adicionales de la formacion son: ", resultado3)
+				//fmt.Println("los datos adicionales de la formacion son: ", resultado3)
 				for i := 0; i < len(resultado3); i++ {
 
 					if resultado3[i]["TipoDatoAdicional"].(float64) == 1 {
