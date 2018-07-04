@@ -16,32 +16,6 @@
     "basePath": "/v1",
     "paths": {
         "/formacion/formacionacademica": {
-            "put": {
-                "tags": [
-                    "formacion"
-                ],
-                "description": "Modificar Formacion Academica",
-                "operationId": "FormacionController.PutFormacionAcademica",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body Modificar Formacion Academica content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/.{}"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{}"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            },
             "post": {
                 "tags": [
                     "formacion"
@@ -83,6 +57,39 @@
                         "description": "The key for staticblock",
                         "required": true,
                         "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": ":id is empty"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "formacion"
+                ],
+                "description": "Modificar Formacion Academica",
+                "operationId": "FormacionController.PutFormacionAcademica",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Modificar Formacion Academica content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.{}"
+                        }
                     }
                 ],
                 "responses": {
@@ -334,6 +341,12 @@
                         "name": "id",
                         "description": "The key for staticblock",
                         "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "query",
+                        "description": "Filter. e.g. col1:v1,col2:v2 ...",
                         "type": "string"
                     }
                 ],
