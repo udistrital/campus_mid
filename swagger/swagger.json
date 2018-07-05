@@ -114,6 +114,15 @@
                         "description": "The key for staticblock",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Modificar Formacion Academica content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.{}"
+                        }
                     }
                 ],
                 "responses": {
@@ -165,13 +174,13 @@
                     {
                         "in": "query",
                         "name": "id",
-                        "description": "Filter model by id",
+                        "description": "busca por  id del ente",
                         "type": "string"
                     },
                     {
                         "in": "query",
                         "name": "userid",
-                        "description": "Filter model by usuario",
+                        "description": "busca por nombre de usuario",
                         "type": "string"
                     }
                 ],

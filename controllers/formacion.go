@@ -303,7 +303,9 @@ func (c *FormacionController) GetFormacionAcademica() {
 // @Description elimonar Fromacion Academica por userid
 // @Param	id		path 	string	true		"The key for staticblock"
 // @Success 200 {}
+// @Param	body  body {}	true		"body Modificar Formacion Academica content"
 // @Failure 403 :id is empty
 // @router /formacionacademica/:id [delete]
 func (c *FormacionController) DeleteFormacionAcademica() {
+
 }
