@@ -251,22 +251,42 @@ func (c *PersonaController) ConsultaPersona() {
 		id := c.GetString("id")
 		errPersona = request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona/?query=Ente:"+id, &resultado)
 		if resultado != nil {
-			newpersona["Persona"] = resultado[0]
+			newpersona = map[string]interface{}{
+				"FechaNacimiento": resultado[0]["FechaNacimiento"],
+				"Foto":            resultado[0]["Foto"],
+				"PrimerApellido": 	resultado[0]["PrimerApellido"],
+	 			"PrimerNombre":    resultado[0]["PrimerNombre"],
+	 			"SegundoApellido": resultado[0]["SegundoApellido"],
+				"SegundoNombre": resultado[0]["SegundoNombre"],
+				"Usuario": resultado[0]["Usuario"],
+				"Id": resultado[0]["Id"],
+				//
+			}
 		}
 
 	} else if id == 0 && uid != "" {
 		errPersona = request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona/?query=Usuario:"+uid, &resultado)
 
 		if resultado != nil {
-			newpersona["Persona"] = resultado[0]
+			newpersona = map[string]interface{}{
+				"FechaNacimiento": resultado[0]["FechaNacimiento"],
+				"Foto":            resultado[0]["Foto"],
+				"PrimerApellido": 	resultado[0]["PrimerApellido"],
+	 			"PrimerNombre":    resultado[0]["PrimerNombre"],
+	 			"SegundoApellido": resultado[0]["SegundoApellido"],
+				"SegundoNombre": resultado[0]["SegundoNombre"],
+				"Usuario": resultado[0]["Usuario"],
+				"Id": resultado[0]["Id"],
+				//
+			}
 		}
 	}
 	if errPersona == nil && resultado != nil {
 
 		errIdentificacion := request.GetJson("http://"+beego.AppConfig.String("EnteService")+"/identificacion/?query=Ente:"+fmt.Sprintf("%.f", resultado[0]["Ente"].(float64))+"&fields=TipoIdentificacion,NumeroIdentificacion,FechaExpedicion,LugarExpedicion,Id", &resultado2)
 		if errIdentificacion == nil && resultado2 != nil {
-			newpersona["Identificacion"] = resultado2[0]
-
+			newpersona["TipoIdentificacion"] = resultado2[0]["TipoIdentificacion"]
+			newpersona["NumeroDocumento"] = resultado2[0]["NumeroIdentificacion"]
 		}
 		errEstadoCivil := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_estado_civil/?query=Persona:"+fmt.Sprintf("%.f", resultado[0]["Id"].(float64))+"&fields=EstadoCivil,Id", &EstadoCivil)
 		if errEstadoCivil == nil && EstadoCivil != nil {
