@@ -254,12 +254,13 @@ func (c *PersonaController) ConsultaPersona() {
 			newpersona = map[string]interface{}{
 				"FechaNacimiento": resultado[0]["FechaNacimiento"],
 				"Foto":            resultado[0]["Foto"],
-				"PrimerApellido": 	resultado[0]["PrimerApellido"],
-	 			"PrimerNombre":    resultado[0]["PrimerNombre"],
-	 			"SegundoApellido": resultado[0]["SegundoApellido"],
-				"SegundoNombre": resultado[0]["SegundoNombre"],
-				"Usuario": resultado[0]["Usuario"],
-				"Id": resultado[0]["Id"],
+				"PrimerApellido":  resultado[0]["PrimerApellido"],
+				"PrimerNombre":    resultado[0]["PrimerNombre"],
+				"SegundoApellido": resultado[0]["SegundoApellido"],
+				"SegundoNombre":   resultado[0]["SegundoNombre"],
+				"Usuario":         resultado[0]["Usuario"],
+				"Id":              resultado[0]["Id"],
+				"Ente":            resultado[0]["Ente"],
 				//
 			}
 		}
@@ -271,12 +272,13 @@ func (c *PersonaController) ConsultaPersona() {
 			newpersona = map[string]interface{}{
 				"FechaNacimiento": resultado[0]["FechaNacimiento"],
 				"Foto":            resultado[0]["Foto"],
-				"PrimerApellido": 	resultado[0]["PrimerApellido"],
-	 			"PrimerNombre":    resultado[0]["PrimerNombre"],
-	 			"SegundoApellido": resultado[0]["SegundoApellido"],
-				"SegundoNombre": resultado[0]["SegundoNombre"],
-				"Usuario": resultado[0]["Usuario"],
-				"Id": resultado[0]["Id"],
+				"PrimerApellido":  resultado[0]["PrimerApellido"],
+				"PrimerNombre":    resultado[0]["PrimerNombre"],
+				"SegundoApellido": resultado[0]["SegundoApellido"],
+				"SegundoNombre":   resultado[0]["SegundoNombre"],
+				"Usuario":         resultado[0]["Usuario"],
+				"Id":              resultado[0]["Id"],
+				"Ente":            resultado[0]["Ente"],
 				//
 			}
 		}
@@ -591,7 +593,7 @@ func (c *PersonaController) ActualizarDatosContacto() {
 // ConsultaDatosComplementarios ...
 // @Title Getdatoscomplementarios
 // @Description conultar datos complementarios
-// @Param	id		path 	string	true		"The key for staticblock"
+// @Param	id		path 	string	true		"consulta de datos complementarios por el Id del ente"
 // @Param	query	query	string	false	"Filter. e.g. col1:v1,col2:v2 ..."
 // @Success 200 {string} models.Persona.Id
 // @Failure 403 body is empty
