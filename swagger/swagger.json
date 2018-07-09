@@ -78,7 +78,7 @@
                     {
                         "in": "path",
                         "name": "id",
-                        "description": "The key for staticblock",
+                        "description": "el id de la formacion academica a modificar",
                         "required": true,
                         "type": "string"
                     },
@@ -105,24 +105,15 @@
                 "tags": [
                     "formacion"
                 ],
-                "description": "elimonar Fromacion Academica por userid",
+                "description": "eliminar Formacion Academica por id de la formacion",
                 "operationId": "FormacionController.DeleteFormacionAcademica",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "id",
-                        "description": "The key for staticblock",
+                        "description": "Id de la formacion academica",
                         "required": true,
                         "type": "string"
-                    },
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body Modificar Formacion Academica content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/.{}"
-                        }
                     }
                 ],
                 "responses": {
@@ -262,7 +253,7 @@
                     {
                         "in": "path",
                         "name": "id",
-                        "description": "The key for staticblock",
+                        "description": "consulta de datos complementarios por el Id del ente",
                         "required": true,
                         "type": "string"
                     },
