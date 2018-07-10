@@ -51,14 +51,15 @@ func (c *PersonaController) GuardarPersona() {
 
 	//valida que el JSON de entrada sea correcto
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &persona); err == nil {
-		alertas := append([]interface{}{"Cadena de respuestas: "})
+		alertas := append([]interface{}{"Response:"})
+
 		//funcion que realiza  de la  peticion POST /persona
 		errPersona := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/persona", "POST", &resultado, persona)
 		//fmt.Println("este es el resultado",resultado["Type"])
 		if resultado["Type"] != "error" || errPersona != nil {
 
-			alertas = append(alertas, []interface{}{"Persona creada con Id "}, []interface{}{resultado["Body"].(map[string]interface{})["Id"]})
-			alerta.Type = "OK"
+			alertas = append(alertas, "OK persona Id "+fmt.Sprintf("%.f", resultado["Body"].(map[string]interface{})["Id"]))
+			alerta.Type = "Created"
 			alerta.Code = "201"
 
 			var identificacion map[string]interface{}
@@ -73,7 +74,7 @@ func (c *PersonaController) GuardarPersona() {
 				alerta.Type = "error"
 				alerta.Code = "400"
 			} else {
-				alertas = append(alertas, []interface{}{" OK identificacion "})
+				alertas = append(alertas, "OK identificacion")
 			}
 
 			var estadoCivil map[string]interface{}
@@ -90,7 +91,7 @@ func (c *PersonaController) GuardarPersona() {
 				alerta.Type = "error"
 				alerta.Code = "400"
 			} else {
-				alertas = append(alertas, []interface{}{" OK persona_estado_civil "})
+				alertas = append(alertas, "OK persona_estado_civil")
 			}
 
 			var genero map[string]interface{}
@@ -106,7 +107,7 @@ func (c *PersonaController) GuardarPersona() {
 				alerta.Type = "error"
 				alerta.Code = "400"
 			} else {
-				alertas = append(alertas, []interface{}{"OK persona_genero"})
+				alertas = append(alertas, "OK persona_genero")
 			}
 
 			alerta.Body = alertas
@@ -153,7 +154,7 @@ func (c *PersonaController) ActualizarPersona() {
 	// alerta que retorna la funcion Guardar persona
 	var alerta models.Alert
 	//acumulado de alertas
-	alertas := append([]interface{}{"Acumulado de respuestas"})
+	alertas := append([]interface{}{"Response:"})
 
 	//valida que el JSON de entrada sea correcto
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &persona); err == nil {
@@ -161,7 +162,7 @@ func (c *PersonaController) ActualizarPersona() {
 		errPersona := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/persona/"+fmt.Sprintf("%.f", persona["Id"].(float64)), "PUT", &resultado, persona)
 		if errPersona == nil && resultado["Type"] == "success" {
 
-			alertas = append(alertas, []interface{}{"Persona Actualizada"})
+			alertas = append(alertas, "UPDATE Persona")
 			alerta.Type = "OK"
 			alerta.Code = "200"
 
@@ -176,7 +177,7 @@ func (c *PersonaController) ActualizarPersona() {
 					alerta.Type = "error"
 					alerta.Code = "400"
 				} else {
-					alertas = append(alertas, []interface{}{"OK persona_genero"})
+					alertas = append(alertas, "UPDATE persona_genero")
 				}
 			}
 
@@ -190,7 +191,7 @@ func (c *PersonaController) ActualizarPersona() {
 					alerta.Type = "error"
 					alerta.Code = "400"
 				} else {
-					alertas = append(alertas, []interface{}{"OK persona estado_civil"})
+					alertas = append(alertas, "UPDATE persona_estado_civil")
 
 				}
 			}
@@ -198,9 +199,14 @@ func (c *PersonaController) ActualizarPersona() {
 			c.Data["json"] = alerta
 			c.ServeJSON()
 		} else {
+			if errPersona != nil {
+				alerta.Body = append(alertas, resultado)
+			} else {
+				alerta.Body = append(alertas, resultado)
+			}
 			alerta.Type = "error"
 			alerta.Code = "400"
-			alerta.Body = append(alertas, resultado)
+
 			c.Data["json"] = alerta
 			c.ServeJSON()
 		}
@@ -424,7 +430,7 @@ func (c *PersonaController) RegistrarUbicaciones() {
 // @Failure 403 body is empty
 // @router /DatosContacto [post]
 func (c *PersonaController) GuardarDatosContacto() {
-	alertas := append([]interface{}{"Cadena de respuestas: "})
+	alertas := append([]interface{}{"Response:"})
 	// datos de contacto de la persona
 	var datos map[string]interface{}
 	var contactoEnte map[string]interface{}
@@ -448,7 +454,7 @@ func (c *PersonaController) GuardarDatosContacto() {
 			errContacto := request.SendJson("http://"+beego.AppConfig.String("EnteService")+"/contacto_ente", "POST", &resultado, contactoEnte)
 
 			if errContacto == nil && resultado["Type"] == "success" {
-				alertas = append(alertas, []interface{}{"succes: "})
+				alertas = append(alertas, "OK contacto_ente ")
 
 			} else {
 				alertas = append(alertas, resultado["Body"].(string))
@@ -471,7 +477,7 @@ func (c *PersonaController) GuardarDatosContacto() {
 			alertas = append(alertas, errUbicaciones)
 			alerta.Code = errUbicaciones.Code
 		} else {
-			alertas = append(alertas, []interface{}{"succes: "})
+			alertas = append(alertas, "OK RegistroUbicaciones")
 			alerta.Code = errUbicaciones.Code
 		}
 		alerta.Body = alertas
@@ -498,7 +504,7 @@ func (c *PersonaController) GuardarDatosContacto() {
 // @Failure 403 body is empty
 // @router /DatosContacto [put]
 func (c *PersonaController) ActualizarDatosContacto() {
-	alertas := append([]interface{}{"Cadena de respuestas: "})
+	alertas := append([]interface{}{"Response: "})
 	// datos de contacto de la persona
 	var datos map[string]interface{}
 	//var contactoEnte map[string]interface{}
@@ -517,14 +523,14 @@ func (c *PersonaController) ActualizarDatosContacto() {
 			contacto := contactos[i].(map[string]interface{})
 			if errContacto := request.SendJson("http://"+beego.AppConfig.String("EnteService")+"/contacto_ente/"+fmt.Sprintf("%.f", contacto["Id"].(float64)), "PUT", &resultado, contacto); errContacto == nil {
 				if resultado["Type"].(string) == "error" {
-					alertas = append(alertas, []interface{}{"Error en la actualización del contacto: ", resultado["Body"].(string)})
+					alertas = append(alertas, "Error UPDATE datos_contacto: "+resultado["Body"].(string))
 				} else {
-					alertas = append(alertas, []interface{}{"OK actualización de contacto"})
+					alertas = append(alertas, "UPDATE datos_contacto")
 				}
 				alerta.Type = resultado["Type"].(string)
 				alerta.Code = resultado["Code"].(string)
 			} else {
-				alertas = append(alertas, []interface{}{"ERROR contacto_ente: ", errContacto.Error()})
+				alertas = append(alertas, "ERROR contacto_ente: "+errContacto.Error())
 				alerta.Type = "error"
 				alerta.Code = "400"
 			}
@@ -539,9 +545,9 @@ func (c *PersonaController) ActualizarDatosContacto() {
 		if errUbicacionEnte := request.SendJson("http://"+beego.AppConfig.String("EnteService")+"/ubicacion_ente/"+fmt.Sprintf("%.f", UbicacionEnte["Id"].(float64)), "PUT", &resultado2, UbicacionEnte); errUbicacionEnte == nil {
 
 			if resultado2["Type"].(string) == "error" {
-				alertas = append(alertas, []interface{}{"Error ubicacion_ente: ", resultado2["Body"].(string)})
+				alertas = append(alertas, "Error ubicacion_ente: "+resultado2["Body"].(string))
 			} else {
-				alertas = append(alertas, []interface{}{"OK ubicacion_ente"})
+				alertas = append(alertas, "UPDATE ubicacion_ente")
 
 				//actualización atributos
 				var ubicacion map[string]interface{}
@@ -553,14 +559,14 @@ func (c *PersonaController) ActualizarDatosContacto() {
 					atributo := atributos[i].(map[string]interface{})
 					if errAtributoUbicacion := request.SendJson("http://"+beego.AppConfig.String("EnteService")+"/valor_atributo_ubicacion/"+fmt.Sprintf("%.f", atributo["Id"].(float64)), "PUT", &resultado3, atributo); errAtributoUbicacion == nil {
 						if resultado3["Type"].(string) == "error" {
-							alertas = append(alertas, []interface{}{"Error en la actualización de de los atributos: ", resultado3["Body"].(string)})
+							alertas = append(alertas, "Error UPDATE atributos: "+resultado3["Body"].(string))
 						} else {
-							alertas = append(alertas, []interface{}{"OK actualización de atributos"})
+							alertas = append(alertas, "UPDATE  atributos")
 						}
 						alerta.Type = resultado3["Type"].(string)
 						alerta.Code = resultado3["Code"].(string)
 					} else {
-						alertas = append(alertas, []interface{}{"Error en la actualización de los atributos: ", errAtributoUbicacion.Error()})
+						alertas = append(alertas, "Error UPDATE atributos: "+errAtributoUbicacion.Error())
 						alerta.Type = "error"
 						alerta.Code = "400"
 					}
@@ -571,7 +577,7 @@ func (c *PersonaController) ActualizarDatosContacto() {
 			}
 
 		} else {
-			alertas = append(alertas, []interface{}{"Error en la actualización de la ubicación: ", errUbicacionEnte.Error()})
+			alertas = append(alertas, "Error UPDATE ubicación: "+errUbicacionEnte.Error())
 			alerta.Type = "error"
 			alerta.Code = "400"
 		}
@@ -580,7 +586,7 @@ func (c *PersonaController) ActualizarDatosContacto() {
 		c.ServeJSON()
 
 	} else {
-		alertas = append(alertas, []interface{}{err.Error()})
+		alertas = append(alertas, err.Error())
 		c.Ctx.Output.SetStatus(400)
 		alerta.Type = "error"
 		alerta.Code = "400"
@@ -629,7 +635,7 @@ func (c *PersonaController) ConsultaDatosComplementarios() {
 	var UbicacionEnte []map[string]interface{}
 	var TipoDiscapacidad []map[string]interface{}
 	var IdentificacionEnte []map[string]interface{}
-	errores := append([]interface{}{"acumulado de alertas"})
+	errores := append([]interface{}{"Response:"})
 
 	//buscar persona con el ente
 	errPersona := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona/?query=Ente:"+idStr, &Persona)
@@ -699,12 +705,13 @@ func (c *PersonaController) ConsultaDatosComplementarios() {
 					"GrupoSanguineo":   TipoGrupoSanguineo,
 					"Rh":               TipoRh,
 					"Identificacion":   IdentificacionEnte,
+					"Ente":             Persona[0]["Ente"],
 					//"Foto":            resultado["Persona"].(map[string]interface{})["Foto"],
 				}
 			} else {
-				errores = append(errores, []interface{}{"otro error "})
-				alerta.Type = "sucess"
-				alerta.Code = "400"
+				errores = append(errores, "ERROR")
+				alerta.Type = "error"
+				alerta.Code = "500"
 				alerta.Body = errores
 				c.Data["json"] = alerta
 				c.ServeJSON()
@@ -714,11 +721,11 @@ func (c *PersonaController) ConsultaDatosComplementarios() {
 		c.ServeJSON()
 
 	} else {
-		errores = append(errores, []interface{}{"La persona no existe"})
-		alerta.Type = "error"
-		alerta.Code = "400"
-		alerta.Body = errores
-		c.Data["json"] = alerta
+		//errores = append(errores, "No found Persona")
+		//alerta.Type = "error"
+		//alerta.Code = "400"
+		//alerta.Body = errores
+		c.Data["json"] = nil
 		c.ServeJSON()
 
 	}
@@ -768,14 +775,14 @@ func (c *PersonaController) DatosComplementariosPersona() {
 			if errGrupoEtnico != nil || resultado2["Id"] == 0 || resultado2["Type"] == "error" {
 
 				if errGrupoEtnico != nil {
-					errores = append(errores, []interface{}{"error grupo etnico: ", errGrupoEtnico.Error()})
+					errores = append(errores, "error grupo etnico: "+errGrupoEtnico.Error())
 				}
 				if resultado2["Type"] == "error" {
-					errores = append(errores, resultado2)
+					errores = append(errores, resultado2["Body"])
 				}
 
 			} else {
-				errores = append(errores, []interface{}{"OK persona_grupo_etnico"})
+				errores = append(errores, "OK persona_grupo_etnico")
 			}
 			if (persona["GrupoSanguineo"] == "O" || persona["GrupoSanguineo"] == "A" || persona["GrupoSanguineo"] == "AB" || persona["GrupoSanguineo"] == "B") && (persona["Rh"] == "+" || persona["Rh"] == "-") {
 
@@ -785,13 +792,13 @@ func (c *PersonaController) DatosComplementariosPersona() {
 				errGrupoSanguineo := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/grupo_sanguineo_persona", "POST", &resultado3, GrupoSanguineo)
 
 				if errGrupoSanguineo == nil {
-					errores = append(errores, []interface{}{"OK grupo_sanquineo_persona"})
+					errores = append(errores, "OK grupo_sanquineo_persona")
 				} else {
-					errores = append(errores, []interface{}{"err grupo_sanquineo_persona", errGrupoSanguineo.Error()})
+					errores = append(errores, errGrupoSanguineo.Error())
 				}
 			} else {
 
-				errores = append(errores, []interface{}{"el grupo sanguineo es incorrecto:", persona["GrupoSanguineo"], persona["Rh"]})
+				errores = append(errores, "el grupo sanguineo es incorrecto")
 			}
 
 			discapacidad := persona["TipoDiscapacidad"].([]interface{})
@@ -804,18 +811,18 @@ func (c *PersonaController) DatosComplementariosPersona() {
 				errDiscapacidad := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_tipo_discapacidad", "POST", &resultado2, Discapacidad)
 
 				if errDiscapacidad != nil || resultado2["Type"] == "error" {
-					errores = append(errores, []interface{}{"La discapacidad con Id ", discapacidad[i].(map[string]interface{})["Id"], " obtuvo ", resultado2["Type"], " ", resultado2["Body"]})
+					errores = append(errores, "La discapacidad con Id "+fmt.Sprintf("%.f", discapacidad[i].(map[string]interface{})["Id"])+" obtuvo "+fmt.Sprintf("%v", resultado2["Type"])+" "+fmt.Sprintf("%v", resultado2["Body"]))
 					alerta.Type = "error"
 					alerta.Code = "400"
 				} else {
-					errores = append(errores, []interface{}{"La discapacidad con Id ", discapacidad[i].(map[string]interface{})["Id"], " obtuvo el resultado ", resultado2["Type"]})
+					errores = append(errores, "La discapacidad con Id "+fmt.Sprintf("%.f", discapacidad[i].(map[string]interface{})["Id"])+" obtuvo "+fmt.Sprintf("%v", resultado2["Type"])+" "+fmt.Sprintf("%v", resultado2["Body"]))
 					alerta.Type = "sucess"
 					alerta.Code = "200"
 				}
 			}
 
 			//agregar identifiacion
-			fmt.Println("la identificacion es: ", persona["Identificacion"])
+			//fmt.Println("la identificacion es: ", persona["Identificacion"])
 			var identificacion map[string]interface{}
 			identificacion = make(map[string]interface{})
 			var ente2 map[string]interface{}
@@ -853,9 +860,9 @@ func (c *PersonaController) DatosComplementariosPersona() {
 
 			errUbicaciones := RegistroUbicaciones(ubicacion)
 			if errUbicaciones.Type != "success" {
-				errores = append(errores, errUbicaciones)
+				errores = append(errores, errUbicaciones.Body)
 			} else {
-				errores = append(errores, []interface{}{"succes: "})
+				errores = append(errores, "succes: ")
 			}
 
 			alerta.Body = errores
@@ -864,10 +871,10 @@ func (c *PersonaController) DatosComplementariosPersona() {
 		} else {
 
 			if errPersona != nil {
-				errores = append(errores, []interface{}{"error persona: ", errPersona})
+				errores = append(errores, "error persona: ", errPersona)
 			}
 			if len(resultado) == 0 {
-				errores = append(errores, []interface{}{"NO existe ninguna persona con este ente"})
+				errores = append(errores, "NO existe ninguna persona con este ente")
 			}
 			alerta.Type = "error"
 			alerta.Code = "400"
@@ -925,7 +932,7 @@ func (c *PersonaController) ActualizarDatosComplementarios() {
 
 	//var resultado4 map[string]interface{}
 	//acumulado de errores
-	errores := append([]interface{}{"acumulado de alertas"})
+	errores := append([]interface{}{"Response:"})
 	//comprobar que el JSON de entrada sea correcto
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &persona); err == nil {
 		errPersona := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona/?query=Ente:"+fmt.Sprintf("%.f", persona["Ente"].(float64))+"&fields=Id", &resultado)
@@ -941,14 +948,14 @@ func (c *PersonaController) ActualizarDatosComplementarios() {
 			if errGrupoEtnico != nil || resultado2["Id"] == 0 || resultado2["Type"] == "error" {
 
 				if errGrupoEtnico != nil {
-					errores = append(errores, []interface{}{"error grupo etnico: ", errGrupoEtnico.Error()})
+					errores = append(errores, "ERROR grupo etnico: "+errGrupoEtnico.Error())
 				}
 				if resultado2["Type"] == "error" {
 					errores = append(errores, resultado2)
 				}
 
 			} else {
-				errores = append(errores, []interface{}{"OK persona_grupo_etnico"})
+				errores = append(errores, []interface{}{"UPDATE persona_grupo_etnico"})
 			}
 			if (persona["GrupoSanguineo"] == "O" || persona["GrupoSanguineo"] == "A" || persona["GrupoSanguineo"] == "AB" || persona["GrupoSanguineo"] == "B") && (persona["Rh"] == "+" || persona["Rh"] == "-") {
 				GrupoSanguineo["Persona"] = resultado[0]
@@ -958,12 +965,12 @@ func (c *PersonaController) ActualizarDatosComplementarios() {
 				errGrupoSanguineo := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/grupo_sanguineo_persona/"+fmt.Sprintf("%.f", idpersona_grupo_sanguineo[0]["Id"].(float64)), "PUT", &resultado3, GrupoSanguineo)
 
 				if errGrupoSanguineo == nil {
-					errores = append(errores, []interface{}{"OK grupo_sanquineo_persona"})
+					errores = append(errores, "UPDATE grupo_sanquineo_persona")
 				} else {
-					errores = append(errores, []interface{}{"err grupo_sanquineo_persona", errGrupoSanguineo.Error()})
+					errores = append(errores, "ERROR grupo_sanquineo_persona"+errGrupoSanguineo.Error())
 				}
 			} else {
-				errores = append(errores, []interface{}{"el grupo sanguineo es incorrecto:", persona["GrupoSanguineo"], persona["Rh"]})
+				errores = append(errores, "el grupo sanguineo es incorrecto:"+fmt.Sprintf("%v", persona["GrupoSanguineo"])+fmt.Sprintf("%v", persona["Rh"]))
 			}
 
 			/*####################################################################################*/
@@ -992,11 +999,11 @@ func (c *PersonaController) ActualizarDatosComplementarios() {
 							errDiscapacidad := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_tipo_discapacidad/"+fmt.Sprintf("%.f", persona_discapacidad["Id"].(float64)), "PUT", &resultado2, Discapacidad)
 
 							if errDiscapacidad != nil || resultado2["Type"] == "error" {
-								errores = append(errores, []interface{}{"La discapacidad con Id ", persona_discapacidad["Id"], " obtuvo ", resultado2["Type"], " ", resultado2["Body"]})
+								errores = append(errores, "La discapacidad con Id "+fmt.Sprintf("%.f", persona_discapacidad["Id"])+" obtuvo "+fmt.Sprintf("%v", resultado2["Type"])+" "+fmt.Sprintf("%v", resultado2["Body"]))
 								alerta.Type = "error"
 								alerta.Code = "400"
 							} else {
-								errores = append(errores, []interface{}{"La discapacidad con Id ", persona_discapacidad["Id"], " obtuvo el resultado ", resultado2["Type"]})
+								errores = append(errores, "La discapacidad con Id "+fmt.Sprintf("%.f", persona_discapacidad["Id"])+" obtuvo "+fmt.Sprintf("%v", resultado2["Type"]))
 								alerta.Type = "sucess"
 								alerta.Code = "200"
 							}
@@ -1010,11 +1017,11 @@ func (c *PersonaController) ActualizarDatosComplementarios() {
 						errDiscapacidad := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_tipo_discapacidad", "POST", &resultado2, Discapacidad)
 
 						if errDiscapacidad != nil || resultado2["Type"] == "error" {
-							errores = append(errores, []interface{}{"La discapacidad con Id ", discapacidad["Id"], " obtuvo ", resultado2["Type"], " ", resultado2["Body"]})
+							errores = append(errores, "La discapacidad con Id "+fmt.Sprintf("%.f", persona_discapacidad["Id"])+" obtuvo "+fmt.Sprintf("%v", resultado2["Type"])+" "+fmt.Sprintf("%v", resultado2["Body"]))
 							alerta.Type = "error"
 							alerta.Code = "400"
 						} else {
-							errores = append(errores, []interface{}{"La discapacidad con Id ", discapacidad["Id"], " obtuvo el resultado ", resultado2["Type"]})
+							errores = append(errores, "La discapacidad con Id "+fmt.Sprintf("%.f", persona_discapacidad["Id"])+" obtuvo "+fmt.Sprintf("%v", resultado2["Type"]))
 							alerta.Type = "sucess"
 							alerta.Code = "200"
 						}
@@ -1068,7 +1075,7 @@ func (c *PersonaController) ActualizarDatosComplementarios() {
 				if resultado2["Type"].(string) == "error" {
 					errores = append(errores, resultado2["Body"])
 				} else {
-					errores = append(errores, []interface{}{"OK update ubicacion_ente"})
+					errores = append(errores, "UPDATE ubicacion_ente")
 				}
 			}
 			/*errIdentifiacionEnte := request.GetJson("http://"+beego.AppConfig.String("EnteService")+"/identificacion/?query=Ente:"+fmt.Sprintf("%.f", persona["Ente"].(float64))+"&fields=Id", &id_identificacion_ente)
@@ -1099,10 +1106,10 @@ func (c *PersonaController) ActualizarDatosComplementarios() {
 		} else {
 
 			if errPersona != nil {
-				errores = append(errores, []interface{}{"error persona: ", errPersona})
+				errores = append(errores, "Error persona: "+errPersona.Error())
 			}
 			if len(resultado) == 0 {
-				errores = append(errores, []interface{}{"NO existe ninguna persona con este ente"})
+				errores = append(errores, "NO existe ninguna persona con este ente")
 
 			}
 			alerta.Type = "error"
@@ -1113,7 +1120,7 @@ func (c *PersonaController) ActualizarDatosComplementarios() {
 		}
 	} else {
 
-		errores = append(errores, []interface{}{err.Error()})
+		errores = append(errores, err.Error())
 		c.Ctx.Output.SetStatus(200)
 		alerta.Type = "error"
 		alerta.Code = "401"
