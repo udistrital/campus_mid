@@ -25,6 +25,11 @@ func init() {
 				&controllers.FormacionController{},
 			),
 		),
+		beego.NSNamespace("/organizacion",
+			beego.NSInclude(
+				&controllers.OrganizacionController{},
+			),
+		),
 	)
 	beego.AddNamespace(ns)
 }
