@@ -47,38 +47,6 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:OrganizacionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:OrganizacionController"],
-		beego.ControllerComments{
-			Method: "GetAll",
-			Router: `/`,
-			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
-			Params: nil})
-
-	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:OrganizacionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:OrganizacionController"],
-		beego.ControllerComments{
-			Method: "GetOne",
-			Router: `/:id`,
-			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
-			Params: nil})
-
-	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:OrganizacionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:OrganizacionController"],
-		beego.ControllerComments{
-			Method: "Put",
-			Router: `/:id`,
-			AllowHTTPMethods: []string{"put"},
-			MethodParams: param.Make(),
-			Params: nil})
-
-	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:OrganizacionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:OrganizacionController"],
-		beego.ControllerComments{
-			Method: "Delete",
-			Router: `/:id`,
-			AllowHTTPMethods: []string{"delete"},
-			MethodParams: param.Make(),
-			Params: nil})
-
 	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"],
 		beego.ControllerComments{
 			Method: "ActualizarPersona",

@@ -16,10 +16,10 @@ type OrganizacionController struct {
 // URLMapping ...
 func (c *OrganizacionController) URLMapping() {
 	c.Mapping("Post", c.Post)
-	c.Mapping("GetOne", c.GetOne)
-	c.Mapping("GetAll", c.GetAll)
-	c.Mapping("Put", c.Put)
-	c.Mapping("Delete", c.Delete)
+	// c.Mapping("GetOne", c.GetOne)
+	// c.Mapping("GetAll", c.GetAll)
+	// c.Mapping("Put", c.Put)
+	// c.Mapping("Delete", c.Delete)
 }
 
 // Post ...
@@ -32,24 +32,26 @@ func (c *OrganizacionController) URLMapping() {
 func (c *OrganizacionController) Post() {
 	var organizacion map[string]interface{}
 	var resultado map[string]interface{}
+	var resultado2 map[string]interface{}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &organizacion); err == nil {
-		fmt.Print(organizacion)
 		o := map[string]interface{}{
-			"TipoOrganizacion": organizacion["Tipo_organizacion"],
+			"TipoOrganizacion": organizacion["TipoOrganizacion"],
 			"Nombre":           organizacion["Nombre"],
 		}
-		if err := request.SendJson("http://"+beego.AppConfig.String("OrganizacionService")+"/organizacion", "POST", resultado["Organizacion"], o); err == nil { // request.SendJson("http://"+beego.AppConfig.String("OrganizacionService")+"/organizacion", "POST", &resultado, o); err == nil {
+		if err := request.SendJson("http://"+beego.AppConfig.String("OrganizacionService")+"/organizacion", "POST", &resultado, o); err == nil {
+
 			p := map[string]interface{}{
 				"LugarExpedicion":      organizacion["LugarExpedicion"],
 				"FechaExpedicion":      organizacion["FechaExpedicion"],
-				"TipoIdentificacion":   map[string]interface{}{"Id": 5},
-				"NumeroIdentificacion": organizacion["Nit"],
-				"Ente":                 map[string]interface{}{"Id": resultado["Organizacion"].(map[string]interface{})["Ente"]},
+				"TipoIdentificacion":   organizacion["TipoIdentificacion"], // asegurando que 5 es el ID para NIT
+				"NumeroIdentificacion": organizacion["NumeroIdentificacion"],
+				"Ente":                 map[string]interface{}{"Id": resultado["Ente"]},
 			}
-			if err := request.SendJson("http://"+beego.AppConfig.String("EnteService")+"/identificacion", "POST", resultado["Identificacion"], p); err == nil {
-				c.Data["json"] = resultado
+			if err := request.SendJson("http://"+beego.AppConfig.String("EnteService")+"/identificacion", "POST", &resultado2, p); err == nil && resultado2["Type"] != "error" {
+				c.Data["json"] = resultado2
 			} else {
-				c.Data["json"] = err
+				request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("OrganizacionService")+"/organizacion/%.f", resultado["Id"]), "DELETE", &resultado2, nil)
+				c.Data["json"] = []interface{}{err, resultado2}
 			}
 		} else {
 			c.Data["json"] = err
@@ -60,6 +62,7 @@ func (c *OrganizacionController) Post() {
 	c.ServeJSON()
 }
 
+/*
 // GetOne ...
 // @Title GetOne
 // @Description get Organizacion by id
@@ -109,3 +112,4 @@ func (c *OrganizacionController) Put() {
 func (c *OrganizacionController) Delete() {
 
 }
+*/
