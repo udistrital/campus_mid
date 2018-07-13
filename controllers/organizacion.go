@@ -38,7 +38,7 @@ func (c *OrganizacionController) Post() {
 			"TipoOrganizacion": organizacion["TipoOrganizacion"],
 			"Nombre":           organizacion["Nombre"],
 		}
-		if err := request.SendJson("http://"+beego.AppConfig.String("OrganizacionService")+"/organizacion", "POST", &resultado, o); err == nil {
+		if err := request.SendJson("http://"+beego.AppConfig.String("OrganizacionService")+"/organizacion", "POST", &resultado, o); err == nil && resultado["Type"] != "error" {
 
 			p := map[string]interface{}{
 				"LugarExpedicion":      organizacion["LugarExpedicion"],
@@ -48,13 +48,13 @@ func (c *OrganizacionController) Post() {
 				"Ente":                 map[string]interface{}{"Id": resultado["Ente"]},
 			}
 			if err := request.SendJson("http://"+beego.AppConfig.String("EnteService")+"/identificacion", "POST", &resultado2, p); err == nil && resultado2["Type"] != "error" {
-				c.Data["json"] = resultado2
+				c.Data["json"] = []interface{}{resultado, resultado2}
 			} else {
 				request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("OrganizacionService")+"/organizacion/%.f", resultado["Id"]), "DELETE", &resultado2, nil)
 				c.Data["json"] = []interface{}{err, resultado2}
 			}
 		} else {
-			c.Data["json"] = err
+			c.Data["json"] = []interface{}{err, resultado}
 		}
 	} else {
 		c.Data["json"] = err
