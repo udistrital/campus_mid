@@ -31,35 +31,56 @@ func (c *OrganizacionController) URLMapping() {
 // @router / [post]
 func (c *OrganizacionController) Post() {
 	var organizacion map[string]interface{}
-	var resultado map[string]interface{}
-	var resultado2 map[string]interface{}
+	var resultado []map[string]interface{}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &organizacion); err == nil {
-		o := map[string]interface{}{
-			"TipoOrganizacion": organizacion["TipoOrganizacion"],
-			"Nombre":           organizacion["Nombre"],
-		}
-		if err := request.SendJson("http://"+beego.AppConfig.String("OrganizacionService")+"/organizacion", "POST", &resultado, o); err == nil {
 
-			p := map[string]interface{}{
-				"LugarExpedicion":      organizacion["LugarExpedicion"],
-				"FechaExpedicion":      organizacion["FechaExpedicion"],
-				"TipoIdentificacion":   organizacion["TipoIdentificacion"], // asegurando que 5 es el ID para NIT
-				"NumeroIdentificacion": organizacion["NumeroIdentificacion"],
-				"Ente":                 map[string]interface{}{"Id": resultado["Ente"]},
-			}
-			if err := request.SendJson("http://"+beego.AppConfig.String("EnteService")+"/identificacion", "POST", &resultado2, p); err == nil && resultado2["Type"] != "error" {
-				c.Data["json"] = resultado2
+		if err := request.GetJson(
+			fmt.Sprintf("http://"+beego.AppConfig.String("EnteService")+"/identificacion?query=NumeroIdentificacion:%s,TipoIdentificacion.Id:%.f",
+				organizacion["NumeroIdentificacion"], organizacion["TipoIdentificacion"].(map[string]interface{})["Id"]),
+			&resultado); resultado != nil {
+			c.Data["json"] = resultado[0]
+		} else if err == nil {
+			if res, errores := CrearOrganizacion(organizacion); errores == nil {
+				c.Data["json"] = res
 			} else {
-				request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("OrganizacionService")+"/organizacion/%.f", resultado["Id"]), "DELETE", &resultado2, nil)
-				c.Data["json"] = []interface{}{err, resultado2}
+				c.Data["json"] = errores
 			}
 		} else {
-			c.Data["json"] = err
+			c.Data["json"] = err.Error()
 		}
 	} else {
 		c.Data["json"] = err
 	}
 	c.ServeJSON()
+}
+
+// CrearOrganizacion Funcion que valida si existe la organizacion si no la crea
+func CrearOrganizacion(organizacion map[string]interface{}) (res interface{}, errores []interface{}) {
+	var resultado map[string]interface{}
+	var resultado2 map[string]interface{}
+	o := map[string]interface{}{
+		"TipoOrganizacion": organizacion["TipoOrganizacion"],
+		"Nombre":           organizacion["Nombre"],
+	}
+	if err := request.SendJson("http://"+beego.AppConfig.String("OrganizacionService")+"/organizacion", "POST", &resultado, o); err == nil && resultado["Type"] != "error" {
+
+		p := map[string]interface{}{
+			"LugarExpedicion":      organizacion["LugarExpedicion"],
+			"FechaExpedicion":      organizacion["FechaExpedicion"],
+			"TipoIdentificacion":   organizacion["TipoIdentificacion"], // asegurando que 5 es el ID para NIT
+			"NumeroIdentificacion": organizacion["NumeroIdentificacion"],
+			"Ente":                 map[string]interface{}{"Id": resultado["Ente"]},
+		}
+		if err := request.SendJson("http://"+beego.AppConfig.String("EnteService")+"/identificacion", "POST", &resultado2, p); err == nil && resultado2["Type"] != "error" {
+			res = resultado2
+		} else {
+			request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("OrganizacionService")+"/organizacion/%.f", resultado["Id"]), "DELETE", &resultado2, nil)
+			errores = []interface{}{err, resultado2}
+		}
+	} else {
+		errores = []interface{}{err, resultado}
+	}
+	return
 }
 
 /*
