@@ -1,426 +1,250 @@
 package controllers
 
 import (
-	"encoding/json"
-	"fmt"
+    "encoding/json"
+    "fmt"
 
-	"github.com/astaxie/beego"
-	"github.com/udistrital/campus_mid/models"
-	"github.com/udistrital/utils_oas/request"
+    "github.com/astaxie/beego"
+    "github.com/udistrital/campus_mid/models"
+    "github.com/udistrital/utils_oas/request"
 )
 
 // FormacionController ...
 type ExperienciaLaboralController struct {
-	beego.Controller
+    beego.Controller
 }
 
 // URLMapping ...
 func (c *ExperienciaLaboralController) URLMapping() {
-	c.Mapping("PostExperienciaLaboral", c.PostExperienciaLaboral)
-	c.Mapping("PutExperienciaLaboral", c.PutExperienciaLaboral)
-	c.Mapping("GetExperienciaLaboral", c.GetExperienciaLaboral)
-	c.Mapping("DeleteExperienciaLaboral", c.DeleteExperienciaLaboral)
+    c.Mapping("PostExperienciaLaboral", c.PostExperienciaLaboral)
+    c.Mapping("PutExperienciaLaboral", c.PutExperienciaLaboral)
+    c.Mapping("GetExperienciaLaboral", c.GetExperienciaLaboral)
+    c.Mapping("DeleteExperienciaLaboral", c.DeleteExperienciaLaboral)
 }
 
 // PostExperienciaLaboral ...
 // @Title PostExperienciaLaboral
 // @Description Agregar Experiencia Laboral
-// @Param	body		body 	{}	true		"body Agregar EXperiencia Laboral content"
+// @Param   body        body    {}  true        "body Agregar EXperiencia Laboral content"
 // @Success 200 {}
 // @Failure 403 body is empty
 // @router /ExperienciaLaboral [post]
 func (c *ExperienciaLaboralController) PostExperienciaLaboral() {
-	//experiencia laboral
-	var experiencia map[string]interface{}
-	//alerta que retorna la funcion PostExperienciaLaboral
-	var alerta models.Alert
-	//cadena de alertas
-	alertas := append([]interface{}{"Cadena de respuestas: "})
-	//resultado formacion academica
-	var resultado map[string]interface{}
-	//resultado dato adicional experiencia laboral
-	var resultado2 map[string]interface{}
-	//resultado dato adicional experiencia laboral
-	var resultado3 map[string]interface{}
-	// resultado soporte experiencia laboral
-	var resultado4 map[string]interface{}
+    //experiencia laboral
+    var experiencia map[string]interface{}
+    //alerta que retorna la funcion PostExperienciaLaboral
+    var alerta models.Alert
+    //cadena de alertas
+    alertas := append([]interface{}{"Cadena de respuestas: "})
+    //resultado formacion academica
+    var resultado map[string]interface{}
+    //resultado soporte experiencia laboral
+    var resultado2 map[string]interface{}
 
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &experiencia); err == nil {
-		experienciaLaboral := map[string]interface{}{
-			"Persona":           experiencia["Ente"],
-			"Actividades":       experiencia["Actividades"],
-			"FechaInicio":       experiencia["FechaInicio"],
-			"FechaFinalizacion": experiencia["FechaFinalizacion"],
-			"Organizacion":      experiencia["Organizacion"],
+    if err := json.Unmarshal(c.Ctx.Input.RequestBody, &experiencia); err == nil {
+        experienciaLaboral := map[string]interface{}{
+            "Persona":           experiencia["Ente"].(map[string]interface{})["Id"],
+            "Actividades":       experiencia["Actividades"],
+            "FechaInicio":       experiencia["FechaInicio"],
+            "FechaFinalizacion": experiencia["FechaFinalizacion"],
+            "Organizacion":      experiencia["Organizacion"],
+            "TipoDedicacion":    experiencia["TipoDedicacion"].(map[string]interface{})["Id"],
+            "Cargo":             experiencia["Cargo"].(map[string]interface{})["Id"],
+            "TipoVinculacion":   experiencia["TipoVinculacion"].(map[string]interface{})["Id"],
+        }
+        errExperienciaLaboral := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/experiencia_laboral", "POST", &resultado, experienciaLaboral)
+        //fmt.Println("el resultado es: ", resultado)
+        if errExperienciaLaboral == nil && resultado["Type"] != "error" {
+            alertas = append(alertas, "se agrego la experiencia laboral")
 
-			"Organizacion":experiencia["ProgramaAcademico"].(map[string]interface{})["Id"],
-			"Organizacion":experiencia["ProgramaAcademico"].(map[string]interface{})["Id"],
-			"Organizacion":experiencia["ProgramaAcademico"].(map[string]interface{})["Id"],
-			"Organizacion":experiencia["ProgramaAcademico"].(map[string]interface{})["Id"],
+            experienciaLaboralSoporte := map[string]interface{}{
+                "Soporte":            experiencia["Soporte"].(map[string]interface{})["Id"],
+                "FormacionAcademica": resultado["Body"],
+            }
+            fmt.Println("el soporte es:", experienciaLaboralSoporte)
+            errExperienciaLaboralSoporte := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_experiencia_laboral", "POST", &resultado2, experienciaLaboralSoporte)
+            if errExperienciaLaboralSoporte == nil && resultado2["Type"] != "error" {
+                alerta.Type = "success"
+                alerta.Code = "200"
+                alertas = append(alertas, "se agrego el soporte correctamente")
+            } else {
+                alerta.Type = "error"
+                alerta.Code = "400"
+                alertas = append(alertas, errExperienciaLaboralSoporte.Error())
+            }
+        } else {
+            alerta.Type = "error"
+            alerta.Code = "400"
+            if errExperienciaLaboral != nil {
+                alertas = append(alertas, errExperienciaLaboral.Error())
+            }
+            if resultado["Type"] == "error" {
+                alertas = append(alertas, resultado["Body"])
+            }
+        }
 
-
-		}
-		errFormacion := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/formacion_academica", "POST", &resultado, formacionacademica)
-		//fmt.Println("el resultado es: ", resultado)
-		if errFormacion == nil && resultado["Type"] != "error" {
-			alertas = append(alertas, "se agrego la formacion correctamente")
-			formaciondatoadicional := map[string]interface{}{
-				"Activo":             true,
-				"FormacionAcademica": resultado["Body"],
-				"TipoDatoAdicional":  1,
-				"Valor":              formacion["TituloTrabajoGrado"],
-			}
-
-			errFormacionAdicional := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/dato_adicional_formacion_academica", "POST", &resultado2, formaciondatoadicional)
-
-			if errFormacionAdicional == nil && resultado2["Type"] != "error" {
-				alerta.Type = "success"
-				alerta.Code = "200"
-				alertas = append(alertas, "se agrego el titulo del trabajo de grado correctamente")
-			} else {
-				alerta.Type = "error"
-				alerta.Code = "400"
-				alertas = append(alertas, errFormacionAdicional.Error())
-			}
-			formaciondatoadicional2 := map[string]interface{}{
-				"Activo":             true,
-				"FormacionAcademica": resultado["Body"],
-				"TipoDatoAdicional":  2,
-				"Valor":              formacion["DescripcionTrabajoGrado"],
-			}
-
-			errFormacionAdicional2 := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/dato_adicional_formacion_academica", "POST", &resultado3, formaciondatoadicional2)
-
-			if errFormacionAdicional2 == nil && resultado2["Type"] != "error" {
-				alerta.Type = "success"
-				alerta.Code = "200"
-				alertas = append(alertas, "se agrego la descripcion del trabajo de grado correctamente")
-			} else {
-				alerta.Type = "error"
-				alerta.Code = "400"
-				alertas = append(alertas, errFormacionAdicional2.Error())
-			}
-			formacionsoporte := map[string]interface{}{
-				"Documento":          formacion["Documento"],
-				"FormacionAcademica": resultado["Body"],
-			}
-			fmt.Println("el soporte es:", formacionsoporte)
-			errFormacionSoporte := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_formacion_academica", "POST", &resultado4, formacionsoporte)
-			if errFormacionSoporte == nil && resultado4["Type"] != "error" {
-				alerta.Type = "success"
-				alerta.Code = "200"
-				alertas = append(alertas, "se agrego el soporte correctamente")
-			} else {
-				alerta.Type = "error"
-				alerta.Code = "400"
-				alertas = append(alertas, errFormacionSoporte.Error())
-			}
-		} else {
-			alerta.Type = "error"
-			alerta.Code = "400"
-			if errFormacion != nil {
-				alertas = append(alertas, errFormacion.Error())
-			}
-			if resultado["Type"] == "error" {
-				alertas = append(alertas, resultado["Body"])
-			}
-		}
-
-	} else {
-		alerta.Type = "error"
-		alerta.Code = "400"
-		alertas = append(alertas, err.Error())
-	}
-	alerta.Body = alertas
-	c.Data["json"] = alerta
-	c.ServeJSON()
+    } else {
+        alerta.Type = "error"
+        alerta.Code = "400"
+        alertas = append(alertas, err.Error())
+    }
+    alerta.Body = alertas
+    c.Data["json"] = alerta
+    c.ServeJSON()
 }
 
 // PutExperienciaLaboral ...
 // @Title PutExperienciaLaboral
 // @Description Modificar Experiencia Laboral
-// @Param	id		path 	string	true		"el id de la experiencia laboral a modificar"
-// @Param	body		body 	{}	true		"body Modificar Experiencia Laboral content"
+// @Param   id      path    string  true        "el id de la experiencia laboral a modificar"
+// @Param   body        body    {}  true        "body Modificar Experiencia Laboral content"
 // @Success 200 {}
 // @Failure 403 :id is empty
 // @router /ExperienciaLaboral/:id [put]
 func (c *ExperienciaLaboralController) PutExperienciaLaboral() {
-	idStr := c.Ctx.Input.Param(":id")
-	//experiencia laboral
-	var formacion map[string]interface{}
-	//alerta que retorna la funcion PutExperienciaLaboral
-	var alerta models.Alert
-	//cadena de alertas
-	alertas := append([]interface{}{"Cadena de respuestas: "})
-	//resultado experiencia laboral
-	var resultado []map[string]interface{}
-	//resultado dato adicional experiencia laboral
-	var resultado2 map[string]interface{}
-	//resultado dato adicional experiencia laboral
-	var resultado3 []map[string]interface{}
-	var resultado4 map[string]interface{}
-	var resultado5 []map[string]interface{}
-	var resultado6 map[string]interface{}
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &formacion); err == nil {
-		errFormacion := request.GetJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/formacion_academica/?query=Id:"+idStr, &resultado)
-		if errFormacion == nil {
-			for i := 0; i < len(resultado); i++ {
+    idStr := c.Ctx.Input.Param(":id")
+    //experiencia laboral
+    var experiencia map[string]interface{}
+    //alerta que retorna la funcion PutExperienciaLaboral
+    var alerta models.Alert
+    //cadena de alertas
+    alertas := append([]interface{}{"Cadena de respuestas: "})
+    //resultado experiencia laboral
+    var resultado map[string]interface{}
+    //resultado dato adicional experiencia laboral
+    var resultado2 map[string]interface{}
+    if err := json.Unmarshal(c.Ctx.Input.RequestBody, &experiencia); err == nil {
 
-				if resultado[i]["Id"] == formacion["Id"] {
-					formacionacademica := map[string]interface{}{
-						"Persona":           formacion["Ente"].(map[string]interface{})["Id"],
-						"Titulacion":        formacion["ProgramaAcademico"].(map[string]interface{})["Id"],
-						"FechaInicio":       formacion["FechaInicio"],
-						"FechaFinalizacion": formacion["FechaFinalizacion"],
-					}
-					errFormacion2 := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/formacion_academica/"+fmt.Sprintf("%.f", resultado[i]["Id"].(float64)), "PUT", &resultado2, formacionacademica)
-					if errFormacion2 == nil {
-						if resultado2["Type"] == "success" {
-							alertas = append(alertas, "OK UPDATE formacion_academica")
-							alerta.Code = "200"
-							alerta.Type = "success"
-							alerta.Body = alertas
-							c.Data["json"] = alerta
-						}
-					} else {
-						//fmt.Println("error de formacion", errFormacion2.Error())
-						alertas = append(alertas, errFormacion2.Error())
-						alerta.Code = "400"
-						alerta.Type = "error"
+        experienciaLaboral := map[string]interface{}{
+            "Persona":           experiencia["Ente"].(map[string]interface{})["Id"],
+            "Actividades":       experiencia["Actividades"],
+            "FechaInicio":       experiencia["FechaInicio"],
+            "FechaFinalizacion": experiencia["FechaFinalizacion"],
+            "Organizacion":      experiencia["Organizacion"],
+            "TipoDedicacion":    experiencia["TipoDedicacion"].(map[string]interface{})["Id"],
+            "Cargo":             experiencia["Cargo"].(map[string]interface{})["Id"],
+            "TipoVinculacion":   experiencia["TipoVinculacion"].(map[string]interface{})["Id"],
+        }
 
-					}
+        errExperienciaLaboral := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/experiencia_laboral/"+idStr, "PUT", &resultado, experienciaLaboral)
+        if errExperienciaLaboral == nil {
+            if resultado["Type"] == "success" {
+                alertas = append(alertas, "OK UPDATE formacion_academica")
+                alerta.Code = "200"
+                alerta.Type = "success"
+                alerta.Body = alertas
+                c.Data["json"] = alerta
+            }
 
-					errFormacionAdd := request.GetJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/dato_adicional_formacion_academica/?query=FormacionAcademica:"+fmt.Sprintf("%.f", resultado[i]["Id"].(float64)), &resultado3)
-					if errFormacionAdd == nil {
-						//fmt.Println("lo adicional es: ", resultado3)
-						for u := 0; u < len(resultado3); u++ {
-							if resultado3[u]["TipoDatoAdicional"].(float64) == 1 {
-								resultado3[u]["Valor"] = formacion["TituloTrabajoGrado"]
-								//fmt.Println("el nuevo titulo es: ", resultado3[u])
-								errFormacionadd2 := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/dato_adicional_formacion_academica/"+fmt.Sprintf("%.f", resultado3[u]["Id"].(float64)), "PUT", &resultado4, resultado3[u])
-								if errFormacionadd2 == nil {
-									alertas = append(alertas, "OK UPDATE TituloTrabajoGrado ")
-									//fmt.Println("el resultado de actualizar lo adicional es: ", resultado4)
-								} else {
-									//fmt.Println("el error de actualizar lo adicional es:", errFormacionadd2.Error())
-									alertas = append(alertas, errFormacionadd2.Error())
-									alerta.Code = "400"
-									alerta.Type = "error"
-								}
-							}
-							if resultado3[u]["TipoDatoAdicional"].(float64) == 2 {
-								resultado3[u]["Valor"] = formacion["DescripcionTrabajoGrado"]
-								errFormacionadd2 := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/dato_adicional_formacion_academica/"+fmt.Sprintf("%.f", resultado3[u]["Id"].(float64)), "PUT", &resultado4, resultado3[u])
-								if errFormacionadd2 == nil {
-									alertas = append(alertas, "OK UPDATE DescripcionTrabajoGrado ")
-									//fmt.Println("el resultado de actualizar lo adicional es: ", resultado4)
-								} else {
-									//fmt.Println("el error de actualizar lo adicional es:", errFormacionadd2.Error())
-									alertas = append(alertas, errFormacionadd2.Error())
-									alerta.Code = "400"
-									alerta.Type = "error"
-								}
-							}
-						}
-						errSoporteFormacion := request.GetJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_formacion_academica/?query=FormacionAcademica:"+fmt.Sprintf("%.f", resultado[i]["Id"].(float64)), &resultado5)
-						if errSoporteFormacion == nil {
-							fmt.Println("el soporte actual es:", resultado5[0])
-							resultado5[0]["Documento"] = formacion["Documento"]
-							fmt.Println("el nuevo soporte es:", resultado5[0])
-							errFormacionsoporte2 := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_formacion_academica/"+fmt.Sprintf("%.f", resultado5[0]["Id"].(float64)), "PUT", &resultado6, resultado5[0])
-							if errFormacionsoporte2 == nil {
-								alertas = append(alertas, "OK UPDATE Documento ")
-							}
-						}
-					} else {
-						//fmt.Println("error adicional: ", errFormacionAdd.Error())
-						alertas = append(alertas, errFormacion.Error())
-						alerta.Code = "400"
-						alerta.Type = "error"
-					}
-				}
+            soporteExperienciaLaboral := map[string]interface{}{
+                "Documento": experiencia["Soporte"].(map[string]interface{})["Documento"],
+            }
 
-			}
+            errSoporteExperienciaLaboral := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_experiencia_laboral/"+fmt.Sprintf("%.f", experiencia["Soporte"].(map[string]interface{})["Documento"]), "PUT", &resultado2, soporteExperienciaLaboral)
+            if errSoporteExperienciaLaboral == nil && resultado2["Type"] == "success" {
+                alertas = append(alertas, "OK UPDATE Documento ")
+            }
 
-		} else {
-			alertas = append(alertas, errFormacion.Error())
-			alerta.Code = "400"
-			alerta.Type = "error"
+        } else {
+            //fmt.Println("error de formacion", errFormacion2.Error())
+            alertas = append(alertas, errExperienciaLaboral.Error())
+            alerta.Code = "400"
+            alerta.Type = "error"
+        }
 
-		}
-
-	} else {
-		alertas = append(alertas, err.Error())
-		alerta.Code = "400"
-		alerta.Type = "error"
-
-	}
-	alerta.Body = alertas
-	c.Data["json"] = alerta
-	c.ServeJSON()
+    } else {
+        alertas = append(alertas, err.Error())
+        alerta.Code = "400"
+        alerta.Type = "error"
+    }
+    alerta.Body = alertas
+    c.Data["json"] = alerta
+    c.ServeJSON()
 }
 
 // GetExperienciaLaboral ...
 // @Title GetExperienciaLaboral
 // @Description consultar Experiencia Laboral por userid
-// @Param	id		path 	string	true		"The key for staticblock"
+// @Param   id      path    string  true        "The key for staticblock"
 // @Success 200 {}
 // @Failure 403 :id is empty
 // @router /ExperienciaLaboral/:id [get]
 func (c *ExperienciaLaboralController) GetExperienciaLaboral() {
-	//Id de la persona
-	idStr := c.Ctx.Input.Param(":id")
-	//formacion academica
-	//var formacion map[string]interface{}
-	//alerta que retorna la funcion GetExperienciaLaboral
-	var alerta models.Alert
-	//cadena de alertas
-	alertas := append([]interface{}{"Cadena de respuestas: "})
-	//resultado experiencia laboral
-	var resultado []map[string]interface{}
-	//resultado dato adicional experiencia laboral
-	var resultado2 []map[string]interface{}
+    //Id de la persona
+    idStr := c.Ctx.Input.Param(":id")
+    //formacion academica
+    //var formacion map[string]interface{}
+    //alerta que retorna la funcion GetExperienciaLaboral
+    //var alerta models.Alert
+    //cadena de alertas
+    //alertas := append([]interface{}{"Cadena de respuestas: "})
+    //resultado experiencia laboral
+    var resultado map[string]interface{}
+    //var resultado2 map[string]interface{}
 
-	var resultado3 []map[string]interface{}
+    errExperienciaLaboral := request.GetJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/experiencia_laboral/"+idStr, &resultado)
 
-	var resultado4 []map[string]interface{}
-	//resultado dato adicional experiencia laboral
-	//var resultado3 map[string]interface{}
-	errFormacion := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica/?query=Persona:"+idStr+"&fields=Id,FechaInicio,FechaFinalizacion,Titulacion", &resultado)
+    if errExperienciaLaboral == nil && resultado != nil {
+        if resultado["Type"] != "error" {
+            //soporte_experiencia_laboral
+        }
+    } else {
 
-	//fmt.Println("el resultado de la consulta es: ", resultado)
-	if errFormacion == nil && resultado != nil {
-		if resultado[0]["Type"] != "error" {
+    }
 
-			resultado[0]["Ente"] = idStr
-			for u := 0; u < len(resultado); u++ {
-
-				errTitulacion := request.GetJson("http://"+beego.AppConfig.String("ProgramaAcademicoService")+"/programa_academico/?query=Id:"+fmt.Sprintf("%.f", resultado[u]["Titulacion"].(float64)), &resultado2)
-				if errTitulacion == nil {
-
-					resultado[u]["Titulacion"] = resultado2[0]
-					//fmt.Println("la titulacion de esa persona es: ", resultado)
-
-				} else {
-					alertas = append(alertas, errTitulacion.Error())
-					alerta.Code = "400"
-					alerta.Type = "error"
-					alerta.Body = alertas
-					c.Data["json"] = alerta
-				}
-
-				errFormacionAdicional := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/?query=FormacionAcademica:"+fmt.Sprintf("%.f", resultado[u]["Id"].(float64))+"&fields=TipoDatoAdicional,Valor,Id", &resultado3)
-
-				if errFormacionAdicional == nil {
-					//fmt.Println("los datos adicionales de la formacion son: ", resultado3)
-					for i := 0; i < len(resultado3); i++ {
-
-						if resultado3[i]["TipoDatoAdicional"].(float64) == 1 {
-
-							resultado[u]["TituloTrabajoGrado"] = resultado3[i]["Valor"]
-						}
-						if resultado3[i]["TipoDatoAdicional"].(float64) == 2 {
-							resultado[u]["DescripcionTrabajoGrado"] = resultado3[i]["Valor"]
-						}
-					}
-
-				} else {
-					//fmt.Println("el error de adicional formacion academica es: ", errFormacionAdicional.Error())
-				}
-
-				errDatoAdicional := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/soporte_formacion_academica/?query=FormacionAcademica:"+fmt.Sprintf("%.f", resultado[u]["Id"].(float64))+"&fields=Documento", &resultado4)
-				if errDatoAdicional == nil && resultado4 != nil {
-					fmt.Println("el resultado de los documentos es: ", resultado4)
-					resultado[u]["Documento"] = resultado4[0]["Documento"]
-				} else {
-					if errDatoAdicional != nil {
-						fmt.Println("el error es: ", errDatoAdicional.Error())
-					}
-
-				}
-			}
-			c.Data["json"] = resultado[0]
-		}
-	} else {
-		fmt.Println("entro al error")
-		if errFormacion != nil {
-			c.Data["json"] = nil
-		} else {
-
-			c.Data["json"] = nil
-		}
-
-	}
-
-	c.ServeJSON()
+    c.ServeJSON()
 }
 
 // DeleteExperienciaLaboral ...
 // @Title DeleteExperienciaLaboral
 // @Description eliminar Experiencia Laboral por id
-// @Param	id		path 	string	true		"Id de la Experiencia Laboral"
+// @Param   id      path    string  true        "Id de la Experiencia Laboral"
 // @Success 200 {}
 // @Failure 403 :id is empty
 // @router /ExperienciaLaboral/:id [delete]
 func (c *ExperienciaLaboralController) DeleteExperienciaLaboral() {
-	idStr := c.Ctx.Input.Param(":id")
-	var alerta models.Alert
-	//cadena de alertas
-	alertas := append([]interface{}{"Cadena de respuestas: "})
-	//resultado experiencia laboral
-	var resultado map[string]interface{}
-	//resultado dato adicional experiencia laboral
-	var resultado2 []map[string]interface{}
-	var resultado3 map[string]interface{}
-	var resultado4 []map[string]interface{}
-	var resultado5 map[string]interface{}
-	var resultado6 map[string]interface{}
-	//fmt.Println("el id de la formacion a borrar es: ", idStr)
-	errFormacion := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica/"+idStr, &resultado)
-	if errFormacion == nil {
-		//fmt.Println("la formacion es: ", resultado)
-		errFormacion := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/?query=FormacionAcademica:"+idStr, &resultado2)
-		if errFormacion == nil {
-			//fmt.Println("el dato adicional es: ", resultado2)
-			for i := 0; i < len(resultado2); i++ {
-				fmt.Println("el id del dato adicional a borrar es: ", resultado2[i]["Id"])
-				err := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/"+fmt.Sprintf("%.f", resultado2[i]["Id"].(float64)), "DELETE", &resultado3, nil)
+    idStr := c.Ctx.Input.Param(":id")
+    var alerta models.Alert
+    //cadena de alertas
+    alertas := append([]interface{}{"Cadena de respuestas: "})
+    //resultado experiencia laboral
+    var resultado map[string]interface{}
+    var resultado4 []map[string]interface{}
+    var resultado5 map[string]interface{}
+    var resultado6 map[string]interface{}
 
-				if err == nil {
-					//fmt.Println("el resultado  del delete es:", resultado3)
-					alertas = append(alertas, "OK DELETE dato_adicional_formacion_academica")
-				}
+    errExperienciaLaboral := request.GetJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/experiencia_laboral/"+idStr, &resultado)
+    if errExperienciaLaboral == nil {
 
-			}
+        if errExperienciaLaboral == nil {
+            errExperienciaLaboral := request.GetJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_experiencia_laboral/?query=ExperienciaLaboral:"+idStr, &resultado4)
+            if errExperienciaLaboral == nil {
+                //fmt.Println("el documento a borrar es ", resultado4[0]["Id"])
+                err := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_experiencia_laboral/"+fmt.Sprintf("%.f", resultado4[0]["Id"].(float64)), "DELETE", &resultado5, nil)
+                if err == nil {
+                    //fmt.Println("el resultado  del delete es:", resultado5)
+                    alertas = append(alertas, "OK DELETE soporte_experiencia_laboral")
+                }
+            } else {
+                alertas = append(alertas, errExperienciaLaboral.Error())
+            }
+            err := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_experiencia_laboral/"+idStr, "DELETE", &resultado6, nil)
+            if err == nil {
+                fmt.Println("el resultado del DELETE es: ", resultado6)
+                alertas = append(alertas, "OK DELETE experiencia_laboral")
+            }
+            alerta.Body = alertas
+            alerta.Code = "200"
+            alerta.Type = "success"
+            c.Data["json"] = alerta
+        }
+    } else {
+        alertas = append(alertas, errExperienciaLaboral.Error())
+        alerta.Body = alertas
+        alerta.Code = "400"
+        alerta.Type = "error"
+        c.Data["json"] = alerta
 
-			errFormacion := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/soporte_formacion_academica/?query=FormacionAcademica:"+idStr, &resultado4)
-			if errFormacion == nil {
-				//fmt.Println("el documento a borrar es ", resultado4[0]["Id"])
-				err := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/soporte_formacion_academica/"+fmt.Sprintf("%.f", resultado4[0]["Id"].(float64)), "DELETE", &resultado5, nil)
-				if err == nil {
-					//fmt.Println("el resultado  del delete es:", resultado5)
-					alertas = append(alertas, "OK DELETE soporte_formacion_academica")
-				}
-			} else {
-				alertas = append(alertas, errFormacion.Error())
-			}
-			err := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica/"+idStr, "DELETE", &resultado6, nil)
-			if err == nil {
-				fmt.Println("el resultado del DELETE es: ", resultado6)
-				alertas = append(alertas, "OK DELETE formacion_academica")
-			}
-			alerta.Body = alertas
-			alerta.Code = "200"
-			alerta.Type = "success"
-			c.Data["json"] = alerta
-		}
-	} else {
-		alertas = append(alertas, errFormacion.Error())
-		alerta.Body = alertas
-		alerta.Code = "400"
-		alerta.Type = "error"
-		c.Data["json"] = alerta
-
-	}
-	c.ServeJSON()
+    }
+    c.ServeJSON()
 }
