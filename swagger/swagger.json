@@ -15,7 +15,7 @@
     },
     "basePath": "/v1",
     "paths": {
-        "/experiencia_laboral/ExperienciaLaboral": {
+        "/experiencia_laboral/": {
             "post": {
                 "tags": [
                     "experiencia_laboral"
@@ -43,7 +43,7 @@
                 }
             }
         },
-        "/experiencia_laboral/ExperienciaLaboral/{id}": {
+        "/experiencia_laboral/{id}": {
             "get": {
                 "tags": [
                     "experiencia_laboral"

@@ -11,7 +11,7 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 basePath: /v1
 paths:
-  /experiencia_laboral/ExperienciaLaboral:
+  /experiencia_laboral/:
     post:
       tags:
       - experiencia_laboral
@@ -29,7 +29,7 @@ paths:
           description: '{}'
         "403":
           description: body is empty
-  /experiencia_laboral/ExperienciaLaboral/{id}:
+  /experiencia_laboral/{id}:
     get:
       tags:
       - experiencia_laboral

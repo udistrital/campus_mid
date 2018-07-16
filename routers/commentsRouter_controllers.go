@@ -10,7 +10,7 @@ func init() {
 	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:ExperienciaLaboralController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:ExperienciaLaboralController"],
 		beego.ControllerComments{
 			Method: "PostExperienciaLaboral",
-			Router: `/ExperienciaLaboral`,
+			Router: `/`,
 			AllowHTTPMethods: []string{"post"},
 			MethodParams: param.Make(),
 			Params: nil})
@@ -18,7 +18,7 @@ func init() {
 	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:ExperienciaLaboralController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:ExperienciaLaboralController"],
 		beego.ControllerComments{
 			Method: "PutExperienciaLaboral",
-			Router: `/ExperienciaLaboral/:id`,
+			Router: `/:id`,
 			AllowHTTPMethods: []string{"put"},
 			MethodParams: param.Make(),
 			Params: nil})
@@ -26,7 +26,7 @@ func init() {
 	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:ExperienciaLaboralController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:ExperienciaLaboralController"],
 		beego.ControllerComments{
 			Method: "GetExperienciaLaboral",
-			Router: `/ExperienciaLaboral/:id`,
+			Router: `/:id`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams: param.Make(),
 			Params: nil})
@@ -34,7 +34,7 @@ func init() {
 	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:ExperienciaLaboralController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:ExperienciaLaboralController"],
 		beego.ControllerComments{
 			Method: "DeleteExperienciaLaboral",
-			Router: `/ExperienciaLaboral/:id`,
+			Router: `/:id`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams: param.Make(),
 			Params: nil})
