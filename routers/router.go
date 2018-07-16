@@ -30,6 +30,11 @@ func init() {
 				&controllers.ExperienciaLaboralController{},
 			),
 		),
+		beego.NSNamespace("/organizacion",
+			beego.NSInclude(
+				&controllers.OrganizacionController{},
+			),
+		),
 	)
 	beego.AddNamespace(ns)
 }
