@@ -15,6 +15,117 @@
     },
     "basePath": "/v1",
     "paths": {
+        "/experiencia_laboral/": {
+            "post": {
+                "tags": [
+                    "experiencia_laboral"
+                ],
+                "description": "Agregar Experiencia Laboral",
+                "operationId": "ExperienciaLaboralController.PostExperienciaLaboral",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Agregar EXperiencia Laboral content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/experiencia_laboral/{id}": {
+            "get": {
+                "tags": [
+                    "experiencia_laboral"
+                ],
+                "description": "consultar Experiencia Laboral por userid",
+                "operationId": "ExperienciaLaboralController.GetExperienciaLaboral",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": ":id is empty"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "experiencia_laboral"
+                ],
+                "description": "Modificar Experiencia Laboral",
+                "operationId": "ExperienciaLaboralController.PutExperienciaLaboral",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "el id de la experiencia laboral a modificar",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Modificar Experiencia Laboral content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": ":id is empty"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "experiencia_laboral"
+                ],
+                "description": "eliminar Experiencia Laboral por id",
+                "operationId": "ExperienciaLaboralController.DeleteExperienciaLaboral",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Id de la Experiencia Laboral",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": ":id is empty"
+                    }
+                }
+            }
+        },
         "/formacion/formacionacademica": {
             "post": {
                 "tags": [
@@ -438,6 +549,10 @@
         },
         {
             "name": "formacion",
+            "description": "FormacionController ...\n"
+        },
+        {
+            "name": "experiencia_laboral",
             "description": "FormacionController ...\n"
         }
     ]
