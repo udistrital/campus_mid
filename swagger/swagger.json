@@ -237,6 +237,34 @@
                 }
             }
         },
+        "/organizacion/": {
+            "post": {
+                "tags": [
+                    "organizacion"
+                ],
+                "description": "create Organizacion",
+                "operationId": "OrganizacionController.Create",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Organizaciona scontent",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.interface"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/persona/ActualizarPersona": {
             "put": {
                 "tags": [
@@ -532,6 +560,9 @@
         ".PersonaDatosBasicos": {
             "type": "object"
         },
+        ".interface": {
+            "type": "object"
+        },
         ".interface{}": {
             "type": "object"
         },
@@ -554,6 +585,10 @@
         {
             "name": "experiencia_laboral",
             "description": "FormacionController ...\n"
+        },
+        {
+            "name": "organizacion",
+            "description": "OrganizacionController operations for Organizacion\n"
         }
     ]
 }
