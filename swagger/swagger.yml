@@ -157,6 +157,24 @@ paths:
           description: '{}'
         "403":
           description: :id is empty
+  /organizacion/:
+    post:
+      tags:
+      - organizacion
+      description: create Organizacion
+      operationId: OrganizacionController.Create
+      parameters:
+      - in: body
+        name: body
+        description: body for Organizaciona scontent
+        required: true
+        schema:
+          $ref: '#/definitions/.interface'
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: body is empty
   /persona/ActualizarPersona:
     put:
       tags:
@@ -350,6 +368,8 @@ definitions:
     type: object
   .PersonaDatosBasicos:
     type: object
+  .interface:
+    type: object
   .interface{}:
     type: object
   .map[string]interface{}:
@@ -364,3 +384,6 @@ tags:
 - name: experiencia_laboral
   description: |
     FormacionController ...
+- name: organizacion
+  description: |
+    OrganizacionController operations for Organizacion
