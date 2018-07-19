@@ -175,6 +175,30 @@ paths:
           description: '{}'
         "403":
           description: body is empty
+  /organizacion/identificacion/:
+    get:
+      tags:
+      - organizacion
+      description: get Organizacion by id
+      operationId: OrganizacionController.GetByIdentificacion
+      parameters:
+      - in: query
+        name: id
+        description: Identification number as id
+        required: true
+        type: string
+      - in: query
+        name: tipoid
+        description: TipoIdentificacion number as nit
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/.Organizacion'
+        "403":
+          description: :id is empty
   /persona/ActualizarPersona:
     put:
       tags:
@@ -365,6 +389,8 @@ paths:
           description: body is empty
 definitions:
   .{}:
+    type: object
+  .Organizacion:
     type: object
   .PersonaDatosBasicos:
     type: object
