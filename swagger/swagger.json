@@ -301,6 +301,7 @@
                 }
             }
         },
+
         "/persona/ActualizarPersona": {
             "put": {
                 "tags": [
