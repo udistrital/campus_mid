@@ -157,6 +157,48 @@ paths:
           description: '{}'
         "403":
           description: :id is empty
+  /organizacion/:
+    post:
+      tags:
+      - organizacion
+      description: create Organizacion
+      operationId: OrganizacionController.Create
+      parameters:
+      - in: body
+        name: body
+        description: body for Organizaciona scontent
+        required: true
+        schema:
+          $ref: '#/definitions/.interface'
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: body is empty
+  /organizacion/identificacion/:
+    get:
+      tags:
+      - organizacion
+      description: get Organizacion by id
+      operationId: OrganizacionController.GetByIdentificacion
+      parameters:
+      - in: query
+        name: id
+        description: Identification number as id
+        required: true
+        type: string
+      - in: query
+        name: tipoid
+        description: TipoIdentificacion number as nit
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/.Organizacion'
+        "403":
+          description: :id is empty
   /persona/ActualizarPersona:
     put:
       tags:
@@ -348,7 +390,11 @@ paths:
 definitions:
   .{}:
     type: object
+  .Organizacion:
+    type: object
   .PersonaDatosBasicos:
+    type: object
+  .interface:
     type: object
   .interface{}:
     type: object
@@ -364,3 +410,6 @@ tags:
 - name: experiencia_laboral
   description: |
     FormacionController ...
+- name: organizacion
+  description: |
+    OrganizacionController operations for Organizacion
