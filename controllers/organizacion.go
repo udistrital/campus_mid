@@ -107,6 +107,7 @@ func (c *OrganizacionController) GetByIdentificacion() {
 			&resId); err == nil {
 			if resId != nil {
 				resultado = resId[0]
+				delete(resultado, "Id")
 				var wg sync.WaitGroup
 				wg.Add(3)
 
