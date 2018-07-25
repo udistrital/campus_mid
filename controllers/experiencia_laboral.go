@@ -44,17 +44,15 @@ func (c *ExperienciaLaboralController) PostExperienciaLaboral() {
 
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &experiencia); err == nil {
 		experienciaLaboral := map[string]interface{}{
-			"Persona":           experiencia["Ente"],
+			"Persona":           experiencia["Persona"],
 			"Actividades":       experiencia["Actividades"],
 			"FechaInicio":       experiencia["FechaInicio"],
 			"FechaFinalizacion": experiencia["FechaFinalizacion"],
-			"Organizacion":      experiencia["Organizacion"].(map[string]interface{})["Id"],
+			"Organizacion":      experiencia["Organizacion"],
 			"TipoDedicacion":    experiencia["TipoDedicacion"],
 			"Cargo":             experiencia["Cargo"],
 			"TipoVinculacion":   experiencia["TipoVinculacion"],
 		}
-		fmt.Println(experienciaLaboral)
-		fmt.Println(resultado)
 		errExperienciaLaboral := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/experiencia_laboral", "POST", &resultado, experienciaLaboral)
 
 		if errExperienciaLaboral == nil && resultado["Type"] != "error" {
