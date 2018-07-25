@@ -71,6 +71,38 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
+	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:IdiomasController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:IdiomasController"],
+		beego.ControllerComments{
+			Method: "PostIdiomas",
+			Router: `/idioma`,
+			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:IdiomasController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:IdiomasController"],
+		beego.ControllerComments{
+			Method: "PutIdiomas",
+			Router: `/idioma/:id`,
+			AllowHTTPMethods: []string{"put"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:IdiomasController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:IdiomasController"],
+		beego.ControllerComments{
+			Method: "GetIdiomas",
+			Router: `/idioma/:id`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:IdiomasController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:IdiomasController"],
+		beego.ControllerComments{
+			Method: "DeleteIdiomas",
+			Router: `/idioma/:id`,
+			AllowHTTPMethods: []string{"delete"},
+			MethodParams: param.Make(),
+			Params: nil})
+
 	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:OrganizacionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:OrganizacionController"],
 		beego.ControllerComments{
 			Method: "Post",

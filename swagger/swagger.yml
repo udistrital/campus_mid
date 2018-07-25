@@ -157,6 +157,79 @@ paths:
           description: '{}'
         "403":
           description: :id is empty
+  /idiomas/idioma:
+    post:
+      tags:
+      - idiomas
+      description: Agregar Idioma
+      operationId: IdiomasController.PostIdiomas
+      parameters:
+      - in: body
+        name: body
+        description: body Agregar Idioma content
+        required: true
+        schema:
+          $ref: '#/definitions/.{}'
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: body is empty
+  /idiomas/idioma/{id}:
+    get:
+      tags:
+      - idiomas
+      description: consultar Idiomas por userid
+      operationId: IdiomasController.GetIdiomas
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: :id is empty
+    put:
+      tags:
+      - idiomas
+      description: Modificar Idioma
+      operationId: IdiomasController.PutIdiomas
+      parameters:
+      - in: path
+        name: id
+        description: el id de la Idioma a modificar
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body Modificar Idioma content
+        required: true
+        schema:
+          $ref: '#/definitions/.{}'
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: :id is empty
+    delete:
+      tags:
+      - idiomas
+      description: eliminar Idioma por id de la formacion
+      operationId: IdiomasController.DeleteIdiomas
+      parameters:
+      - in: path
+        name: id
+        description: Id de la Idioma
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: :id is empty
   /organizacion/:
     post:
       tags:
@@ -413,3 +486,6 @@ tags:
 - name: organizacion
   description: |
     OrganizacionController operations for Organizacion
+- name: idiomas
+  description: |
+    IdiomasController ...
