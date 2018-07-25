@@ -44,11 +44,11 @@ func (c *ExperienciaLaboralController) PostExperienciaLaboral() {
 
     if err := json.Unmarshal(c.Ctx.Input.RequestBody, &experiencia); err == nil {
         experienciaLaboral := map[string]interface{}{
-            "Persona":           experiencia["Ente"],
+            "Persona":           experiencia["Persona"],
             "Actividades":       experiencia["Actividades"],
             "FechaInicio":       experiencia["FechaInicio"],
             "FechaFinalizacion": experiencia["FechaFinalizacion"],
-            "Organizacion":      experiencia["Organizacion"].(map[string]interface{})["Id"],
+            "Organizacion":      experiencia["Organizacion"],
             "TipoDedicacion":    experiencia["TipoDedicacion"],
             "Cargo":             experiencia["Cargo"],
             "TipoVinculacion":   experiencia["TipoVinculacion"],
