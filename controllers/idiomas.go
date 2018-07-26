@@ -41,14 +41,32 @@ func (c *IdiomasController) PostIdiomas() {
 	alertas := append([]interface{}{"Cadena de respuestas: "})
 	//resultado idiomas
 	var resultado map[string]interface{}
-
+	var resultado2 map[string]interface{}
+	var soporte map[string]interface{}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &idioma); err == nil {
 
 		errPersona := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona/"+fmt.Sprintf("%.f", idioma["Persona"]), &persona)
 		if errPersona == nil && persona["Type"] != "error" {
 
 			errIdiomas := request.SendJson("http://"+beego.AppConfig.String("IdiomaService")+"/conocimiento_idioma", "POST", &resultado, idioma)
+
 			if errIdiomas == nil && resultado != nil {
+				if resultado["Id"] != 0 {
+					soporte = map[string]interface{}{
+						"Descripcion":        idioma["Soporte"].(map[string]interface{})["Descripcion"],
+						"Documento":          idioma["Soporte"].(map[string]interface{})["Documento"],
+						"Institucion":        idioma["Soporte"].(map[string]interface{})["Institucion"],
+						"ConocimientoIdioma": map[string]interface{}{"Id": resultado["Id"]},
+
+						//
+					}
+
+					errSoporteIdiomas := request.SendJson("http://"+beego.AppConfig.String("IdiomaService")+"/soporte_conocimiento_idioma", "POST", &resultado2, soporte)
+					if errSoporteIdiomas == nil {
+						alertas = append(alertas, "OK soporte_idioma")
+					}
+				}
+
 				alerta.Type = "success"
 				alerta.Code = "200"
 				alertas = append(alertas, "OK idioma")
@@ -98,6 +116,8 @@ func (c *IdiomasController) PutIdiomas() {
 	alertas := append([]interface{}{"Cadena de respuestas: "})
 	//resultado modiciacion idioma a agregar
 	var resultado map[string]interface{}
+	var resultado2 map[string]interface{}
+	var soporte map[string]interface{}
 
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &idioma); err == nil {
 		i64, _ := strconv.ParseInt(idStr, 10, 32)
@@ -105,6 +125,23 @@ func (c *IdiomasController) PutIdiomas() {
 		idioma["Id"] = i
 
 		errIdioma := request.SendJson("http://"+beego.AppConfig.String("IdiomaService")+"/conocimiento_idioma/"+idStr, "PUT", &resultado, idioma)
+		if idioma["Soporte"] != nil {
+			fmt.Println("el soporte es: ")
+			soporte = map[string]interface{}{
+				"Descripcion":        idioma["Soporte"].(map[string]interface{})["Descripcion"],
+				"Documento":          idioma["Soporte"].(map[string]interface{})["Documento"],
+				"Institucion":        idioma["Soporte"].(map[string]interface{})["Institucion"],
+				"ConocimientoIdioma": map[string]interface{}{"Id": idioma["Id"]},
+
+				//
+			}
+			errSoporteIdioma := request.SendJson("http://"+beego.AppConfig.String("IdiomaService")+"/soporte_conocimiento_idioma/"+fmt.Sprintf("%.f", idioma["Soporte"].(map[string]interface{})["Id"].(float64)), "PUT", &resultado2, soporte)
+			if errSoporteIdioma == nil {
+				alertas = append(alertas, "OK UPDATE soporte_idioma")
+			} else {
+				alertas = append(alertas, "ERROR UPDATE soporte_idioma")
+			}
+		}
 		if errIdioma == nil && resultado["Type"] == "success" {
 			alertas = append(alertas, "OK UPDATE idioma")
 			alerta.Code = "200"
@@ -148,11 +185,19 @@ func (c *IdiomasController) GetIdiomas() {
 	//alertas := append([]interface{}{"Cadena de respuestas: "})
 	//persona a la que corresponde ese idioma
 	var persona map[string]interface{}
+	var soporte []map[string]interface{}
 	var idiomas []map[string]interface{}
 	errPersona := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona/"+idStr, &persona)
 	if errPersona == nil && persona["Type"] != "error" {
 		errIdioma := request.GetJson("http://"+beego.AppConfig.String("IdiomaService")+"/conocimiento_idioma/?query=Persona:"+idStr+"&fields=Id,ClasificacionNivelIdioma,Idioma,Nativo,NivelEscribe,NivelEscucha,NivelHabla,NivelLee", &idiomas)
 		if errIdioma == nil && idiomas != nil {
+			for i := 0; i < len(idiomas); i++ {
+				errSoporteIdioma := request.GetJson("http://"+beego.AppConfig.String("IdiomaService")+"/soporte_conocimiento_idioma/?query=ConocimientoIdioma:"+fmt.Sprintf("%.f", idiomas[i]["Id"].(float64))+"&fields=Id,Descripcion,Documento,Institucion", &soporte)
+				if errSoporteIdioma == nil && soporte != nil {
+					idiomas[i]["Soporte"] = soporte[0]
+				}
+			}
+
 			residioma := map[string]interface{}{
 				"Persona": persona,
 				"Idiomas": idiomas,
@@ -182,14 +227,30 @@ func (c *IdiomasController) DeleteIdiomas() {
 	idStr := c.Ctx.Input.Param(":id")
 	var alerta models.Alert
 	var resultado map[string]interface{}
+	//var soporte map[string]interface{}
+	var idioma []map[string]interface{}
+	//var soportes map[string]interface{}
 	//cadena de alertas
 	alertas := append([]interface{}{"Cadena de respuestas: "})
+	errSoporteIdioma := request.GetJson("http://"+beego.AppConfig.String("IdiomaService")+"/soporte_conocimiento_idioma/?query=ConocimientoIdioma:"+idStr, &idioma)
+	if errSoporteIdioma == nil {
+		fmt.Println("el idioma es: ", idioma)
+		for i := 0; i < len(idioma); i++ {
+			err := request.SendJson("http://"+beego.AppConfig.String("IdiomaService")+"/soporte_conocimiento_idioma/"+fmt.Sprintf("%.f", idioma[i]["Id"].(float64)), "DELETE", &resultado, nil)
+			if err == nil {
+				alertas = append(alertas, "OK DELETE soporte_idioma")
+			}
+		}
+	} else {
+		alertas = append(alertas, errSoporteIdioma.Error())
+	}
+
 	err := request.SendJson("http://"+beego.AppConfig.String("IdiomaService")+"/conocimiento_idioma/"+idStr, "DELETE", &resultado, nil)
 	if err == nil && resultado["Type"] == "success" {
 		alertas = append(alertas, "OK DELETE idioma")
 		alerta.Body = alertas
-		alerta.Code = "400"
-		alerta.Type = "error"
+		alerta.Code = "200"
+		alerta.Type = "success"
 		c.Data["json"] = alerta
 	} else {
 		if err == nil {
