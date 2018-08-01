@@ -15,7 +15,7 @@
     },
     "basePath": "/v1",
     "paths": {
-        "/experiencia_laboral/": {
+        "/experiencia_laboral": {
             "post": {
                 "tags": [
                     "experiencia_laboral"
@@ -237,7 +237,7 @@
                 }
             }
         },
-        "/organizacion/": {
+        "/organizacion": {
             "post": {
                 "tags": [
                     "organizacion"
@@ -265,7 +265,7 @@
                 }
             }
         },
-        "/organizacion/identificacion/": {
+        "/organizacion/identificacion": {
             "get": {
                 "tags": [
                     "organizacion"
@@ -301,7 +301,6 @@
                 }
             }
         },
-
         "/persona/ActualizarPersona": {
             "put": {
                 "tags": [
@@ -330,7 +329,7 @@
                 }
             }
         },
-        "/persona/ConsultaPersona/": {
+        "/persona/ConsultaPersona": {
             "get": {
                 "tags": [
                     "persona"
