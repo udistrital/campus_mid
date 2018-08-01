@@ -56,7 +56,7 @@ func (c *OrganizacionController) Post() {
 }
 
 // CrearOrganizacion Funcion que valida si existe la organizacion si no la crea
-func CrearOrganizacion(organizacion map[string]interface{}) (res interface{}, errores []interface{}) {
+func CrearOrganizacion(organizacion map[string]interface{}) (res map[string]interface{}, errores []interface{}) {
 	var resultado map[string]interface{}
 	var resultado2 map[string]interface{}
 	o := map[string]interface{}{
@@ -74,6 +74,17 @@ func CrearOrganizacion(organizacion map[string]interface{}) (res interface{}, er
 		}
 		if err := request.SendJson("http://"+beego.AppConfig.String("EnteService")+"/identificacion", "POST", &resultado2, p); err == nil && resultado2["Type"] != "error" {
 			res = resultado2
+			res["Nombre"] = organizacion["Nombre"]
+			if organizacion["Contacto"] != nil {
+				array := organizacion["Contacto"].([]interface{})
+				for _, c := range array {
+					contacto := c.(map[string]interface{})
+					contacto["Ente"] = map[string]interface{}{"Id": resultado["Ente"]}
+					var r interface{}
+					request.SendJson("http://"+beego.AppConfig.String("EnteService")+"/contacto_ente", "POST", &r, c)
+				}
+			}
+
 		} else {
 			request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("OrganizacionService")+"/organizacion/%.f", resultado["Id"]), "DELETE", &resultado2, nil)
 			errores = []interface{}{err, resultado2}
@@ -107,6 +118,7 @@ func (c *OrganizacionController) GetByIdentificacion() {
 			&resId); err == nil {
 			if resId != nil {
 				resultado = resId[0]
+				delete(resultado, "Id")
 				var wg sync.WaitGroup
 				wg.Add(3)
 
