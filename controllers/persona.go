@@ -322,7 +322,7 @@ func (c *PersonaController) ConsultaPersona() {
 
 		errIdentificacion := request.GetJson("http://"+beego.AppConfig.String("EnteService")+"/identificacion/?query=Ente:"+fmt.Sprintf("%.f", resultado[0]["Ente"].(float64))+"&fields=TipoIdentificacion,NumeroIdentificacion,FechaExpedicion,LugarExpedicion,Id,Soporte", &resultado2)
 		if errIdentificacion == nil && resultado2 != nil {
-			newpersona["TipoIdentificacion"] = resultado2[0]["TipoIdentificacion"]
+			newpersona["TipoDocumento"] = resultado2[0]["TipoIdentificacion"]
 			newpersona["NumeroDocumento"] = resultado2[0]["NumeroIdentificacion"]
 			newpersona["SoporteDocumento"] = resultado2[0]["Soporte"]
 
