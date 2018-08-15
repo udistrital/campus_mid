@@ -4,7 +4,7 @@
         "title": "beego Test API",
         "description": "beego has a very cool tools to autogenerate documents for your API",
         "version": "1.0.0",
-        "termsOfService": "http://beego.me",
+        "termsOfService": "http://beego.me/",
         "contact": {
             "email": "astaxie@gmail.com"
         },
@@ -15,7 +15,7 @@
     },
     "basePath": "/v1",
     "paths": {
-        "/experiencia_laboral": {
+        "/experiencia_laboral/": {
             "post": {
                 "tags": [
                     "experiencia_laboral"
@@ -237,7 +237,7 @@
                 }
             }
         },
-        "/organizacion": {
+        "/organizacion/": {
             "post": {
                 "tags": [
                     "organizacion"
@@ -265,7 +265,7 @@
                 }
             }
         },
-        "/organizacion/identificacion": {
+        "/organizacion/identificacion/": {
             "get": {
                 "tags": [
                     "organizacion"
@@ -329,7 +329,7 @@
                 }
             }
         },
-        "/persona/ConsultaPersona": {
+        "/persona/ConsultaPersona/": {
             "get": {
                 "tags": [
                     "persona"

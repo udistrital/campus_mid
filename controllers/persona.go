@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/astaxie/beego"
@@ -673,8 +672,7 @@ func (c *PersonaController) ConsultaDatosComplementarios() {
 	var s string
 	if query != nil {
 		for key, val := range query {
-			valInt, _ := strconv.Atoi(val)
-			s = fmt.Sprintf(",%s:%d", key, valInt)
+			s = fmt.Sprintf(",%s:%s", key, val)
 		}
 	}
 
@@ -1197,8 +1195,7 @@ func (c *PersonaController) DatosContacto() {
 	var s string
 	if query != nil {
 		for key, val := range query {
-			valInt, _ := strconv.Atoi(val)
-			s = fmt.Sprintf(",%s:%d", key, valInt)
+			s = fmt.Sprintf(",%s:%s", key, val)
 		}
 	}
 
