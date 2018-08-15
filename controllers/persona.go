@@ -51,6 +51,7 @@ func (c *PersonaController) GuardarPersona() {
 	//valida que el JSON de entrada sea correcto
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &persona); err == nil {
 		alertas := append([]interface{}{"Response:"})
+		alertas = append([]interface{}{"Responseeee:"})
 
 		//funcion que realiza  de la  peticion POST /persona
 		errPersona := request.SendJson("http://"+beego.AppConfig.String("PersonaService")+"/persona", "POST", &resultado, persona)
