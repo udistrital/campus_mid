@@ -61,8 +61,7 @@ func (c *ExperienciaLaboralController) PostExperienciaLaboral() {
 			//si se envía algún soporte en la experiencia laboral
 			if experiencia["Soporte"] != nil {
 				experienciaLaboralSoporte := map[string]interface{}{
-					"Documento":          experiencia["Soporte"].(map[string]interface{})["Documento"],
-					"Descripcion":        experiencia["Soporte"].(map[string]interface{})["Descripcion"],
+					"Documento":          experiencia["Soporte"],
 					"ExperienciaLaboral": resultado["Body"],
 				}
 				errExperienciaLaboralSoporte := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_experiencia_laboral", "POST", &resultado2, experienciaLaboralSoporte)
@@ -146,8 +145,7 @@ func (c *ExperienciaLaboralController) PutExperienciaLaboral() {
 				//si la experiencia laboral tiene soporte: Actualizarlo
 				if errSoportes == nil && soporte != nil {
 					soporteExperienciaLaboral := map[string]interface{}{
-						"Documento":   experiencia["Soporte"].(map[string]interface{})["Documento"],
-						"Descripcion": experiencia["Soporte"].(map[string]interface{})["Descripcion"],
+						"Documento":   experiencia["Soporte"],
 					}
 
 					errSoporteExperienciaLaboral := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_experiencia_laboral/"+fmt.Sprintf("%.f", soporte[0]["Id"]), "PUT", &resultado2, soporteExperienciaLaboral)
@@ -226,18 +224,16 @@ func (c *ExperienciaLaboralController) GetExperienciaLaboral() {
 	var resultado map[string]interface{}
 
 	errExperienciaLaboral := request.GetJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/experiencia_laboral/"+idStr, &resultado)
-
+	fmt.Println(idStr)
 	if errExperienciaLaboral == nil && resultado != nil {
 		if resultado["Type"] != "error" {
 			//buscar soporte_experiencia_laboral
 			var soporte []map[string]interface{}
-			errSoportes := request.GetJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_experiencia_laboral/?query=ExperienciaLaboral:"+idStr+"&fields=Id,Documento,Descripcion", &soporte)
-
+			errSoportes := request.GetJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_experiencia_laboral/?query=ExperienciaLaboral:"+idStr+"&fields=Id,Documento", &soporte)
 			if errSoportes == nil {
-				if soporte != nil {
-					resultado["Soporte"] = soporte[0]
-				}
+				resultado["Soporte"] = soporte[0]["Documento"]
 				c.Data["json"] = resultado
+				fmt.Println(resultado["Soporte"])
 			} else {
 				alertas = append(alertas, errSoportes.Error())
 				alerta.Code = "400"
@@ -263,7 +259,6 @@ func (c *ExperienciaLaboralController) GetExperienciaLaboral() {
 		alerta.Body = alertas
 		c.Data["json"] = alerta
 	}
-
 	c.ServeJSON()
 }
 

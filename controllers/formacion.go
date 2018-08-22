@@ -53,7 +53,6 @@ func (c *FormacionController) PostFormacionAcademica() {
 			"FechaFinalizacion": formacion["FechaFinalizacion"],
 		}
 		errFormacion := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica", "POST", &resultado, formacionacademica)
-		//fmt.Println("el resultado es: ", resultado)
 		if errFormacion == nil && resultado["Type"] != "error" {
 			alertas = append(alertas, "se agrego la formacion correctamente")
 			formaciondatoadicional := map[string]interface{}{
@@ -108,6 +107,7 @@ func (c *FormacionController) PostFormacionAcademica() {
 				alertas = append(alertas, errFormacionSoporte.Error())
 			}
 		} else {
+			fmt.Println(resultado);
 			alerta.Type = "error"
 			alerta.Code = "400"
 			if errFormacion != nil {
