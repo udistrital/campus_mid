@@ -7,6 +7,22 @@ import (
 
 func init() {
 
+	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:AdmisionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:AdmisionController"],
+		beego.ControllerComments{
+			Method: "PutAdmision",
+			Router: `/:id`,
+			AllowHTTPMethods: []string{"put"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:AdmisionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:AdmisionController"],
+		beego.ControllerComments{
+			Method: "GetAdmision",
+			Router: `/:id`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
+			Params: nil})
+
 	beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:ExperienciaLaboralController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:ExperienciaLaboralController"],
 		beego.ControllerComments{
 			Method: "PostExperienciaLaboral",

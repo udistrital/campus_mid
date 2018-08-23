@@ -11,6 +11,45 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 basePath: /v1
 paths:
+  /admision/{id}:
+    get:
+      tags:
+      - admision
+      description: consultar admision por id
+      operationId: AdmisionController.GetAdmision
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: :id is empty
+    put:
+      tags:
+      - admision
+      description: Modificar datos de la admisión
+      operationId: AdmisionController.PutAdmision
+      parameters:
+      - in: path
+        name: id
+        description: el id de la admisión a modificar
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body Modificar Admisión content
+        required: true
+        schema:
+          $ref: '#/definitions/.{}'
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: :id is empty
   /experiencia_laboral/:
     post:
       tags:
@@ -413,3 +452,6 @@ tags:
 - name: organizacion
   description: |
     OrganizacionController operations for Organizacion
+- name: admision
+  description: |
+    AdmisionController ...
