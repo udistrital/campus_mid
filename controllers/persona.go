@@ -58,7 +58,7 @@ func (c *PersonaController) GuardarPersona() {
 		if resultado["Type"] != "error" || errPersona != nil {
 
 			alertas = append(alertas, "OK persona Id "+fmt.Sprintf("%.f", resultado["Body"].(map[string]interface{})["Id"]))
-			alerta.Type = "Created"
+			alerta.Type = "success"
 			alerta.Code = "201"
 
 			var identificacion map[string]interface{}
@@ -109,8 +109,7 @@ func (c *PersonaController) GuardarPersona() {
 			} else {
 				alertas = append(alertas, "OK persona_genero")
 			}
-
-			alerta.Body = alertas
+			alerta.Body = resultado["Body"]
 			c.Data["json"] = alerta
 			c.ServeJSON()
 		} else {
