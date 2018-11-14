@@ -109,7 +109,32 @@ func (c *PersonaController) GuardarPersona() {
 			} else {
 				alertas = append(alertas, "OK persona_genero")
 			}
-			alerta.Body = resultado["Body"]
+			var resultado5 map[string]interface{}
+			var admision map[string]interface{}
+			admision = make(map[string]interface{})
+			admision = map[string]interface{}{
+				"Aspirante":          resultado["Body"].(map[string]interface{})["Ente"],
+				"AceptaTerminos":     persona["Admision"].(map[string]interface{})["AceptaTerminos"],
+				"EstadoAdmision":     map[string]interface{}{"Id": persona["Admision"].(map[string]interface{})["EstadoAdmision"]},
+				"Enfasis":            map[string]interface{}{"Id": persona["Admision"].(map[string]interface{})["Enfasis"]},
+				"LineaInvestigacion": map[string]interface{}{"Id": persona["Admision"].(map[string]interface{})["LineaInvestigacion"]},
+				"Periodo":            persona["Admision"].(map[string]interface{})["Periodo"],
+				"ProgramaAcademico":  persona["Admision"].(map[string]interface{})["ProgramaAcademico"],
+			}
+			//fmt.Println("la admision es: ", admision)
+
+			//funcion que realiza  de la  peticion POST /admisiones
+			errAdmision := request.SendJson("http://"+beego.AppConfig.String("AdmisionService")+"/admision", "POST", &resultado5, admision)
+			fmt.Println("la admision", resultado5)
+			if resultado5["Type"] == "error" || errAdmision != nil {
+				alertas = append(alertas, resultado5)
+				alerta.Type = "error"
+				alerta.Code = "400"
+			} else {
+				alertas = append(alertas, "OK admision")
+			}
+
+			alerta.Body = alertas
 			c.Data["json"] = alerta
 			c.ServeJSON()
 		} else {

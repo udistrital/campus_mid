@@ -154,6 +154,7 @@ func (c *OrganizacionController) GetByIdentificacion() {
 					if err := request.GetJson(
 						fmt.Sprintf("http://"+beego.AppConfig.String("EnteService")+"/valor_atributo_ubicacion/?query=UbicacionEnte.Ente.Id:%.f", resultado["Ente"].(map[string]interface{})["Id"]),
 						&resUbicacion); err == nil {
+						fmt.Println("la respuesta es:", resUbicacion)
 						if resUbicacion != nil {
 							resultado["Ubicacion"] = resUbicacion
 						}
