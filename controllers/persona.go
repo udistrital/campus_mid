@@ -374,8 +374,10 @@ func (c *PersonaController) ConsultaPersona() {
 
 	} else {
 		newpersona = nil
+		c.Ctx.Output.SetStatus(404)
 	}
 	c.Data["json"] = newpersona
+
 	c.ServeJSON()
 
 }
