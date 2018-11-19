@@ -24,8 +24,8 @@ func (c *FormacionController) URLMapping() {
 
 // PostFormacionAcademica ...
 // @Title PostFormacionAcademica
-// @Description Agregar Formacion Academica
-// @Param	body		body 	{}	true		"body Agregar Formacion Academica content"
+// @Description Agregar Formacion Academica ud
+// @Param	body		body 	'hola'	true		"body Agregar Formacion Academica content"
 // @Success 200 {}
 // @Failure 403 body is empty
 // @router /formacionacademica [post]
@@ -107,7 +107,7 @@ func (c *FormacionController) PostFormacionAcademica() {
 				alertas = append(alertas, errFormacionSoporte.Error())
 			}
 		} else {
-			fmt.Println(resultado);
+			fmt.Println(resultado)
 			alerta.Type = "error"
 			alerta.Code = "400"
 			if errFormacion != nil {
@@ -276,11 +276,12 @@ func (c *FormacionController) GetFormacionAcademica() {
 	var resultado3 []map[string]interface{}
 
 	var resultado4 []map[string]interface{}
+	var resultadof []map[string]interface{}
 	//resultado dato adicional formacion academica
 	//var resultado3 map[string]interface{}
 	errFormacion := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica/?query=Persona:"+idStr+"&fields=Id,FechaInicio,FechaFinalizacion,Titulacion", &resultado)
 
-	//fmt.Println("el resultado de la consulta es: ", resultado)
+	fmt.Println("el resultado de la consulta es: ", resultado)
 	if errFormacion == nil && resultado != nil {
 		if resultado[0]["Type"] != "error" {
 
@@ -290,9 +291,16 @@ func (c *FormacionController) GetFormacionAcademica() {
 				errTitulacion := request.GetJson("http://"+beego.AppConfig.String("ProgramaAcademicoService")+"/programa_academico/?query=Id:"+fmt.Sprintf("%.f", resultado[u]["Titulacion"].(float64)), &resultado2)
 				if errTitulacion == nil {
 
-					resultado[u]["Titulacion"] = resultado2[0]
-					//fmt.Println("la titulacion de esa persona es: ", resultado)
+					//fmt.Println("la titulacion de esa persona es: ", resultado2[0]["Institucion"])
 
+					errOrganizacion := request.GetJson("http://"+beego.AppConfig.String("OrganizacionService")+"/organizacion/?query=id:"+fmt.Sprintf("%.f", resultado2[0]["Institucion"].(float64)), &resultadof)
+					if errOrganizacion == nil && resultadof != nil {
+						fmt.Println("la universidad es: ", resultadof[0])
+						resultado[u]["Institucion"] = resultadof[0]
+					} else {
+						fmt.Println(errOrganizacion)
+					}
+					resultado[u]["Titulacion"] = resultado2
 				} else {
 					alertas = append(alertas, errTitulacion.Error())
 					alerta.Code = "400"
@@ -322,7 +330,7 @@ func (c *FormacionController) GetFormacionAcademica() {
 
 				errDatoAdicional := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/soporte_formacion_academica/?query=FormacionAcademica:"+fmt.Sprintf("%.f", resultado[u]["Id"].(float64))+"&fields=Documento", &resultado4)
 				if errDatoAdicional == nil && resultado4 != nil {
-					fmt.Println("el resultado de los documentos es: ", resultado4)
+					//fmt.Println("el resultado de los documentos es: ", resultado4)
 					resultado[u]["Documento"] = resultado4[0]["Documento"]
 				} else {
 					if errDatoAdicional != nil {
@@ -331,7 +339,7 @@ func (c *FormacionController) GetFormacionAcademica() {
 
 				}
 			}
-			c.Data["json"] = resultado[0]
+			c.Data["json"] = resultado
 		}
 	} else {
 		fmt.Println("entro al error")

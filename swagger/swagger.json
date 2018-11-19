@@ -190,7 +190,7 @@
                 "tags": [
                     "formacion"
                 ],
-                "description": "Agregar Formacion Academica",
+                "description": "Agregar Formacion Academica ud",
                 "operationId": "FormacionController.PostFormacionAcademica",
                 "parameters": [
                     {
@@ -199,7 +199,7 @@
                         "description": "body Agregar Formacion Academica content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.{}"
+                            "$ref": "#/definitions/.'hola'"
                         }
                     }
                 ],
@@ -652,6 +652,9 @@
         }
     },
     "definitions": {
+        ".'hola'": {
+            "type": "object"
+        },
         ".Organizacion": {
             "type": "object"
         },

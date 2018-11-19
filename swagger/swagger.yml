@@ -127,7 +127,7 @@ paths:
     post:
       tags:
       - formacion
-      description: Agregar Formacion Academica
+      description: Agregar Formacion Academica ud
       operationId: FormacionController.PostFormacionAcademica
       parameters:
       - in: body
@@ -135,7 +135,7 @@ paths:
         description: body Agregar Formacion Academica content
         required: true
         schema:
-          $ref: '#/definitions/.{}'
+          $ref: '#/definitions/.''hola'''
       responses:
         "200":
           description: '{}'
@@ -427,6 +427,8 @@ paths:
         "403":
           description: body is empty
 definitions:
+  .'hola':
+    type: object
   .{}:
     type: object
   .Organizacion:
