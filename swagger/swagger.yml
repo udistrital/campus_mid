@@ -141,23 +141,28 @@ paths:
           description: '{}'
         "403":
           description: body is empty
-  /formacion/formacionacademica/{id}:
+  /formacion/formacionacademica/:
     get:
       tags:
       - formacion
       description: consultar Fromacion Academica por userid
       operationId: FormacionController.GetFormacionAcademica
       parameters:
-      - in: path
+      - in: query
         name: id
         description: The key for staticblock
         required: true
+        type: string
+      - in: query
+        name: idformacion
+        description: The key for staticblock
         type: string
       responses:
         "200":
           description: '{}'
         "403":
           description: :id is empty
+  /formacion/formacionacademica/{id}:
     put:
       tags:
       - formacion

@@ -213,7 +213,7 @@
                 }
             }
         },
-        "/formacion/formacionacademica/{id}": {
+        "/formacion/formacionacademica/": {
             "get": {
                 "tags": [
                     "formacion"
@@ -222,10 +222,16 @@
                 "operationId": "FormacionController.GetFormacionAcademica",
                 "parameters": [
                     {
-                        "in": "path",
+                        "in": "query",
                         "name": "id",
                         "description": "The key for staticblock",
                         "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "idformacion",
+                        "description": "The key for staticblock",
                         "type": "string"
                     }
                 ],
@@ -237,7 +243,9 @@
                         "description": ":id is empty"
                     }
                 }
-            },
+            }
+        },
+        "/formacion/formacionacademica/{id}": {
             "put": {
                 "tags": [
                     "formacion"

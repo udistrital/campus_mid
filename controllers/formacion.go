@@ -172,7 +172,7 @@ func (c *FormacionController) PutFormacionAcademica() {
 							alerta.Code = "200"
 							alerta.Type = "success"
 							alerta.Body = alertas
-							c.Data["json"] = alerta
+
 						}
 					} else {
 						//fmt.Println("error de formacion", errFormacion2.Error())
@@ -183,8 +183,9 @@ func (c *FormacionController) PutFormacionAcademica() {
 					}
 
 					errFormacionAdd := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/?query=FormacionAcademica:"+fmt.Sprintf("%.f", resultado[i]["Id"].(float64)), &resultado3)
-					if errFormacionAdd == nil {
-						//fmt.Println("lo adicional es: ", resultado3)
+					fmt.Println("lo adicional es: ", resultado3)
+					if errFormacionAdd == nil && resultado3 != nil {
+						fmt.Println("lo adicional es: ", resultado3)
 						for u := 0; u < len(resultado3); u++ {
 							if resultado3[u]["TipoDatoAdicional"].(float64) == 1 {
 								resultado3[u]["Valor"] = formacion["TituloTrabajoGrado"]
@@ -215,7 +216,7 @@ func (c *FormacionController) PutFormacionAcademica() {
 							}
 						}
 						errSoporteFormacion := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/soporte_formacion_academica/?query=FormacionAcademica:"+fmt.Sprintf("%.f", resultado[i]["Id"].(float64)), &resultado5)
-						if errSoporteFormacion == nil {
+						if errSoporteFormacion == nil && resultado5 != nil {
 							fmt.Println("el soporte actual es:", resultado5[0])
 							resultado5[0]["Documento"] = formacion["Documento"]
 							fmt.Println("el nuevo soporte es:", resultado5[0])
@@ -225,11 +226,19 @@ func (c *FormacionController) PutFormacionAcademica() {
 							}
 						}
 					} else {
-						//fmt.Println("error adicional: ", errFormacionAdd.Error())
-						alertas = append(alertas, errFormacion.Error())
+						if errFormacionAdd != nil {
+							fmt.Println("error adicional: ", errFormacionAdd.Error())
+							alertas = append(alertas, errFormacion.Error())
+
+						} else {
+							alertas = append(alertas, "ERROR formacion adicional no se encontro registro")
+
+						}
 						alerta.Code = "400"
 						alerta.Type = "error"
+
 					}
+
 				}
 
 			}
@@ -255,13 +264,18 @@ func (c *FormacionController) PutFormacionAcademica() {
 // GetFormacionAcademica ...
 // @Title GetFormacionAcademica
 // @Description consultar Fromacion Academica por userid
-// @Param	id		path 	string	true		"The key for staticblock"
+// @Param	id		query 	string	true		"The key for staticblock"
+// @Param	idformacion		query 	string	false		"The key for staticblock"
 // @Success 200 {}
 // @Failure 403 :id is empty
-// @router /formacionacademica/:id [get]
+// @router /formacionacademica/ [get]
 func (c *FormacionController) GetFormacionAcademica() {
 	//Id de la persona
-	idStr := c.Ctx.Input.Param(":id")
+	var idStr = ""
+	var idFor float64 = 0
+	idStr = c.GetString("id")
+	idFor, _ = c.GetFloat("idformacion")
+	fmt.Println("el id for es: ", idFor)
 	//formacion academica
 	//var formacion map[string]interface{}
 	//alerta que retorna la funcion PostFormacionAcademica
@@ -279,9 +293,10 @@ func (c *FormacionController) GetFormacionAcademica() {
 	var resultadof []map[string]interface{}
 	//resultado dato adicional formacion academica
 	//var resultado3 map[string]interface{}
+
 	errFormacion := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica/?query=Persona:"+idStr+"&fields=Id,FechaInicio,FechaFinalizacion,Titulacion", &resultado)
 
-	fmt.Println("el resultado de la consulta es: ", resultado)
+	//fmt.Println("el resultado de la consulta es: ", resultado)
 	if errFormacion == nil && resultado != nil {
 		if resultado[0]["Type"] != "error" {
 
@@ -295,10 +310,10 @@ func (c *FormacionController) GetFormacionAcademica() {
 
 					errOrganizacion := request.GetJson("http://"+beego.AppConfig.String("OrganizacionService")+"/organizacion/?query=id:"+fmt.Sprintf("%.f", resultado2[0]["Institucion"].(float64)), &resultadof)
 					if errOrganizacion == nil && resultadof != nil {
-						fmt.Println("la universidad es: ", resultadof[0])
+						//fmt.Println("la universidad es: ", resultadof[0])
 						resultado[u]["Institucion"] = resultadof[0]
 					} else {
-						fmt.Println(errOrganizacion)
+						//fmt.Println(errOrganizacion)
 					}
 					resultado[u]["Titulacion"] = resultado2
 				} else {
@@ -334,12 +349,27 @@ func (c *FormacionController) GetFormacionAcademica() {
 					resultado[u]["Documento"] = resultado4[0]["Documento"]
 				} else {
 					if errDatoAdicional != nil {
-						fmt.Println("el error es: ", errDatoAdicional.Error())
+						//fmt.Println("el error es: ", errDatoAdicional.Error())
 					}
 
 				}
 			}
-			c.Data["json"] = resultado
+			if idFor != 0 {
+				for u := 0; u < len(resultado); u++ {
+
+					fmt.Println("el id de la formacion es ", resultado[u]["Id"], "y el de la consulta: ", idFor)
+					if resultado[u]["Id"].(float64) == idFor {
+						c.Data["json"] = resultado[u]
+					} else {
+
+					}
+
+				}
+
+			} else {
+				c.Data["json"] = resultado
+			}
+
 		}
 	} else {
 		fmt.Println("entro al error")
@@ -383,7 +413,7 @@ func (c *FormacionController) DeleteFormacionAcademica() {
 		if errFormacion == nil {
 			//fmt.Println("el dato adicional es: ", resultado2)
 			for i := 0; i < len(resultado2); i++ {
-				fmt.Println("el id del dato adicional a borrar es: ", resultado2[i]["Id"])
+				//fmt.Println("el id del dato adicional a borrar es: ", resultado2[i]["Id"])
 				err := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/"+fmt.Sprintf("%.f", resultado2[i]["Id"].(float64)), "DELETE", &resultado3, nil)
 
 				if err == nil {
@@ -406,7 +436,7 @@ func (c *FormacionController) DeleteFormacionAcademica() {
 			}
 			err := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica/"+idStr, "DELETE", &resultado6, nil)
 			if err == nil {
-				fmt.Println("el resultado del DELETE es: ", resultado6)
+				//fmt.Println("el resultado del DELETE es: ", resultado6)
 				alertas = append(alertas, "OK DELETE formacion_academica")
 			}
 			alerta.Body = alertas
