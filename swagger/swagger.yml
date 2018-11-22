@@ -260,6 +260,25 @@ paths:
             $ref: '#/definitions/models.Organizacion'
         "403":
           description: :id is empty
+  /organizacion/identificacionente/:
+    get:
+      tags:
+      - organizacion
+      description: get Organizacion by id
+      operationId: OrganizacionController.GetByEnte
+      parameters:
+      - in: query
+        name: Ente
+        description: id del ente
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Organizacion'
+        "403":
+          description: :Ente is empty
   /persona/ActualizarPersona:
     put:
       tags:

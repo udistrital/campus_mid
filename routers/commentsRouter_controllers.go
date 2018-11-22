@@ -124,6 +124,15 @@ func init() {
             Filters: nil,
             Params: nil})
 
+    beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:OrganizacionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:OrganizacionController"],
+        beego.ControllerComments{
+            Method: "GetByEnte",
+            Router: `/identificacionente/`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/campus_mid/controllers:PersonaController"],
         beego.ControllerComments{
             Method: "ActualizarPersona",

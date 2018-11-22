@@ -18,6 +18,7 @@ type OrganizacionController struct {
 func (c *OrganizacionController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetByIdentificacion", c.GetByIdentificacion)
+	c.Mapping("GetByEnte", c.GetByEnte)
 
 	// c.Mapping("GetAll", c.GetAll)
 	// c.Mapping("Put", c.Put)
@@ -116,6 +117,85 @@ func (c *OrganizacionController) GetByIdentificacion() {
 		if err := request.GetJson(
 			fmt.Sprintf("http://"+beego.AppConfig.String("EnteService")+"/identificacion?query=NumeroIdentificacion:%s,TipoIdentificacion.Id:%s",
 				uid, tid),
+			&resId); err == nil {
+			if resId != nil {
+				resultado = resId[0]
+				delete(resultado, "Id")
+				var wg sync.WaitGroup
+				wg.Add(3)
+
+				go func() {
+					var resOrg []map[string]interface{}
+					if err := request.GetJson(
+						fmt.Sprintf("http://"+beego.AppConfig.String("OrganizacionService")+"/organizacion/?query=Ente:%.f", resultado["Ente"].(map[string]interface{})["Id"]),
+						&resOrg); err == nil {
+						if resOrg != nil {
+							resultado["Nombre"] = resOrg[0]["Nombre"]
+							resultado["TipoOrganizacion"] = resOrg[0]["TipoOrganizacion"]
+						}
+					}
+					// Do work
+					wg.Done()
+				}()
+
+				go func() {
+					var resContacto []map[string]interface{}
+					if err := request.GetJson(
+						fmt.Sprintf("http://"+beego.AppConfig.String("EnteService")+"/contacto_ente/?query=Ente:%.f&fields=TipoContacto,Valor", resultado["Ente"].(map[string]interface{})["Id"]),
+						&resContacto); err == nil {
+						if resContacto != nil {
+							resultado["Contacto"] = resContacto
+						}
+					}
+					// Do work
+					wg.Done()
+				}()
+
+				go func() {
+					var resUbicacion []map[string]interface{}
+					if err := request.GetJson(
+						fmt.Sprintf("http://"+beego.AppConfig.String("EnteService")+"/valor_atributo_ubicacion/?query=UbicacionEnte.Ente.Id:%.f", resultado["Ente"].(map[string]interface{})["Id"]),
+						&resUbicacion); err == nil {
+						fmt.Println("la respuesta es:", resUbicacion)
+						if resUbicacion != nil {
+							resultado["Ubicacion"] = resUbicacion
+						}
+					}
+					// Do work
+					wg.Done()
+				}()
+
+				wg.Wait()
+
+			}
+			c.Data["json"] = resultado
+
+		} else {
+			c.Data["json"] = err
+		}
+	}
+	c.ServeJSON()
+}
+
+// GetByEnte ...
+// @Title GetByEnte
+// @Description get Organizacion by id
+// @Param	Ente		query 	string	true		"id del ente"
+// @Success 200 {object} models.Organizacion
+// @Failure 403 :Ente is empty
+// @router /identificacionente/ [get]
+func (c *OrganizacionController) GetByEnte() {
+	uid := c.GetString("Ente")
+
+	var resultado map[string]interface{}
+
+	var resId []map[string]interface{}
+	// var res_ontacto []map[string]interface{}
+	// var res_ubicacion []map[string]interface{}
+	if uid != "" {
+		if err := request.GetJson(
+			fmt.Sprintf("http://"+beego.AppConfig.String("EnteService")+"/identificacion?query=Ente:%s",
+				uid),
 			&resId); err == nil {
 			if resId != nil {
 				resultado = resId[0]
