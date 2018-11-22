@@ -18,6 +18,7 @@ type OrganizacionController struct {
 func (c *OrganizacionController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetByIdentificacion", c.GetByIdentificacion)
+
 	// c.Mapping("GetAll", c.GetAll)
 	// c.Mapping("Put", c.Put)
 	// c.Mapping("Delete", c.Delete)

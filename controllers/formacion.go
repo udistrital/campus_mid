@@ -19,6 +19,7 @@ func (c *FormacionController) URLMapping() {
 	c.Mapping("PostFormacionAcademica", c.PostFormacionAcademica)
 	c.Mapping("PutFormacionAcademica", c.PutFormacionAcademica)
 	c.Mapping("GetFormacionAcademica", c.GetFormacionAcademica)
+	c.Mapping("GetFormacionAcademicaByEnte", c.GetFormacionAcademicaByEnte)
 	c.Mapping("DeleteFormacionAcademica", c.DeleteFormacionAcademica)
 }
 
@@ -369,6 +370,115 @@ func (c *FormacionController) GetFormacionAcademica() {
 			} else {
 				c.Data["json"] = resultado
 			}
+
+		}
+	} else {
+		fmt.Println("entro al error")
+		if errFormacion != nil {
+			c.Data["json"] = nil
+		} else {
+
+			c.Data["json"] = nil
+		}
+
+	}
+
+	c.ServeJSON()
+}
+
+// GetFormacionAcademicaByEnte ...
+// @Title GetFormacionAcademicaByEnte
+// @Description consultar Fromacion Academica por userid
+// @Param	Ente		query 	string	true		"The key for staticblock"
+// @Success 200 {}
+// @Failure 403 :id is empty
+// @router /formacionacademicaente/ [get]
+func (c *FormacionController) GetFormacionAcademicaByEnte() {
+	//Id de la persona
+	var idStr = ""
+
+	idStr = c.GetString("Ente")
+
+	//formacion academica
+	//var formacion map[string]interface{}
+	//alerta que retorna la funcion PostFormacionAcademica
+	var alerta models.Alert
+	//cadena de alertas
+	alertas := append([]interface{}{"Cadena de respuestas: "})
+	//resultado formacion academica
+	var resultado []map[string]interface{}
+	//resultado dato adicional formacion academica
+	var resultado2 []map[string]interface{}
+
+	var resultado3 []map[string]interface{}
+
+	var resultado4 []map[string]interface{}
+	var resultadof []map[string]interface{}
+	//resultado dato adicional formacion academica
+	//var resultado3 map[string]interface{}
+
+	errFormacion := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica/?query=Persona:"+idStr+"&fields=Id,FechaInicio,FechaFinalizacion,Titulacion", &resultado)
+
+	//fmt.Println("el resultado de la consulta es: ", resultado)
+	if errFormacion == nil && resultado != nil {
+		if resultado[0]["Type"] != "error" {
+
+			resultado[0]["Ente"] = idStr
+			for u := 0; u < len(resultado); u++ {
+
+				errTitulacion := request.GetJson("http://"+beego.AppConfig.String("ProgramaAcademicoService")+"/programa_academico/?query=Id:"+fmt.Sprintf("%.f", resultado[u]["Titulacion"].(float64)), &resultado2)
+				if errTitulacion == nil {
+
+					//fmt.Println("la titulacion de esa persona es: ", resultado2[0]["Institucion"])
+
+					errOrganizacion := request.GetJson("http://"+beego.AppConfig.String("OrganizacionService")+"/organizacion/?query=id:"+fmt.Sprintf("%.f", resultado2[0]["Institucion"].(float64)), &resultadof)
+					if errOrganizacion == nil && resultadof != nil {
+						//fmt.Println("la universidad es: ", resultadof[0])
+						resultado[u]["Institucion"] = resultadof[0]
+					} else {
+						//fmt.Println(errOrganizacion)
+					}
+					resultado[u]["Titulacion"] = resultado2
+				} else {
+					alertas = append(alertas, errTitulacion.Error())
+					alerta.Code = "400"
+					alerta.Type = "error"
+					alerta.Body = alertas
+					c.Data["json"] = alerta
+				}
+
+				errFormacionAdicional := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/?query=FormacionAcademica:"+fmt.Sprintf("%.f", resultado[u]["Id"].(float64))+"&fields=TipoDatoAdicional,Valor,Id", &resultado3)
+
+				if errFormacionAdicional == nil {
+					//fmt.Println("los datos adicionales de la formacion son: ", resultado3)
+					for i := 0; i < len(resultado3); i++ {
+
+						if resultado3[i]["TipoDatoAdicional"].(float64) == 1 {
+
+							resultado[u]["TituloTrabajoGrado"] = resultado3[i]["Valor"]
+						}
+						if resultado3[i]["TipoDatoAdicional"].(float64) == 2 {
+							resultado[u]["DescripcionTrabajoGrado"] = resultado3[i]["Valor"]
+						}
+					}
+
+				} else {
+					//fmt.Println("el error de adicional formacion academica es: ", errFormacionAdicional.Error())
+				}
+
+				errDatoAdicional := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/soporte_formacion_academica/?query=FormacionAcademica:"+fmt.Sprintf("%.f", resultado[u]["Id"].(float64))+"&fields=Documento", &resultado4)
+				if errDatoAdicional == nil && resultado4 != nil {
+					//fmt.Println("el resultado de los documentos es: ", resultado4)
+					resultado[u]["Documento"] = resultado4[0]["Documento"]
+				} else {
+					if errDatoAdicional != nil {
+						//fmt.Println("el error es: ", errDatoAdicional.Error())
+					}
+
+				}
+			}
+
+			c.Data["json"] = resultado
 
 		}
 	} else {
