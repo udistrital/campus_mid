@@ -397,7 +397,7 @@ func RegistroUbicaciones(ubicaciones map[string]interface{}) models.Alert {
 	ubicacionPersona = ubicacionesPersona
 
 	lugar, err := ubicacionPersona["Lugar"].(map[string]interface{})
-	if err == true {
+	if err == false {
 		ubicacion = make(map[string]interface{})
 		ubicacion["Ente"] = map[string]interface{}{"Id": ubicacionPersona["Ente"]}
 		ubicacion["Lugar"] = lugar["Id"]

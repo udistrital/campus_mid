@@ -44,7 +44,7 @@ paths:
         description: body Modificar Admisión content
         required: true
         schema:
-          $ref: '#/definitions/{}'
+          $ref: '#/definitions/.{}'
       responses:
         "200":
           description: '{}'
@@ -62,7 +62,7 @@ paths:
         description: body Agregar EXperiencia Laboral content
         required: true
         schema:
-          $ref: '#/definitions/{}'
+          $ref: '#/definitions/.{}'
       responses:
         "200":
           description: '{}'
@@ -101,7 +101,7 @@ paths:
         description: body Modificar Experiencia Laboral content
         required: true
         schema:
-          $ref: '#/definitions/{}'
+          $ref: '#/definitions/.{}'
       responses:
         "200":
           description: '{}'
@@ -135,7 +135,7 @@ paths:
         description: body Agregar Formacion Academica content
         required: true
         schema:
-          $ref: '#/definitions/''hola'''
+          $ref: '#/definitions/.''hola'''
       responses:
         "200":
           description: '{}'
@@ -179,7 +179,7 @@ paths:
         description: body Modificar Formacion Academica content
         required: true
         schema:
-          $ref: '#/definitions/{}'
+          $ref: '#/definitions/.{}'
       responses:
         "200":
           description: '{}'
@@ -230,7 +230,7 @@ paths:
         description: body for Organizaciona scontent
         required: true
         schema:
-          $ref: '#/definitions/interface'
+          $ref: '#/definitions/.interface'
       responses:
         "200":
           description: '{}'
@@ -257,7 +257,7 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.Organizacion'
+            $ref: '#/definitions/.Organizacion'
         "403":
           description: :id is empty
   /organizacion/identificacionente/:
@@ -276,7 +276,7 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.Organizacion'
+            $ref: '#/definitions/.Organizacion'
         "403":
           description: :Ente is empty
   /persona/ActualizarPersona:
@@ -291,7 +291,7 @@ paths:
         description: body for Actualizar Persona content
         required: true
         schema:
-          $ref: '#/definitions/models.PersonaDatosBasicos'
+          $ref: '#/definitions/.PersonaDatosBasicos'
       responses:
         "200":
           description: '{}'
@@ -316,7 +316,7 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/interface{}'
+            $ref: '#/definitions/.interface{}'
         "403":
           description: :id is empty
   /persona/DatosComplementarios:
@@ -331,7 +331,7 @@ paths:
         description: body for Guardar Persona content
         required: true
         schema:
-          $ref: '#/definitions/models.PersonaDatosBasicos'
+          $ref: '#/definitions/.PersonaDatosBasicos'
       responses:
         "200":
           description: '{string} models.Persona.Id'
@@ -348,7 +348,7 @@ paths:
         description: body for Guardar Persona content
         required: true
         schema:
-          $ref: '#/definitions/models.PersonaDatosBasicos'
+          $ref: '#/definitions/.PersonaDatosBasicos'
       responses:
         "200":
           description: '{string} models.Persona.Id'
@@ -387,7 +387,7 @@ paths:
         description: body for Actualizar Persona content
         required: true
         schema:
-          $ref: '#/definitions/models.PersonaDatosBasicos'
+          $ref: '#/definitions/.PersonaDatosBasicos'
       responses:
         "200":
           description: '{string} models.Persona.Id'
@@ -404,7 +404,7 @@ paths:
         description: body for Guardar datos contacto content
         required: true
         schema:
-          $ref: '#/definitions/models.PersonaDatosBasicos'
+          $ref: '#/definitions/.PersonaDatosBasicos'
       responses:
         "200":
           description: '{string} models.Persona.Id'
@@ -443,7 +443,7 @@ paths:
         description: body for Guardar Persona content
         required: true
         schema:
-          $ref: '#/definitions/{}'
+          $ref: '#/definitions/.{}'
       responses:
         "200":
           description: '{}'
@@ -461,33 +461,26 @@ paths:
         description: body for Registrar Ubicaciones content
         required: true
         schema:
-          $ref: '#/definitions/map[string]interface{}'
+          $ref: '#/definitions/.map[string]interface{}'
       responses:
         "200":
           description: '{}'
         "403":
           description: body is empty
 definitions:
-  '''hola''':
-    title: '''hola'''
+  .'hola':
     type: object
-  '{}':
-    title: '{}'
+  .{}:
     type: object
-  interface:
-    title: interface
+  .Organizacion:
     type: object
-  interface{}:
-    title: interface{}
+  .PersonaDatosBasicos:
     type: object
-  map[string]interface{}:
-    title: map[string]interface{}
+  .interface:
     type: object
-  models.Organizacion:
-    title: Organizacion
+  .interface{}:
     type: object
-  models.PersonaDatosBasicos:
-    title: PersonaDatosBasicos
+  .map[string]interface{}:
     type: object
 tags:
 - name: persona
