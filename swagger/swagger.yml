@@ -11,6 +11,274 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 basePath: /v1
 paths:
+  /admision/{id}:
+    get:
+      tags:
+      - admision
+      description: consultar admision por id
+      operationId: AdmisionController.GetAdmision
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: :id is empty
+    put:
+      tags:
+      - admision
+      description: Modificar datos de la admisión
+      operationId: AdmisionController.PutAdmision
+      parameters:
+      - in: path
+        name: id
+        description: el id de la admisión a modificar
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body Modificar Admisión content
+        required: true
+        schema:
+          $ref: '#/definitions/.{}'
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: :id is empty
+  /experiencia_laboral/:
+    post:
+      tags:
+      - experiencia_laboral
+      description: Agregar Experiencia Laboral
+      operationId: ExperienciaLaboralController.PostExperienciaLaboral
+      parameters:
+      - in: body
+        name: body
+        description: body Agregar EXperiencia Laboral content
+        required: true
+        schema:
+          $ref: '#/definitions/.{}'
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: body is empty
+  /experiencia_laboral/{id}:
+    get:
+      tags:
+      - experiencia_laboral
+      description: consultar Experiencia Laboral por userid
+      operationId: ExperienciaLaboralController.GetExperienciaLaboral
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: :id is empty
+    put:
+      tags:
+      - experiencia_laboral
+      description: Modificar Experiencia Laboral
+      operationId: ExperienciaLaboralController.PutExperienciaLaboral
+      parameters:
+      - in: path
+        name: id
+        description: el id de la experiencia laboral a modificar
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body Modificar Experiencia Laboral content
+        required: true
+        schema:
+          $ref: '#/definitions/.{}'
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: :id is empty
+    delete:
+      tags:
+      - experiencia_laboral
+      description: eliminar Experiencia Laboral por id
+      operationId: ExperienciaLaboralController.DeleteExperienciaLaboral
+      parameters:
+      - in: path
+        name: id
+        description: Id de la Experiencia Laboral
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: :id is empty
+  /formacion/formacionacademica:
+    post:
+      tags:
+      - formacion
+      description: Agregar Formacion Academica ud
+      operationId: FormacionController.PostFormacionAcademica
+      parameters:
+      - in: body
+        name: body
+        description: body Agregar Formacion Academica content
+        required: true
+        schema:
+          $ref: '#/definitions/.''hola'''
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: body is empty
+  /formacion/formacionacademica/:
+    get:
+      tags:
+      - formacion
+      description: consultar Fromacion Academica por userid
+      operationId: FormacionController.GetFormacionAcademica
+      parameters:
+      - in: query
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      - in: query
+        name: idformacion
+        description: The key for staticblock
+        type: string
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: :id is empty
+  /formacion/formacionacademica/{id}:
+    put:
+      tags:
+      - formacion
+      description: Modificar Formacion Academica
+      operationId: FormacionController.PutFormacionAcademica
+      parameters:
+      - in: path
+        name: id
+        description: el id de la formacion academica a modificar
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body Modificar Formacion Academica content
+        required: true
+        schema:
+          $ref: '#/definitions/.{}'
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: :id is empty
+    delete:
+      tags:
+      - formacion
+      description: eliminar Formacion Academica por id de la formacion
+      operationId: FormacionController.DeleteFormacionAcademica
+      parameters:
+      - in: path
+        name: id
+        description: Id de la formacion academica
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: :id is empty
+  /formacion/formacionacademicaente/:
+    get:
+      tags:
+      - formacion
+      description: consultar Fromacion Academica por userid
+      operationId: FormacionController.GetFormacionAcademicaByEnte
+      parameters:
+      - in: query
+        name: Ente
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: :id is empty
+  /organizacion/:
+    post:
+      tags:
+      - organizacion
+      description: create Organizacion
+      operationId: OrganizacionController.Create
+      parameters:
+      - in: body
+        name: body
+        description: body for Organizaciona scontent
+        required: true
+        schema:
+          $ref: '#/definitions/.interface'
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: body is empty
+  /organizacion/identificacion/:
+    get:
+      tags:
+      - organizacion
+      description: get Organizacion by id
+      operationId: OrganizacionController.GetByIdentificacion
+      parameters:
+      - in: query
+        name: id
+        description: Identification number as id
+        required: true
+        type: string
+      - in: query
+        name: tipoid
+        description: TipoIdentificacion number as nit
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/.Organizacion'
+        "403":
+          description: :id is empty
+  /organizacion/identificacionente/:
+    get:
+      tags:
+      - organizacion
+      description: get Organizacion by id
+      operationId: OrganizacionController.GetByEnte
+      parameters:
+      - in: query
+        name: Ente
+        description: id del ente
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/.Organizacion'
+        "403":
+          description: :Ente is empty
   /persona/ActualizarPersona:
     put:
       tags:
@@ -29,21 +297,26 @@ paths:
           description: '{}'
         "403":
           description: body is empty
-  /persona/ConsultaPersona/{id}:
+  /persona/ConsultaPersona/:
     get:
       tags:
       - persona
       description: get ConsultaPersona by userid
       operationId: PersonaController.Get One
       parameters:
-      - in: path
+      - in: query
         name: id
-        description: The key for staticblock
-        required: true
+        description: busca por  id del ente
+        type: string
+      - in: query
+        name: userid
+        description: busca por nombre de usuario
         type: string
       responses:
         "200":
-          description: '{}'
+          description: ""
+          schema:
+            $ref: '#/definitions/.interface{}'
         "403":
           description: :id is empty
   /persona/DatosComplementarios:
@@ -90,7 +363,7 @@ paths:
       parameters:
       - in: path
         name: id
-        description: The key for staticblock
+        description: consulta de datos complementarios por el Id del ente
         required: true
         type: string
       - in: query
@@ -149,6 +422,10 @@ paths:
         description: The key for staticblock
         required: true
         type: string
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
       responses:
         "200":
           description: '{}'
@@ -191,9 +468,17 @@ paths:
         "403":
           description: body is empty
 definitions:
+  .'hola':
+    type: object
   .{}:
     type: object
+  .Organizacion:
+    type: object
   .PersonaDatosBasicos:
+    type: object
+  .interface:
+    type: object
+  .interface{}:
     type: object
   .map[string]interface{}:
     type: object
@@ -201,3 +486,15 @@ tags:
 - name: persona
   description: |
     PersonaController ...
+- name: formacion
+  description: |
+    FormacionController ...
+- name: experiencia_laboral
+  description: |
+    FormacionController ...
+- name: organizacion
+  description: |
+    OrganizacionController operations for Organizacion
+- name: admision
+  description: |
+    AdmisionController ...

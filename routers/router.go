@@ -20,6 +20,26 @@ func init() {
 				&controllers.PersonaController{},
 			),
 		),
+		beego.NSNamespace("/formacion",
+			beego.NSInclude(
+				&controllers.FormacionController{},
+			),
+		),
+		beego.NSNamespace("/experiencia_laboral",
+			beego.NSInclude(
+				&controllers.ExperienciaLaboralController{},
+			),
+		),
+		beego.NSNamespace("/organizacion",
+			beego.NSInclude(
+				&controllers.OrganizacionController{},
+			),
+		),
+		beego.NSNamespace("/admision",
+			beego.NSInclude(
+				&controllers.AdmisionController{},
+			),
+		),
 	)
 	beego.AddNamespace(ns)
 }
