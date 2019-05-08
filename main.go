@@ -1,7 +1,7 @@
 package main
 
 import (
-	_ "github.com/udistrital/campus_mid/routers"
+	_ "github.com/planesticud/campus_mid/routers"
 	notificacionlib "github.com/udistrital/notificaciones_lib"
 	apistatus "github.com/udistrital/utils_oas/apiStatusLib"
 
