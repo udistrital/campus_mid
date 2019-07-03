@@ -133,7 +133,7 @@ func (c *PersonaController) GuardarPersona() {
 			//} else {
 			//	alertas = append(alertas, "OK admision")
 			//}
-
+			alertas = append(alertas, resultado["Body"].(map[string]interface{})["Id"])
 			alerta.Body = alertas
 			c.Data["json"] = alerta
 			c.ServeJSON()

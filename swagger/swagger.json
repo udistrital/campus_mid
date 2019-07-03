@@ -60,7 +60,7 @@
                         "description": "body Modificar Admisión content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.{}"
+                            "$ref": "#/definitions/{}"
                         }
                     }
                 ],
@@ -88,7 +88,7 @@
                         "description": "body Agregar EXperiencia Laboral content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.{}"
+                            "$ref": "#/definitions/{}"
                         }
                     }
                 ],
@@ -147,7 +147,7 @@
                         "description": "body Modificar Experiencia Laboral content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.{}"
+                            "$ref": "#/definitions/{}"
                         }
                     }
                 ],
@@ -199,7 +199,7 @@
                         "description": "body Agregar Formacion Academica content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.'hola'"
+                            "$ref": "#/definitions/'hola'"
                         }
                     }
                 ],
@@ -266,7 +266,7 @@
                         "description": "body Modificar Formacion Academica content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.{}"
+                            "$ref": "#/definitions/{}"
                         }
                     }
                 ],
@@ -344,7 +344,7 @@
                         "description": "body for Organizaciona scontent",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.interface"
+                            "$ref": "#/definitions/interface"
                         }
                     }
                 ],
@@ -385,7 +385,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/.Organizacion"
+                            "$ref": "#/definitions/models.Organizacion"
                         }
                     },
                     "403": {
@@ -414,7 +414,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/.Organizacion"
+                            "$ref": "#/definitions/models.Organizacion"
                         }
                     },
                     "403": {
@@ -437,7 +437,7 @@
                         "description": "body for Actualizar Persona content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.PersonaDatosBasicos"
+                            "$ref": "#/definitions/models.PersonaDatosBasicos"
                         }
                     }
                 ],
@@ -476,7 +476,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/.interface{}"
+                            "$ref": "#/definitions/interface{}"
                         }
                     },
                     "403": {
@@ -499,7 +499,7 @@
                         "description": "body for Guardar Persona content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.PersonaDatosBasicos"
+                            "$ref": "#/definitions/models.PersonaDatosBasicos"
                         }
                     }
                 ],
@@ -525,7 +525,7 @@
                         "description": "body for Guardar Persona content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.PersonaDatosBasicos"
+                            "$ref": "#/definitions/models.PersonaDatosBasicos"
                         }
                     }
                 ],
@@ -585,7 +585,7 @@
                         "description": "body for Actualizar Persona content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.PersonaDatosBasicos"
+                            "$ref": "#/definitions/models.PersonaDatosBasicos"
                         }
                     }
                 ],
@@ -611,7 +611,7 @@
                         "description": "body for Guardar datos contacto content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.PersonaDatosBasicos"
+                            "$ref": "#/definitions/models.PersonaDatosBasicos"
                         }
                     }
                 ],
@@ -671,7 +671,7 @@
                         "description": "body for Guardar Persona content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.{}"
+                            "$ref": "#/definitions/{}"
                         }
                     }
                 ],
@@ -699,7 +699,7 @@
                         "description": "body for Registrar Ubicaciones content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.map[string]interface{}"
+                            "$ref": "#/definitions/map[string]interface{}"
                         }
                     }
                 ],
@@ -715,25 +715,32 @@
         }
     },
     "definitions": {
-        ".'hola'": {
+        "'hola'": {
+            "title": "'hola'",
             "type": "object"
         },
-        ".Organizacion": {
+        "interface": {
+            "title": "interface",
             "type": "object"
         },
-        ".PersonaDatosBasicos": {
+        "interface{}": {
+            "title": "interface{}",
             "type": "object"
         },
-        ".interface": {
+        "map[string]interface{}": {
+            "title": "map[string]interface{}",
             "type": "object"
         },
-        ".interface{}": {
+        "models.Organizacion": {
+            "title": "Organizacion",
             "type": "object"
         },
-        ".map[string]interface{}": {
+        "models.PersonaDatosBasicos": {
+            "title": "PersonaDatosBasicos",
             "type": "object"
         },
-        ".{}": {
+        "{}": {
+            "title": "{}",
             "type": "object"
         }
     },
