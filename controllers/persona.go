@@ -395,66 +395,70 @@ func RegistroUbicaciones(ubicaciones map[string]interface{}) models.Alert {
 	var alerta models.Alert
 
 	ubicacionPersona = ubicacionesPersona
+	fmt.Println(ubicacionesPersona)
 
 	lugar, err := ubicacionPersona["Lugar"].(map[string]interface{})
-	if err == false {
-		ubicacion = make(map[string]interface{})
-		ubicacion["Ente"] = map[string]interface{}{"Id": ubicacionPersona["Ente"]}
-		ubicacion["Lugar"] = lugar["Id"]
-		ubicacion["TipoRelacionUbicacionEnte"] = map[string]interface{}{"Id": ubicacionPersona["TipoRelacionUbicacionEnte"]}
-		ubicacion["Activo"] = true
+	fmt.Println(lugar)
+	fmt.Println(lugar["Id"])
+	fmt.Println(err)
+	//if err == false {
+	ubicacion = make(map[string]interface{})
+	ubicacion["Ente"] = map[string]interface{}{"Id": ubicacionPersona["Ente"]}
+	ubicacion["Lugar"] = lugar["Id"]
+	ubicacion["TipoRelacionUbicacionEnte"] = map[string]interface{}{"Id": ubicacionPersona["TipoRelacionUbicacionEnte"]}
+	ubicacion["Activo"] = true
 
-		// resultado registro ubicacion_ente
-		var resultado map[string]interface{}
-		var resultado2 map[string]interface{}
+	// resultado registro ubicacion_ente
+	var resultado map[string]interface{}
+	var resultado2 map[string]interface{}
 
-		//funcion que realiza  de la  peticion POST /ubicacion_ente
+	//funcion que realiza  de la  peticion POST /ubicacion_ente
 
-		if errUbicacionEnte := request.SendJson("http://"+beego.AppConfig.String("EnteService")+"/ubicacion_ente", "POST", &resultado, ubicacion); errUbicacionEnte == nil {
-			if resultado["Type"] == "success" {
-				errores = append(errores, []interface{}{" OK ubicacion_ente "})
-				//recorrer arreglo de atributos y registrarlos
-				if ubicacionPersona["Atributos"] != nil {
-					atributos := ubicacionPersona["Atributos"].([]interface{})
-					if len(atributos) > 0 {
-						for i := 0; i < len(atributos); i++ {
-							atributo := atributos[i].(map[string]interface{})
-							valorAtributoUbicacion = make(map[string]interface{})
-							valorAtributoUbicacion["UbicacionEnte"] = resultado["Body"]
-							valorAtributoUbicacion["AtributoUbicacion"] = map[string]interface{}{"Id": atributo["AtributoUbicacion"]}
-							valorAtributoUbicacion["Valor"] = atributo["Valor"]
+	if errUbicacionEnte := request.SendJson("http://"+beego.AppConfig.String("EnteService")+"/ubicacion_ente", "POST", &resultado, ubicacion); errUbicacionEnte == nil {
+		if resultado["Type"] == "success" {
+			errores = append(errores, []interface{}{" OK ubicacion_ente "})
+			//recorrer arreglo de atributos y registrarlos
+			if ubicacionPersona["Atributos"] != nil {
+				atributos := ubicacionPersona["Atributos"].([]interface{})
+				if len(atributos) > 0 {
+					for i := 0; i < len(atributos); i++ {
+						atributo := atributos[i].(map[string]interface{})
+						valorAtributoUbicacion = make(map[string]interface{})
+						valorAtributoUbicacion["UbicacionEnte"] = resultado["Body"]
+						valorAtributoUbicacion["AtributoUbicacion"] = map[string]interface{}{"Id": atributo["AtributoUbicacion"]}
+						valorAtributoUbicacion["Valor"] = atributo["Valor"]
 
-							errAtributoUbicacion := request.SendJson("http://"+beego.AppConfig.String("EnteService")+"/valor_atributo_ubicacion", "POST", &resultado2, valorAtributoUbicacion)
-							if errAtributoUbicacion == nil && resultado2["Type"] == "success" {
-								errores = append(errores, []interface{}{"OK atributo_ubicacion "})
-								alerta.Type = resultado2["Type"].(string)
-								alerta.Code = resultado2["Code"].(string)
-							} else {
-								errores = append(errores, " ERROR atributo_ubicacion: "+resultado2["Body"].(string))
-								alerta.Type = resultado2["Type"].(string)
-								alerta.Code = resultado2["Code"].(string)
-							}
-
+						errAtributoUbicacion := request.SendJson("http://"+beego.AppConfig.String("EnteService")+"/valor_atributo_ubicacion", "POST", &resultado2, valorAtributoUbicacion)
+						if errAtributoUbicacion == nil && resultado2["Type"] == "success" {
+							errores = append(errores, []interface{}{"OK atributo_ubicacion "})
+							alerta.Type = resultado2["Type"].(string)
+							alerta.Code = resultado2["Code"].(string)
+						} else {
+							errores = append(errores, " ERROR atributo_ubicacion: "+resultado2["Body"].(string))
+							alerta.Type = resultado2["Type"].(string)
+							alerta.Code = resultado2["Code"].(string)
 						}
+
 					}
 				}
-
-			} else {
-				errores = append(errores, " ERROR ubicacion_ente: "+resultado["Body"].(string))
-				alerta.Type = "error"
-				alerta.Code = "400"
 			}
+
 		} else {
-			errores = append(errores, " ERROR ubicacion_ente: "+errUbicacionEnte.Error())
+			errores = append(errores, " ERROR ubicacion_ente: "+resultado["Body"].(string))
 			alerta.Type = "error"
 			alerta.Code = "400"
 		}
-
 	} else {
-		errores = append(errores, " ERROR lugar")
+		errores = append(errores, " ERROR ubicacion_ente: "+errUbicacionEnte.Error())
 		alerta.Type = "error"
 		alerta.Code = "400"
 	}
+
+	//} else {
+	//	errores = append(errores, " ERROR lugar")
+	//	alerta.Type = "error"
+	//	alerta.Code = "400"
+	//}
 
 	alerta.Body = errores
 	return alerta
@@ -721,7 +725,6 @@ func (c *PersonaController) ConsultaDatosComplementarios() {
 				for i := 0; i < len(UbicacionEnte); i++ {
 					//buscar relaciones del lugar
 					l := fmt.Sprintf("%.f", UbicacionEnte[i]["Lugar"].(float64))
-
 					if errJerarquiaLugar := request.GetJson("http://"+beego.AppConfig.String("UbicacionesService")+"/relacion_lugares/jerarquia_lugar/"+l, &Lugar); errJerarquiaLugar == nil {
 						UbicacionEnte[i]["Lugar"] = Lugar
 					} else {
