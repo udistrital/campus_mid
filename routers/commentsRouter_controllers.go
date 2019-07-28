@@ -25,6 +25,69 @@ func init() {
             Filters: nil,
             Params: nil})
 
+    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:DescuentoController"],
+        beego.ControllerComments{
+            Method: "PostDescuentoAcademico",
+            Router: `/descuentoacademico`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:DescuentoController"],
+        beego.ControllerComments{
+            Method: "GetDescuentoAcademico",
+            Router: `/descuentoacademico/`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:DescuentoController"],
+        beego.ControllerComments{
+            Method: "PutDescuentoAcademico",
+            Router: `/descuentoacademico/:Id`,
+            AllowHTTPMethods: []string{"put"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:DescuentoController"],
+        beego.ControllerComments{
+            Method: "DeleteDescuentoAcademico",
+            Router: `/descuentoacademico/:Id`,
+            AllowHTTPMethods: []string{"delete"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:DescuentoController"],
+        beego.ControllerComments{
+            Method: "GetDescuentoAcademicoByPersona",
+            Router: `/descuentoacademicopersona/`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:DescuentoController"],
+        beego.ControllerComments{
+            Method: "GetDescuentoByDependenciaPeriodo",
+            Router: `/descuentodependenciaperiodo/`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:DescuentoController"],
+        beego.ControllerComments{
+            Method: "GetDescuentoByPersonaPeriodoDependencia",
+            Router: `/descuentopersonaperiododependencia/`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:ExperienciaLaboralController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:ExperienciaLaboralController"],
         beego.ControllerComments{
             Method: "PostExperienciaLaboral",

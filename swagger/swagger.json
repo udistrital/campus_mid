@@ -60,8 +60,226 @@
                         "description": "body Modificar Admisión content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/{}"
+                            "$ref": "#/definitions/.{}"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": ":id is empty"
+                    }
+                }
+            }
+        },
+        "/descuentoacademico/descuentoacademico": {
+            "post": {
+                "tags": [
+                    "descuentoacademico"
+                ],
+                "description": "Agregar Descuento Academico ud",
+                "operationId": "DescuentoController.PostDescuentoAcademico",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Agregar Descuento Academico content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.'hola'"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/descuentoacademico/descuentoacademico/": {
+            "get": {
+                "tags": [
+                    "descuentoacademico"
+                ],
+                "description": "consultar Descuento Academico por userid",
+                "operationId": "DescuentoController.GetDescuentoAcademico",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "Id",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "idsolicitud",
+                        "description": "The key for staticblock",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": ":id is empty"
+                    }
+                }
+            }
+        },
+        "/descuentoacademico/descuentoacademico/{Id}": {
+            "put": {
+                "tags": [
+                    "descuentoacademico"
+                ],
+                "description": "Modificar Descuento Academico",
+                "operationId": "DescuentoController.PutDescuentoAcademico",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "Id",
+                        "description": "el id de la solicitud de descuento a modificar",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Modificar Descuento Academico content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": ":id s empty"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "descuentoacademico"
+                ],
+                "description": "eliminar Formacion Academica por id de la formacion",
+                "operationId": "DescuentoController.DeleteDescuentoAcademico",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "Id",
+                        "description": "Id de la formacion academica",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": ":id is empty"
+                    }
+                }
+            }
+        },
+        "/descuentoacademico/descuentoacademicopersona/": {
+            "get": {
+                "tags": [
+                    "descuentoacademico"
+                ],
+                "description": "consultar Descuento Academico por userid",
+                "operationId": "DescuentoController.GetDescuentoAcademicoByPersona",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "Persona",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": ":id is empty"
+                    }
+                }
+            }
+        },
+        "/descuentoacademico/descuentodependenciaperiodo/": {
+            "get": {
+                "tags": [
+                    "descuentoacademico"
+                ],
+                "description": "consultar Descuento Academico por userid",
+                "operationId": "DescuentoController.GetDescuentoByDependenciaPeriodo",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "Dependencia",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "Periodo",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": ":id is empty"
+                    }
+                }
+            }
+        },
+        "/descuentoacademico/descuentopersonaperiododependencia/": {
+            "get": {
+                "tags": [
+                    "descuentoacademico"
+                ],
+                "description": "consultar Descuento Academico por userid",
+                "operationId": "DescuentoController.GetDescuentoByPersonaPeriodoDependencia",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "Persona",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "Dependencia",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "Periodo",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -88,7 +306,7 @@
                         "description": "body Agregar EXperiencia Laboral content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/{}"
+                            "$ref": "#/definitions/.{}"
                         }
                     }
                 ],
@@ -147,7 +365,7 @@
                         "description": "body Modificar Experiencia Laboral content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/{}"
+                            "$ref": "#/definitions/.{}"
                         }
                     }
                 ],
@@ -199,7 +417,7 @@
                         "description": "body Agregar Formacion Academica content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/'hola'"
+                            "$ref": "#/definitions/.'hola'"
                         }
                     }
                 ],
@@ -266,7 +484,7 @@
                         "description": "body Modificar Formacion Academica content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/{}"
+                            "$ref": "#/definitions/.{}"
                         }
                     }
                 ],
@@ -344,7 +562,7 @@
                         "description": "body for Organizaciona scontent",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/interface"
+                            "$ref": "#/definitions/.interface"
                         }
                     }
                 ],
@@ -385,7 +603,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.Organizacion"
+                            "$ref": "#/definitions/.Organizacion"
                         }
                     },
                     "403": {
@@ -414,7 +632,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.Organizacion"
+                            "$ref": "#/definitions/.Organizacion"
                         }
                     },
                     "403": {
@@ -437,7 +655,7 @@
                         "description": "body for Actualizar Persona content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.PersonaDatosBasicos"
+                            "$ref": "#/definitions/.PersonaDatosBasicos"
                         }
                     }
                 ],
@@ -476,7 +694,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/interface{}"
+                            "$ref": "#/definitions/.interface{}"
                         }
                     },
                     "403": {
@@ -499,7 +717,7 @@
                         "description": "body for Guardar Persona content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.PersonaDatosBasicos"
+                            "$ref": "#/definitions/.PersonaDatosBasicos"
                         }
                     }
                 ],
@@ -525,7 +743,7 @@
                         "description": "body for Guardar Persona content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.PersonaDatosBasicos"
+                            "$ref": "#/definitions/.PersonaDatosBasicos"
                         }
                     }
                 ],
@@ -585,7 +803,7 @@
                         "description": "body for Actualizar Persona content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.PersonaDatosBasicos"
+                            "$ref": "#/definitions/.PersonaDatosBasicos"
                         }
                     }
                 ],
@@ -611,7 +829,7 @@
                         "description": "body for Guardar datos contacto content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.PersonaDatosBasicos"
+                            "$ref": "#/definitions/.PersonaDatosBasicos"
                         }
                     }
                 ],
@@ -671,7 +889,7 @@
                         "description": "body for Guardar Persona content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/{}"
+                            "$ref": "#/definitions/.{}"
                         }
                     }
                 ],
@@ -699,7 +917,7 @@
                         "description": "body for Registrar Ubicaciones content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/map[string]interface{}"
+                            "$ref": "#/definitions/.map[string]interface{}"
                         }
                     }
                 ],
@@ -715,32 +933,25 @@
         }
     },
     "definitions": {
-        "'hola'": {
-            "title": "'hola'",
+        ".'hola'": {
             "type": "object"
         },
-        "interface": {
-            "title": "interface",
+        ".Organizacion": {
             "type": "object"
         },
-        "interface{}": {
-            "title": "interface{}",
+        ".PersonaDatosBasicos": {
             "type": "object"
         },
-        "map[string]interface{}": {
-            "title": "map[string]interface{}",
+        ".interface": {
             "type": "object"
         },
-        "models.Organizacion": {
-            "title": "Organizacion",
+        ".interface{}": {
             "type": "object"
         },
-        "models.PersonaDatosBasicos": {
-            "title": "PersonaDatosBasicos",
+        ".map[string]interface{}": {
             "type": "object"
         },
-        "{}": {
-            "title": "{}",
+        ".{}": {
             "type": "object"
         }
     },
@@ -752,6 +963,10 @@
         {
             "name": "formacion",
             "description": "FormacionController ...\n"
+        },
+        {
+            "name": "descuentoacademico",
+            "description": "DescuentoController ...\n"
         },
         {
             "name": "experiencia_laboral",

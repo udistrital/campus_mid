@@ -25,6 +25,11 @@ func init() {
 				&controllers.FormacionController{},
 			),
 		),
+		beego.NSNamespace("/descuentoacademico",
+			beego.NSInclude(
+				&controllers.DescuentoController{},
+			),
+		),
 		beego.NSNamespace("/experiencia_laboral",
 			beego.NSInclude(
 				&controllers.ExperienciaLaboralController{},
