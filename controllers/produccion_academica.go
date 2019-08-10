@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"encoding/json"
-	"strconv"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/astaxie/beego"
@@ -22,7 +22,7 @@ func (c *ProduccionAcademicaController) URLMapping() {
 	c.Mapping("PutProduccionAcademica", c.PutProduccionAcademica)
 	c.Mapping("GetProduccionAcademica", c.GetProduccionAcademica)
 	c.Mapping("DeleteProduccionAcademica", c.DeleteProduccionAcademica)
-	c.Mapping("PutEstadoAutorProduccionAcademica",c.PutEstadoAutorProduccionAcademica)
+	c.Mapping("PutEstadoAutorProduccionAcademica", c.PutEstadoAutorProduccionAcademica)
 }
 
 // PostProduccionAcademica ...
@@ -41,45 +41,45 @@ func (c *ProduccionAcademicaController) PostProduccionAcademica() {
 
 		produccionAcademicaPost := make(map[string]interface{})
 		produccionAcademicaPost["ProduccionAcademica"] = map[string]interface{}{
-			"Titulo": produccionAcademica["Titulo"],
-			"Resumen": produccionAcademica["Resumen"],
-			"Fecha": produccionAcademica["Fecha"],
+			"Titulo":              produccionAcademica["Titulo"],
+			"Resumen":             produccionAcademica["Resumen"],
+			"Fecha":               produccionAcademica["Fecha"],
 			"SubtipoProduccionId": produccionAcademica["SubtipoProduccionId"],
-			"Activo": true,
-			"FechaCreacion": creationDate,
-			"FechaModificacion": creationDate,
+			"Activo":              true,
+			"FechaCreacion":       creationDate,
+			"FechaModificacion":   creationDate,
 		}
 
 		var autores []map[string]interface{}
 		for _, autorTemp := range produccionAcademica["Autores"].([]interface{}) {
 			autor := autorTemp.(map[string]interface{})
-			autores = append(autores,map[string]interface{}{
-				"Persona": autor["Persona"],
+			autores = append(autores, map[string]interface{}{
+				"PersonaId":               autor["Persona"],
 				"EstadoAutorProduccionId": autor["EstadoAutorProduccionId"],
-				"ProduccionAcademicaId": map[string]interface{}{"Id":0},
-				"Activo": true,
-				"FechaCreacion": creationDate,
-				"FechaModificacion": creationDate,
+				"ProduccionAcademicaId":   map[string]interface{}{"Id": 0},
+				"Activo":                  true,
+				"FechaCreacion":           creationDate,
+				"FechaModificacion":       creationDate,
 			})
 		}
 		produccionAcademicaPost["Autores"] = autores
 
-		fmt.Println("prdo",produccionAcademica);
-		fmt.Println("metadatos",produccionAcademica["Metadatos"]);
+		fmt.Println("prdo", produccionAcademica)
+		fmt.Println("metadatos", produccionAcademica["Metadatos"])
 
 		var metadatos []map[string]interface{}
 		for _, metadatoTemp := range produccionAcademica["Metadatos"].([]interface{}) {
 			metadato := metadatoTemp.(map[string]interface{})
-			metadatos = append(metadatos,map[string]interface{}{
-				"Valor":metadato["Valor"],
-				"MetadatoSubtipoProduccionId": map[string]interface{}{"Id":metadato["MetadatoSubtipoProduccionId"]},
-				"ProduccionAcademicaId": map[string]interface{}{"Id":0},
-				"Activo": true,
-				"FechaCreacion": creationDate,
-				"FechaModificacion": creationDate,
+			metadatos = append(metadatos, map[string]interface{}{
+				"Valor":                       metadato["Valor"],
+				"MetadatoSubtipoProduccionId": map[string]interface{}{"Id": metadato["MetadatoSubtipoProduccionId"]},
+				"ProduccionAcademicaId":       map[string]interface{}{"Id": 0},
+				"Activo":                      true,
+				"FechaCreacion":               creationDate,
+				"FechaModificacion":           creationDate,
 			})
 		}
-		produccionAcademicaPost["Metadatos"] =  metadatos
+		produccionAcademicaPost["Metadatos"] = metadatos
 
 		var resultadoProduccionAcademica map[string]interface{}
 		errProduccion := request.SendJson("http://"+beego.AppConfig.String("ProduccionAcademicaService")+"/tr_produccion_academica", "POST", &resultadoProduccionAcademica, produccionAcademicaPost)
@@ -115,11 +115,11 @@ func (c *ProduccionAcademicaController) PutEstadoAutorProduccionAcademica() {
 	var alerta models.Alert
 	alertas := append([]interface{}{"Response:"})
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &dataPut); err == nil {
-		fmt.Println("data put",dataPut)
-		var acepta = dataPut["acepta"].(bool);
+		fmt.Println("data put", dataPut)
+		var acepta = dataPut["acepta"].(bool)
 		var AutorProduccionAcademica = dataPut["AutorProduccionAcademica"].(map[string]interface{})
 
-		if (acepta) {
+		if acepta {
 			(AutorProduccionAcademica["EstadoAutorProduccionId"].(map[string]interface{}))["Id"] = 2
 		} else {
 			(AutorProduccionAcademica["EstadoAutorProduccionId"].(map[string]interface{}))["Id"] = 4
@@ -161,44 +161,44 @@ func (c *ProduccionAcademicaController) PutProduccionAcademica() {
 	alertas := append([]interface{}{"Response:"})
 	modificationDate := time.Now()
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &produccionAcademica); err == nil {
-		
+
 		produccionAcademicaPut := make(map[string]interface{})
-		
+
 		produccionAcademicaPut["ProduccionAcademica"] = map[string]interface{}{
-			"Titulo": produccionAcademica["Titulo"],
-			"Resumen": produccionAcademica["Resumen"],
-			"Fecha": produccionAcademica["Fecha"],
+			"Titulo":              produccionAcademica["Titulo"],
+			"Resumen":             produccionAcademica["Resumen"],
+			"Fecha":               produccionAcademica["Fecha"],
 			"SubtipoProduccionId": produccionAcademica["SubtipoProduccionId"],
-			"FechaModificacion": modificationDate,
+			"FechaModificacion":   modificationDate,
 		}
 
 		/*
-		var autores []map[string]interface{}
-		for _, autorTemp := range produccionAcademica["Autores"].([]interface{}) {
-			autor := autorTemp.(map[string]interface{})
-			autores = append(autores,map[string]interface{}{
-				"Ente": autor["Ente"],
-				"EstadoAutorProduccion": autor["EstadoAutorProduccion"],
-				"ProduccionAcademica": map[string]interface{}{"Id":0},
-			})
-		}
-		produccionAcademicaPost["Autores"] = autores
+			var autores []map[string]interface{}
+			for _, autorTemp := range produccionAcademica["Autores"].([]interface{}) {
+				autor := autorTemp.(map[string]interface{})
+				autores = append(autores,map[string]interface{}{
+					"Ente": autor["Ente"],
+					"EstadoAutorProduccion": autor["EstadoAutorProduccion"],
+					"ProduccionAcademica": map[string]interface{}{"Id":0},
+				})
+			}
+			produccionAcademicaPost["Autores"] = autores
 		*/
 
 		var metadatos []map[string]interface{}
 		for _, metadatoTemp := range produccionAcademica["Metadatos"].([]interface{}) {
 			metadato := metadatoTemp.(map[string]interface{})
-			metadatos = append(metadatos,map[string]interface{}{
-				"Valor":metadato["Valor"],
-				"MetadatoSubtipoProduccionId": map[string]interface{}{"Id":metadato["MetadatoSubtipoProduccionId"]},
-				"Activo": true,
-				"FechaCreacion": modificationDate,
-				"FechaModificacion": modificationDate,
+			metadatos = append(metadatos, map[string]interface{}{
+				"Valor":                       metadato["Valor"],
+				"MetadatoSubtipoProduccionId": map[string]interface{}{"Id": metadato["MetadatoSubtipoProduccionId"]},
+				"Activo":                      true,
+				"FechaCreacion":               modificationDate,
+				"FechaModificacion":           modificationDate,
 			})
 		}
-		
+
 		produccionAcademicaPut["Autores"] = nil
-		produccionAcademicaPut["Metadatos"] =  metadatos
+		produccionAcademicaPut["Metadatos"] = metadatos
 
 		var resultadoProduccionAcademica map[string]interface{}
 		errProduccion := request.SendJson("http://"+beego.AppConfig.String("ProduccionAcademicaService")+"/tr_produccion_academica/"+idStr, "PUT", &resultadoProduccionAcademica, produccionAcademicaPut)
@@ -232,7 +232,7 @@ func (c *ProduccionAcademicaController) GetProduccionAcademica() {
 	var alerta models.Alert
 	alertas := append([]interface{}{"Response:"})
 	persona := c.Ctx.Input.Param(":persona")
-	personaId, _ := strconv.ParseFloat(persona, 64);
+	personaId, _ := strconv.ParseFloat(persona, 64)
 	errProduccion := request.GetJson("http://"+beego.AppConfig.String("ProduccionAcademicaService")+"/tr_produccion_academica/"+persona, &producciones)
 	if errProduccion != nil {
 		alertas = append(alertas, errProduccion)
@@ -244,7 +244,7 @@ func (c *ProduccionAcademicaController) GetProduccionAcademica() {
 			autores := produccion["Autores"].([]interface{})
 			for _, autorTemp := range autores {
 				autor := autorTemp.(map[string]interface{})
-				if (autor["Persona"] == personaId) {
+				if autor["Persona"] == personaId {
 					produccion["EstadoEnteAutorId"] = autor
 				}
 				//cargar nombre del autor
@@ -257,15 +257,14 @@ func (c *ProduccionAcademicaController) GetProduccionAcademica() {
 					alerta.Code = "400"
 				} else {
 					autor["Nombre"] = autorProduccion["PrimerNombre"].(string) + " " + autorProduccion["SegundoNombre"].(string) + " " + autorProduccion["PrimerApellido"].(string) + " " + autorProduccion["SegundoApellido"].(string)
-				}	
+				}
 			}
 		}
 		alerta.Body = producciones
-	}	
+	}
 	c.Data["json"] = alerta
 	c.ServeJSON()
 }
-
 
 // DeleteProduccionAcademica ...
 // @Title DeleteProduccionAcademica
@@ -280,14 +279,14 @@ func (c *ProduccionAcademicaController) DeleteProduccionAcademica() {
 	alertas := append([]interface{}{"Response:"})
 	id := c.Ctx.Input.Param(":id")
 	errProduccion := request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("ProduccionAcademicaService")+"/tr_produccion_academica/"+id), "DELETE", &produccionDeleted, nil)
-	if errProduccion != nil || produccionDeleted["Message"]!= nil {
+	if errProduccion != nil || produccionDeleted["Message"] != nil {
 		alertas = append(alertas, errProduccion)
 		alerta.Body = alertas
 		alerta.Type = "error"
 		alerta.Code = "400"
 	} else {
 		alerta.Body = produccionDeleted
-	}	
+	}
 	c.Data["json"] = alerta
 	c.ServeJSON()
 }
