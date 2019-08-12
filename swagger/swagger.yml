@@ -44,7 +44,7 @@ paths:
         description: body Modificar Admisión content
         required: true
         schema:
-          $ref: '#/definitions/.{}'
+          $ref: '#/definitions/{}'
       responses:
         "200":
           description: '{}'
@@ -62,7 +62,7 @@ paths:
         description: body Agregar Descuento Academico content
         required: true
         schema:
-          $ref: '#/definitions/.''hola'''
+          $ref: '#/definitions/''hola'''
       responses:
         "200":
           description: '{}'
@@ -106,7 +106,7 @@ paths:
         description: body Modificar Descuento Academico content
         required: true
         schema:
-          $ref: '#/definitions/.{}'
+          $ref: '#/definitions/{}'
       responses:
         "200":
           description: '{}'
@@ -206,7 +206,7 @@ paths:
         description: body Agregar EXperiencia Laboral content
         required: true
         schema:
-          $ref: '#/definitions/.{}'
+          $ref: '#/definitions/{}'
       responses:
         "200":
           description: '{}'
@@ -245,7 +245,7 @@ paths:
         description: body Modificar Experiencia Laboral content
         required: true
         schema:
-          $ref: '#/definitions/.{}'
+          $ref: '#/definitions/{}'
       responses:
         "200":
           description: '{}'
@@ -279,7 +279,7 @@ paths:
         description: body Agregar Formacion Academica content
         required: true
         schema:
-          $ref: '#/definitions/.''hola'''
+          $ref: '#/definitions/''hola'''
       responses:
         "200":
           description: '{}'
@@ -323,7 +323,7 @@ paths:
         description: body Modificar Formacion Academica content
         required: true
         schema:
-          $ref: '#/definitions/.{}'
+          $ref: '#/definitions/{}'
       responses:
         "200":
           description: '{}'
@@ -374,7 +374,7 @@ paths:
         description: body for Organizaciona scontent
         required: true
         schema:
-          $ref: '#/definitions/.interface'
+          $ref: '#/definitions/interface'
       responses:
         "200":
           description: '{}'
@@ -401,7 +401,7 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/.Organizacion'
+            $ref: '#/definitions/models.Organizacion'
         "403":
           description: :id is empty
   /organizacion/identificacionente/:
@@ -420,7 +420,7 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/.Organizacion'
+            $ref: '#/definitions/models.Organizacion'
         "403":
           description: :Ente is empty
   /persona/ActualizarPersona:
@@ -435,7 +435,7 @@ paths:
         description: body for Actualizar Persona content
         required: true
         schema:
-          $ref: '#/definitions/.PersonaDatosBasicos'
+          $ref: '#/definitions/models.PersonaDatosBasicos'
       responses:
         "200":
           description: '{}'
@@ -460,7 +460,7 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/.interface{}'
+            $ref: '#/definitions/interface{}'
         "403":
           description: :id is empty
   /persona/DatosComplementarios:
@@ -475,7 +475,7 @@ paths:
         description: body for Guardar Persona content
         required: true
         schema:
-          $ref: '#/definitions/.PersonaDatosBasicos'
+          $ref: '#/definitions/models.PersonaDatosBasicos'
       responses:
         "200":
           description: '{string} models.Persona.Id'
@@ -492,7 +492,7 @@ paths:
         description: body for Guardar Persona content
         required: true
         schema:
-          $ref: '#/definitions/.PersonaDatosBasicos'
+          $ref: '#/definitions/models.PersonaDatosBasicos'
       responses:
         "200":
           description: '{string} models.Persona.Id'
@@ -531,7 +531,7 @@ paths:
         description: body for Actualizar Persona content
         required: true
         schema:
-          $ref: '#/definitions/.PersonaDatosBasicos'
+          $ref: '#/definitions/models.PersonaDatosBasicos'
       responses:
         "200":
           description: '{string} models.Persona.Id'
@@ -548,7 +548,7 @@ paths:
         description: body for Guardar datos contacto content
         required: true
         schema:
-          $ref: '#/definitions/.PersonaDatosBasicos'
+          $ref: '#/definitions/models.PersonaDatosBasicos'
       responses:
         "200":
           description: '{string} models.Persona.Id'
@@ -587,7 +587,7 @@ paths:
         description: body for Guardar Persona content
         required: true
         schema:
-          $ref: '#/definitions/.{}'
+          $ref: '#/definitions/{}'
       responses:
         "200":
           description: '{}'
@@ -605,26 +605,130 @@ paths:
         description: body for Registrar Ubicaciones content
         required: true
         schema:
-          $ref: '#/definitions/.map[string]interface{}'
+          $ref: '#/definitions/map[string]interface{}'
       responses:
         "200":
           description: '{}'
         "403":
           description: body is empty
+  /produccion_academica/:
+    post:
+      tags:
+      - produccion_academica
+      description: Agregar Producción academica
+      operationId: ProduccionAcademicaController.PostProduccionAcademica
+      parameters:
+      - in: body
+        name: body
+        description: body Agregar ProduccionAcademica content
+        required: true
+        schema:
+          $ref: '#/definitions/{}'
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: body is empty
+  /produccion_academica/{id}:
+    put:
+      tags:
+      - produccion_academica
+      description: Modificar Producción Academica
+      operationId: ProduccionAcademicaController.PutProduccionAcademica
+      parameters:
+      - in: path
+        name: id
+        description: el id de la Produccion academica a modificar
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body Modificar ProduccionAcademica content
+        required: true
+        schema:
+          $ref: '#/definitions/{}'
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: :id is empty
+    delete:
+      tags:
+      - produccion_academica
+      description: eliminar Produccion Academica por id
+      operationId: ProduccionAcademicaController.DeleteProduccionAcademica
+      parameters:
+      - in: path
+        name: id
+        description: Id de la Produccion Academica
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: :id is empty
+  /produccion_academica/{persona}:
+    get:
+      tags:
+      - produccion_academica
+      description: consultar Produccion Academica por persona
+      operationId: ProduccionAcademicaController.GetProduccionAcademica
+      parameters:
+      - in: path
+        name: persona
+        description: Persona
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: :persona is empty
+  /produccion_academica/estado_autor_produccion/{id}:
+    put:
+      tags:
+      - produccion_academica
+      description: Modificar Estado de Autor de Producción Academica
+      operationId: ProduccionAcademicaController.PutEstadoAutorProduccionAcademica
+      parameters:
+      - in: path
+        name: id
+        description: el id del autor a modificar
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body Modificar AutorProduccionAcademica content
+        required: true
+        schema:
+          $ref: '#/definitions/{}'
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: :id is empty
 definitions:
-  .'hola':
+  '''hola''':
+    title: '''hola'''
     type: object
-  .{}:
+  '{}':
+    title: '{}'
     type: object
-  .Organizacion:
+  interface:
+    title: interface
     type: object
-  .PersonaDatosBasicos:
+  interface{}:
+    title: interface{}
     type: object
-  .interface:
+  map[string]interface{}:
+    title: map[string]interface{}
     type: object
-  .interface{}:
+  models.Organizacion:
+    title: Organizacion
     type: object
-  .map[string]interface{}:
+  models.PersonaDatosBasicos:
+    title: PersonaDatosBasicos
     type: object
 tags:
 - name: persona
@@ -645,3 +749,6 @@ tags:
 - name: admision
   description: |
     AdmisionController ...
+- name: produccion_academica
+  description: |
+    FormacionController ...
