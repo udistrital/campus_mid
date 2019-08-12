@@ -244,12 +244,12 @@ func (c *ProduccionAcademicaController) GetProduccionAcademica() {
 			autores := produccion["Autores"].([]interface{})
 			for _, autorTemp := range autores {
 				autor := autorTemp.(map[string]interface{})
-				if autor["Persona"] == personaId {
+				if autor["PersonaId"] == personaId {
 					produccion["EstadoEnteAutorId"] = autor
 				}
 				//cargar nombre del autor
 				var autorProduccion map[string]interface{}
-				errAutor := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona/"+fmt.Sprintf("%.f", autor["Persona"].(float64)), &autorProduccion)
+				errAutor := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona/"+fmt.Sprintf("%.f", autor["PersonaId"].(float64)), &autorProduccion)
 				if autorProduccion["Type"] == "error" || errAutor != nil {
 					alertas = append(alertas, errAutor)
 					alerta.Body = alertas
