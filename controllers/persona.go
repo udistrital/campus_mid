@@ -1235,9 +1235,9 @@ func (c *PersonaController) DatosContacto() {
 		if errUbicacionEnte := request.GetJson("http://"+beego.AppConfig.String("EnteService")+"/ubicacion_ente/?query=Ente.Id:"+idStr+s+"&fields=Id,Lugar,TipoRelacionUbicacionEnte", &UbicacionEnte); errUbicacionEnte == nil {
 			var persona map[string]interface{}
 			if ContactoEnte == nil && UbicacionEnte == nil {
-				var nuevapersona []interface{}
-				nuevapersona = nil
-				nuevapersona = append(nuevapersona, map[string]interface{}{})
+				var persona []interface{}
+				persona = nil
+				persona = append(persona, map[string]interface{}{})
 			} else {
 				//buscar atributos de la ubicacion
 				var AtributosEnte []map[string]interface{}
