@@ -719,9 +719,9 @@ func (c *PersonaController) ConsultaDatosComplementarios() {
 		}*/
 		var nuevapersona map[string]interface{}
 		if GrupoEtnico == nil && Discapacidades == nil && UbicacionEnte == nil && GrupoSanguineo == nil && IdentificacionEnte == nil {
-			var nuevapersona []interface{}
-			nuevapersona = nil
-			nuevapersona = append(nuevapersona, map[string]interface{}{})
+			var l []interface{}
+			l = append(l, map[string]interface{}{})
+			c.Data["json"] = l
 		} else {
 			if UbicacionEnte != nil {
 				for i := 0; i < len(UbicacionEnte); i++ {
@@ -776,8 +776,8 @@ func (c *PersonaController) ConsultaDatosComplementarios() {
 				c.Data["json"] = alerta
 				c.ServeJSON()
 			}
+			c.Data["json"] = nuevapersona
 		}
-		c.Data["json"] = nuevapersona
 		c.ServeJSON()
 
 	} else {
@@ -1235,9 +1235,9 @@ func (c *PersonaController) DatosContacto() {
 		if errUbicacionEnte := request.GetJson("http://"+beego.AppConfig.String("EnteService")+"/ubicacion_ente/?query=Ente.Id:"+idStr+s+"&fields=Id,Lugar,TipoRelacionUbicacionEnte", &UbicacionEnte); errUbicacionEnte == nil {
 			var persona map[string]interface{}
 			if ContactoEnte == nil && UbicacionEnte == nil {
-				var persona []interface{}
-				persona = nil
-				persona = append(persona, map[string]interface{}{})
+				var l []interface{}
+				l = append(l, map[string]interface{}{})
+				c.Data["json"] = l
 			} else {
 				//buscar atributos de la ubicacion
 				var AtributosEnte []map[string]interface{}
@@ -1273,9 +1273,9 @@ func (c *PersonaController) DatosContacto() {
 					"ContactoEnte":  ContactoEnte,
 					"UbicacionEnte": UbicacionEnte,
 				}
+				c.Data["json"] = persona
 			}
 
-			c.Data["json"] = persona
 			c.ServeJSON()
 		} else {
 			alertas = append(alertas, errUbicacionEnte.Error())
