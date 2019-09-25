@@ -655,6 +655,7 @@ func (c *PersonaController) ActualizarDatosContacto() {
 					c.Abort("404")
 				}
 			}
+
 		} else {
 			logs.Error(ubicacionEnte)
 			//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
