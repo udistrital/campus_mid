@@ -20,12 +20,12 @@ func init() {
 				&controllers.PersonaController{},
 			),
 		),
-		beego.NSNamespace("/formacion",
+		beego.NSNamespace("/formacion_academica",
 			beego.NSInclude(
 				&controllers.FormacionController{},
 			),
 		),
-		beego.NSNamespace("/descuentoacademico",
+		beego.NSNamespace("/descuento_academico",
 			beego.NSInclude(
 				&controllers.DescuentoController{},
 			),
@@ -40,14 +40,19 @@ func init() {
 				&controllers.OrganizacionController{},
 			),
 		),
-		beego.NSNamespace("/admision",
+		beego.NSNamespace("/inscripcion",
 			beego.NSInclude(
-				&controllers.AdmisionController{},
+				&controllers.InscripcionController{},
 			),
 		),
 		beego.NSNamespace("/produccion_academica",
 			beego.NSInclude(
 				&controllers.ProduccionAcademicaController{},
+			),
+		),
+		beego.NSNamespace("/evaluacion_inscripcion",
+			beego.NSInclude(
+				&controllers.EvaluacionInscripcionController{},
 			),
 		),
 	)

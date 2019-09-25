@@ -3,10 +3,11 @@ package main
 import (
 	_ "github.com/planesticud/campus_mid/routers"
 	//notificacionlib "github.com/udistrital/notificaciones_lib"
-	apistatus "github.com/udistrital/utils_oas/apiStatusLib"
-
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
+	"github.com/udistrital/auditoria"
+	apistatus "github.com/udistrital/utils_oas/apiStatusLib"
+	"github.com/udistrital/utils_oas/customerror"
 )
 
 func main() {
@@ -28,7 +29,8 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	//notificacionlib.InitMiddleware()
 	apistatus.Init()
+	auditoria.InitMiddleware()
+	beego.ErrorController(&customerror.CustomErrorController{})
 	beego.Run()
 }

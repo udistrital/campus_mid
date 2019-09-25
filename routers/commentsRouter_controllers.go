@@ -7,28 +7,10 @@ import (
 
 func init() {
 
-    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:AdmisionController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:AdmisionController"],
-        beego.ControllerComments{
-            Method: "PutAdmision",
-            Router: `/:id`,
-            AllowHTTPMethods: []string{"put"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:AdmisionController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:AdmisionController"],
-        beego.ControllerComments{
-            Method: "GetAdmision",
-            Router: `/:id`,
-            AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
     beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:DescuentoController"],
         beego.ControllerComments{
             Method: "PostDescuentoAcademico",
-            Router: `/descuentoacademico`,
+            Router: `/`,
             AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -37,7 +19,7 @@ func init() {
     beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:DescuentoController"],
         beego.ControllerComments{
             Method: "GetDescuentoAcademico",
-            Router: `/descuentoacademico/`,
+            Router: `/`,
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -46,7 +28,7 @@ func init() {
     beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:DescuentoController"],
         beego.ControllerComments{
             Method: "PutDescuentoAcademico",
-            Router: `/descuentoacademico/:Id`,
+            Router: `/:id`,
             AllowHTTPMethods: []string{"put"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -55,7 +37,7 @@ func init() {
     beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:DescuentoController"],
         beego.ControllerComments{
             Method: "DeleteDescuentoAcademico",
-            Router: `/descuentoacademico/:Id`,
+            Router: `/:id`,
             AllowHTTPMethods: []string{"delete"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -64,7 +46,7 @@ func init() {
     beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:DescuentoController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:DescuentoController"],
         beego.ControllerComments{
             Method: "GetDescuentoAcademicoByPersona",
-            Router: `/descuentoacademicopersona/`,
+            Router: `/:persona_id`,
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -88,11 +70,29 @@ func init() {
             Filters: nil,
             Params: nil})
 
+    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:EvaluacionInscripcionController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:EvaluacionInscripcionController"],
+        beego.ControllerComments{
+            Method: "GetEvaluacionInscripcionByIdInscripcion",
+            Router: `/:inscripcion_id`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:ExperienciaLaboralController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:ExperienciaLaboralController"],
         beego.ControllerComments{
             Method: "PostExperienciaLaboral",
             Router: `/`,
             AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:ExperienciaLaboralController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:ExperienciaLaboralController"],
+        beego.ControllerComments{
+            Method: "GetExperienciaLaboralByEnte",
+            Router: `/`,
+            AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
@@ -127,7 +127,7 @@ func init() {
     beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:FormacionController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:FormacionController"],
         beego.ControllerComments{
             Method: "PostFormacionAcademica",
-            Router: `/formacionacademica`,
+            Router: `/`,
             AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -135,8 +135,8 @@ func init() {
 
     beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:FormacionController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:FormacionController"],
         beego.ControllerComments{
-            Method: "GetFormacionAcademica",
-            Router: `/formacionacademica/`,
+            Method: "GetFormacionAcademicaByEnte",
+            Router: `/`,
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -145,7 +145,7 @@ func init() {
     beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:FormacionController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:FormacionController"],
         beego.ControllerComments{
             Method: "PutFormacionAcademica",
-            Router: `/formacionacademica/:id`,
+            Router: `/:id`,
             AllowHTTPMethods: []string{"put"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -153,17 +153,53 @@ func init() {
 
     beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:FormacionController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:FormacionController"],
         beego.ControllerComments{
-            Method: "DeleteFormacionAcademica",
-            Router: `/formacionacademica/:id`,
-            AllowHTTPMethods: []string{"delete"},
+            Method: "GetFormacionAcademica",
+            Router: `/:id`,
+            AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
 
     beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:FormacionController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:FormacionController"],
         beego.ControllerComments{
-            Method: "GetFormacionAcademicaByEnte",
-            Router: `/formacionacademicaente/`,
+            Method: "DeleteFormacionAcademica",
+            Router: `/:id`,
+            AllowHTTPMethods: []string{"delete"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:InscripcionController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:InscripcionController"],
+        beego.ControllerComments{
+            Method: "GetInscripcionByPeriodoPrograma",
+            Router: `/`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:InscripcionController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:InscripcionController"],
+        beego.ControllerComments{
+            Method: "PutInscripcion",
+            Router: `/:id`,
+            AllowHTTPMethods: []string{"put"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:InscripcionController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:InscripcionController"],
+        beego.ControllerComments{
+            Method: "GetInscripcion",
+            Router: `/:id`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:InscripcionController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:InscripcionController"],
+        beego.ControllerComments{
+            Method: "GetByIdentificacion",
+            Router: `/identificacion/`,
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -180,6 +216,15 @@ func init() {
 
     beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:OrganizacionController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:OrganizacionController"],
         beego.ControllerComments{
+            Method: "GetByEnte",
+            Router: `/:ente`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:OrganizacionController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:OrganizacionController"],
+        beego.ControllerComments{
             Method: "GetByIdentificacion",
             Router: `/identificacion/`,
             AllowHTTPMethods: []string{"get"},
@@ -189,35 +234,8 @@ func init() {
 
     beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:OrganizacionController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:OrganizacionController"],
         beego.ControllerComments{
-            Method: "GetByEnte",
-            Router: `/identificacionente/`,
-            AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"],
-        beego.ControllerComments{
-            Method: "ActualizarPersona",
-            Router: `/ActualizarPersona`,
-            AllowHTTPMethods: []string{"put"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"],
-        beego.ControllerComments{
-            Method: "ConsultaPersona",
-            Router: `/ConsultaPersona/`,
-            AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"],
-        beego.ControllerComments{
-            Method: "DatosComplementariosPersona",
-            Router: `/DatosComplementarios`,
+            Method: "RegistrarUbicacion",
+            Router: `/registar_ubicacion`,
             AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -226,26 +244,8 @@ func init() {
     beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"],
         beego.ControllerComments{
             Method: "ActualizarDatosComplementarios",
-            Router: `/DatosComplementarios`,
+            Router: `/actualizar_complementarios`,
             AllowHTTPMethods: []string{"put"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"],
-        beego.ControllerComments{
-            Method: "ConsultaDatosComplementarios",
-            Router: `/DatosComplementarios/:id`,
-            AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"],
-        beego.ControllerComments{
-            Method: "GuardarDatosContacto",
-            Router: `/DatosContacto`,
-            AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
@@ -253,7 +253,7 @@ func init() {
     beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"],
         beego.ControllerComments{
             Method: "ActualizarDatosContacto",
-            Router: `/DatosContacto`,
+            Router: `/actualizar_contacto`,
             AllowHTTPMethods: []string{"put"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -261,8 +261,17 @@ func init() {
 
     beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"],
         beego.ControllerComments{
-            Method: "DatosContacto",
-            Router: `/DatosContacto/:id`,
+            Method: "ActualizarPersona",
+            Router: `/actualizar_persona`,
+            AllowHTTPMethods: []string{"put"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"],
+        beego.ControllerComments{
+            Method: "ConsultarDatosComplementarios",
+            Router: `/consultar_complementarios/:ente_id`,
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -270,8 +279,35 @@ func init() {
 
     beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"],
         beego.ControllerComments{
-            Method: "GuardarPersona",
-            Router: `/GuardarPersona`,
+            Method: "ConsultarDatosContacto",
+            Router: `/consultar_contacto/:ente_id`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"],
+        beego.ControllerComments{
+            Method: "ConsultarPersonaByUser",
+            Router: `/consultar_persona/`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"],
+        beego.ControllerComments{
+            Method: "ConsultarPersona",
+            Router: `/consultar_persona/:ente_id`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"],
+        beego.ControllerComments{
+            Method: "GuardarDatosComplementarios",
+            Router: `/guardar_complementarios`,
             AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -279,8 +315,17 @@ func init() {
 
     beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"],
         beego.ControllerComments{
-            Method: "RegistrarUbicaciones",
-            Router: `/RegistrarUbicaciones`,
+            Method: "GuardarDatosContacto",
+            Router: `/guardar_contacto`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"] = append(beego.GlobalControllerRouter["github.com/planesticud/campus_mid/controllers:PersonaController"],
+        beego.ControllerComments{
+            Method: "GuardarPersona",
+            Router: `/guardar_persona`,
             AllowHTTPMethods: []string{"post"},
             MethodParams: param.Make(),
             Filters: nil,

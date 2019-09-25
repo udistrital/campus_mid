@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/astaxie/beego"
-	"github.com/planesticud/campus_mid/models"
+	"github.com/astaxie/beego/logs"
 	"github.com/udistrital/utils_oas/request"
 )
 
@@ -26,541 +26,691 @@ func (c *FormacionController) URLMapping() {
 // PostFormacionAcademica ...
 // @Title PostFormacionAcademica
 // @Description Agregar Formacion Academica ud
-// @Param	body		body 	'hola'	true		"body Agregar Formacion Academica content"
-// @Success 200 {}
-// @Failure 403 body is empty
-// @router /formacionacademica [post]
+// @Param   body        body    {}  true		"body Agregar Formacion Academica content"
+// @Success 201 {int}
+// @Failure 400 the request contains incorrect syntax
+// @router / [post]
 func (c *FormacionController) PostFormacionAcademica() {
-	//formacion academica
-	var formacion map[string]interface{}
-	//alerta que retorna la funcion PostFormacionAcademica
-	var alerta models.Alert
-	//cadena de alertas
-	alertas := append([]interface{}{"Cadena de respuestas: "})
-	//resultado formacion academica
+	//resultado experiencia
 	var resultado map[string]interface{}
-	//resultado dato adicional formacion academica
-	var resultado2 map[string]interface{}
-	//resultado dato adicional formacion academica
-	var resultado3 map[string]interface{}
-	// resultado soporte fromacion
-	var resultado4 map[string]interface{}
+	//experiencia
+	var formacion map[string]interface{}
+	var formacionPost map[string]interface{}
 
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &formacion); err == nil {
 		formacionacademica := map[string]interface{}{
-			"Persona":           formacion["Ente"].(map[string]interface{})["Id"],
-			"Titulacion":        formacion["ProgramaAcademico"].(map[string]interface{})["Id"],
+			"Persona":           formacion["Persona"],
+			"Titulacion":        formacion["Titulacion"].(map[string]interface{})["Id"],
 			"FechaInicio":       formacion["FechaInicio"],
 			"FechaFinalizacion": formacion["FechaFinalizacion"],
 		}
-		errFormacion := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica", "POST", &resultado, formacionacademica)
-		if errFormacion == nil && resultado["Type"] != "error" {
-			alertas = append(alertas, "se agrego la formacion correctamente")
-			formaciondatoadicional := map[string]interface{}{
-				"Activo":             true,
-				"FormacionAcademica": resultado["Body"],
-				"TipoDatoAdicional":  1,
-				"Valor":              formacion["TituloTrabajoGrado"],
-			}
 
-			errFormacionAdicional := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica", "POST", &resultado2, formaciondatoadicional)
+		errFormacion := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica", "POST", &formacionPost, formacionacademica)
+		if errFormacion == nil && fmt.Sprintf("%v", formacionPost["System"]) != "map[]" && formacionPost["Id"] != nil {
+			if formacionPost["Status"] != 400 {
+				//soporte
+				var soporte map[string]interface{}
 
-			if errFormacionAdicional == nil && resultado2["Type"] != "error" {
-				alerta.Type = "success"
-				alerta.Code = "200"
-				alertas = append(alertas, "se agrego el titulo del trabajo de grado correctamente")
+				soporteformacion := map[string]interface{}{
+					"Documento":          formacion["Documento"],
+					"Descripcion":        "''",
+					"FormacionAcademica": formacionPost,
+				}
+
+				errSoporte := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/soporte_formacion_academica", "POST", &soporte, soporteformacion)
+				if errSoporte == nil && fmt.Sprintf("%v", soporte["System"]) != "map[]" && soporte["Id"] != nil {
+					if soporte["Status"] != 400 {
+						//dato adicional 1
+						var dato1 map[string]interface{}
+						resultado = formacionPost
+						resultado["Documento"] = soporte["Documento"]
+
+						formaciondatoadicional := map[string]interface{}{
+							"Activo":             true,
+							"FormacionAcademica": formacionPost,
+							"TipoDatoAdicional":  1,
+							"Valor":              formacion["TituloTrabajoGrado"],
+						}
+
+						errDato1 := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica", "POST", &dato1, formaciondatoadicional)
+						if errDato1 == nil && fmt.Sprintf("%v", dato1["System"]) != "map[]" && dato1["Id"] != nil {
+							if dato1["Status"] != 400 {
+								//dato adicional 2
+								var dato2 map[string]interface{}
+								resultado["TituloTrabajoGrado"] = dato1["Valor"]
+								formaciondatoadicional2 := map[string]interface{}{
+									"Activo":             true,
+									"FormacionAcademica": formacionPost,
+									"TipoDatoAdicional":  2,
+									"Valor":              formacion["DescripcionTrabajoGrado"],
+								}
+								errDato2 := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica", "POST", &dato2, formaciondatoadicional2)
+								if errDato2 == nil && fmt.Sprintf("%v", dato2["System"]) != "map[]" && dato2["Id"] != nil {
+									if dato2["Status"] != 400 {
+
+										resultado["DescripcionTrabajoGrado"] = dato2["Valor"]
+										c.Data["json"] = resultado
+
+									} else {
+										//resultado
+										var resultado4 map[string]interface{}
+										request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/%.f", dato1["Id"]), "DELETE", &resultado4, nil)
+										request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/soporte_formacion_academica/%.f", soporte["Id"]), "DELETE", &resultado4, nil)
+										request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica/%.f", formacionPost["Id"]), "DELETE", &resultado4, nil)
+										logs.Error(errDato2)
+										//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
+										c.Data["system"] = dato2
+										c.Abort("400")
+									}
+								} else {
+									logs.Error(errDato2)
+									//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+									c.Data["system"] = dato2
+									c.Abort("400")
+								}
+							} else {
+								//resultado
+								var resultado3 map[string]interface{}
+								request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/soporte_formacion_academica/%.f", soporte["Id"]), "DELETE", &resultado3, nil)
+								request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica/%.f", formacionPost["Id"]), "DELETE", &resultado3, nil)
+								logs.Error(errDato1)
+								//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
+								c.Data["system"] = dato1
+								c.Abort("400")
+							}
+						} else {
+							logs.Error(errDato1)
+							//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+							c.Data["system"] = dato1
+							c.Abort("400")
+						}
+					} else {
+						//resultado solicitud de descuento
+						var resultado2 map[string]interface{}
+						request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica/%.f", formacionPost["Id"]), "DELETE", &resultado2, nil)
+						logs.Error(errSoporte)
+						//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
+						c.Data["system"] = soporte
+						c.Abort("400")
+					}
+				} else {
+					logs.Error(errSoporte)
+					//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+					c.Data["system"] = soporte
+					c.Abort("400")
+				}
 			} else {
-				alerta.Type = "error"
-				alerta.Code = "400"
-				alertas = append(alertas, errFormacionAdicional.Error())
-			}
-			formaciondatoadicional2 := map[string]interface{}{
-				"Activo":             true,
-				"FormacionAcademica": resultado["Body"],
-				"TipoDatoAdicional":  2,
-				"Valor":              formacion["DescripcionTrabajoGrado"],
-			}
-
-			errFormacionAdicional2 := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica", "POST", &resultado3, formaciondatoadicional2)
-
-			if errFormacionAdicional2 == nil && resultado2["Type"] != "error" {
-				alerta.Type = "success"
-				alerta.Code = "200"
-				alertas = append(alertas, "se agrego la descripcion del trabajo de grado correctamente")
-			} else {
-				alerta.Type = "error"
-				alerta.Code = "400"
-				alertas = append(alertas, errFormacionAdicional2.Error())
-			}
-			formacionsoporte := map[string]interface{}{
-				"Documento":          formacion["Documento"],
-				"FormacionAcademica": resultado["Body"],
-			}
-			fmt.Println("el soporte es:", formacionsoporte)
-			errFormacionSoporte := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/soporte_formacion_academica", "POST", &resultado4, formacionsoporte)
-			if errFormacionSoporte == nil && resultado4["Type"] != "error" {
-				alerta.Type = "success"
-				alerta.Code = "200"
-				alertas = append(alertas, "se agrego el soporte correctamente")
-			} else {
-				alerta.Type = "error"
-				alerta.Code = "400"
-				alertas = append(alertas, errFormacionSoporte.Error())
+				logs.Error(errFormacion)
+				//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
+				c.Data["system"] = formacionPost
+				c.Abort("400")
 			}
 		} else {
-			fmt.Println(resultado)
-			alerta.Type = "error"
-			alerta.Code = "400"
-			if errFormacion != nil {
-				alertas = append(alertas, errFormacion.Error())
-			}
-			if resultado["Type"] == "error" {
-				alertas = append(alertas, resultado["Body"])
-			}
+			logs.Error(errFormacion)
+			//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = formacionPost
+			c.Abort("400")
 		}
-
 	} else {
-		alerta.Type = "error"
-		alerta.Code = "400"
-		alertas = append(alertas, err.Error())
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("400")
 	}
-	alerta.Body = alertas
-	c.Data["json"] = alerta
 	c.ServeJSON()
 }
 
 // PutFormacionAcademica ...
 // @Title PutFormacionAcademica
 // @Description Modificar Formacion Academica
-// @Param	id		path 	string	true		"el id de la formacion academica a modificar"
+// @Param	id		path 	int	true		"el id de la formacion academica a modificar"
 // @Param	body		body 	{}	true		"body Modificar Formacion Academica content"
 // @Success 200 {}
-// @Failure 403 :id is empty
-// @router /formacionacademica/:id [put]
+// @Failure 400 the request contains incorrect syntax
+// @router /:id [put]
 func (c *FormacionController) PutFormacionAcademica() {
 	idStr := c.Ctx.Input.Param(":id")
-	//formacion academica
+	//resultado formacion
+	var resultado map[string]interface{}
+	//formacion
 	var formacion map[string]interface{}
-	//alerta que retorna la funcion PostFormacionAcademica
-	var alerta models.Alert
-	//cadena de alertas
-	alertas := append([]interface{}{"Cadena de respuestas: "})
-	//resultado formacion academica
-	var resultado []map[string]interface{}
-	//resultado dato adicional formacion academica
-	var resultado2 map[string]interface{}
-	//resultado dato adicional formacion academica
-	var resultado3 []map[string]interface{}
-	var resultado4 map[string]interface{}
-	var resultado5 []map[string]interface{}
-	var resultado6 map[string]interface{}
+	var formacionPut map[string]interface{}
+
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &formacion); err == nil {
-		errFormacion := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica/?query=Id:"+idStr, &resultado)
-		if errFormacion == nil {
-			for i := 0; i < len(resultado); i++ {
-
-				if resultado[i]["Id"] == formacion["Id"] {
-					formacionacademica := map[string]interface{}{
-						"Persona":           formacion["Ente"].(map[string]interface{})["Id"],
-						"Titulacion":        formacion["ProgramaAcademico"].(map[string]interface{})["Id"],
-						"FechaInicio":       formacion["FechaInicio"],
-						"FechaFinalizacion": formacion["FechaFinalizacion"],
-					}
-					errFormacion2 := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica/"+fmt.Sprintf("%.f", resultado[i]["Id"].(float64)), "PUT", &resultado2, formacionacademica)
-					if errFormacion2 == nil {
-						if resultado2["Type"] == "success" {
-							alertas = append(alertas, "OK UPDATE formacion_academica")
-							alerta.Code = "200"
-							alerta.Type = "success"
-							alerta.Body = alertas
-
-						}
-					} else {
-						//fmt.Println("error de formacion", errFormacion2.Error())
-						alertas = append(alertas, errFormacion2.Error())
-						alerta.Code = "400"
-						alerta.Type = "error"
-
-					}
-
-					errFormacionAdd := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/?query=FormacionAcademica:"+fmt.Sprintf("%.f", resultado[i]["Id"].(float64)), &resultado3)
-					fmt.Println("lo adicional es: ", resultado3)
-					if errFormacionAdd == nil && resultado3 != nil {
-						fmt.Println("lo adicional es: ", resultado3)
-						for u := 0; u < len(resultado3); u++ {
-							if resultado3[u]["TipoDatoAdicional"].(float64) == 1 {
-								resultado3[u]["Valor"] = formacion["TituloTrabajoGrado"]
-								//fmt.Println("el nuevo titulo es: ", resultado3[u])
-								errFormacionadd2 := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/"+fmt.Sprintf("%.f", resultado3[u]["Id"].(float64)), "PUT", &resultado4, resultado3[u])
-								if errFormacionadd2 == nil {
-									alertas = append(alertas, "OK UPDATE TituloTrabajoGrado ")
-									//fmt.Println("el resultado de actualizar lo adicional es: ", resultado4)
-								} else {
-									//fmt.Println("el error de actualizar lo adicional es:", errFormacionadd2.Error())
-									alertas = append(alertas, errFormacionadd2.Error())
-									alerta.Code = "400"
-									alerta.Type = "error"
-								}
-							}
-							if resultado3[u]["TipoDatoAdicional"].(float64) == 2 {
-								resultado3[u]["Valor"] = formacion["DescripcionTrabajoGrado"]
-								errFormacionadd2 := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/"+fmt.Sprintf("%.f", resultado3[u]["Id"].(float64)), "PUT", &resultado4, resultado3[u])
-								if errFormacionadd2 == nil {
-									alertas = append(alertas, "OK UPDATE DescripcionTrabajoGrado ")
-									//fmt.Println("el resultado de actualizar lo adicional es: ", resultado4)
-								} else {
-									//fmt.Println("el error de actualizar lo adicional es:", errFormacionadd2.Error())
-									alertas = append(alertas, errFormacionadd2.Error())
-									alerta.Code = "400"
-									alerta.Type = "error"
-								}
-							}
-						}
-						errSoporteFormacion := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/soporte_formacion_academica/?query=FormacionAcademica:"+fmt.Sprintf("%.f", resultado[i]["Id"].(float64)), &resultado5)
-						if errSoporteFormacion == nil && resultado5 != nil {
-							fmt.Println("el soporte actual es:", resultado5[0])
-							resultado5[0]["Documento"] = formacion["Documento"]
-							fmt.Println("el nuevo soporte es:", resultado5[0])
-							errFormacionsoporte2 := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/soporte_formacion_academica/"+fmt.Sprintf("%.f", resultado5[0]["Id"].(float64)), "PUT", &resultado6, resultado5[0])
-							if errFormacionsoporte2 == nil {
-								alertas = append(alertas, "OK UPDATE Documento ")
-							}
-						}
-					} else {
-						if errFormacionAdd != nil {
-							fmt.Println("error adicional: ", errFormacionAdd.Error())
-							alertas = append(alertas, errFormacion.Error())
-
-						} else {
-							alertas = append(alertas, "ERROR formacion adicional no se encontro registro")
-
-						}
-						alerta.Code = "400"
-						alerta.Type = "error"
-
-					}
-
-				}
-
-			}
-
-		} else {
-			alertas = append(alertas, errFormacion.Error())
-			alerta.Code = "400"
-			alerta.Type = "error"
-
+		formacionacademica := map[string]interface{}{
+			"Id":                formacion["Id"],
+			"Persona":           formacion["Persona"],
+			"Titulacion":        formacion["Titulacion"].(map[string]interface{})["Id"],
+			"FechaInicio":       formacion["FechaInicio"],
+			"FechaFinalizacion": formacion["FechaFinalizacion"],
 		}
 
-	} else {
-		alertas = append(alertas, err.Error())
-		alerta.Code = "400"
-		alerta.Type = "error"
+		errFormacion := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica/"+idStr, "PUT", &formacionPut, formacionacademica)
+		if errFormacion == nil && fmt.Sprintf("%v", formacionPut["System"]) != "map[]" && formacionPut["Id"] != nil {
+			if formacionPut["Status"] != 400 {
+				//soporte
+				var soporte []map[string]interface{}
+				var soportePut map[string]interface{}
+				//datos adicionales
+				var datos []map[string]interface{}
+				var datoPut map[string]interface{}
 
+				errSoporte := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/soporte_formacion_academica/?query=FormacionAcademica:"+idStr, &soporte)
+				if errSoporte == nil && fmt.Sprintf("%v", soporte[0]["System"]) != "map[]" {
+					if soporte[0]["Status"] != 404 {
+						soporte[0]["Documento"] = formacion["Documento"]
+
+						errSoportePut := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/soporte_formacion_academica/"+
+							fmt.Sprintf("%v", soporte[0]["Id"]), "PUT", &soportePut, soporte[0])
+						if errSoportePut == nil && fmt.Sprintf("%v", soportePut["System"]) != "map[]" && soportePut["Id"] != nil {
+							if soportePut["Status"] != 400 {
+								resultado = formacion
+								c.Data["json"] = resultado
+							} else {
+								logs.Error(errSoportePut)
+								//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
+								c.Data["system"] = soportePut
+								c.Abort("400")
+							}
+						} else {
+							logs.Error(errSoportePut)
+							//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+							c.Data["system"] = soportePut
+							c.Abort("400")
+						}
+
+					} else {
+						if soporte[0]["Message"] == "Not found resource" {
+							c.Data["json"] = nil
+						} else {
+							logs.Error(soporte)
+							//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+							c.Data["system"] = errSoporte
+							c.Abort("404")
+						}
+					}
+				} else {
+					logs.Error(soporte)
+					//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+					c.Data["system"] = errSoporte
+					c.Abort("404")
+				}
+
+				errDatos := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/?query=FormacionAcademica:"+idStr, &datos)
+				if errDatos == nil && fmt.Sprintf("%v", datos[0]["System"]) != "map[]" {
+					if datos[0]["Status"] != 404 {
+						for u := 0; u < len(datos); u++ {
+
+							if datos[u]["TipoDatoAdicional"].(float64) == 1 {
+								datos[u]["Valor"] = formacion["TituloTrabajoGrado"]
+							}
+							if datos[u]["TipoDatoAdicional"].(float64) == 2 {
+								datos[u]["Valor"] = formacion["DescripcionTrabajoGrado"]
+							}
+
+							errDatoPut := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/"+
+								fmt.Sprintf("%v", datos[u]["Id"]), "PUT", &datoPut, datos[u])
+							if errDatoPut == nil && fmt.Sprintf("%v", datoPut["System"]) != "map[]" && datoPut["Id"] != nil {
+								if datoPut["Status"] != 400 {
+									resultado = formacion
+									c.Data["json"] = resultado
+								} else {
+									logs.Error(errDatoPut)
+									//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
+									c.Data["system"] = datoPut
+									c.Abort("400")
+								}
+							} else {
+								logs.Error(errDatoPut)
+								//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+								c.Data["system"] = datoPut
+								c.Abort("400")
+							}
+
+						}
+					} else {
+						if datos[0]["Message"] == "Not found resource" {
+							c.Data["json"] = nil
+						} else {
+							logs.Error(datos)
+							//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+							c.Data["system"] = errDatos
+							c.Abort("404")
+						}
+					}
+				} else {
+					logs.Error(datos)
+					//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+					c.Data["system"] = errDatos
+					c.Abort("404")
+				}
+			} else {
+				logs.Error(errFormacion)
+				//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
+				c.Data["system"] = formacionPut
+				c.Abort("400")
+			}
+		} else {
+			logs.Error(errFormacion)
+			//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = formacionPut
+			c.Abort("400")
+		}
+	} else {
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("400")
 	}
-	alerta.Body = alertas
-	c.Data["json"] = alerta
 	c.ServeJSON()
 }
 
 // GetFormacionAcademica ...
 // @Title GetFormacionAcademica
-// @Description consultar Fromacion Academica por userid
-// @Param	id		query 	string	true		"The key for staticblock"
-// @Param	idformacion		query 	string	false		"The key for staticblock"
+// @Description consultar Fromacion Academica por id
+// @Param	id		path 	int	true		"Id de la experiencia"
 // @Success 200 {}
-// @Failure 403 :id is empty
-// @router /formacionacademica/ [get]
+// @Failure 404 not found resource
+// @router /:id [get]
 func (c *FormacionController) GetFormacionAcademica() {
 	//Id de la persona
-	var idStr = ""
-	var idFor float64 = 0
-	idStr = c.GetString("id")
-	idFor, _ = c.GetFloat("idformacion")
-	fmt.Println("el id for es: ", idFor)
-	//formacion academica
-	//var formacion map[string]interface{}
-	//alerta que retorna la funcion PostFormacionAcademica
-	var alerta models.Alert
-	//cadena de alertas
-	alertas := append([]interface{}{"Cadena de respuestas: "})
-	//resultado formacion academica
-	var resultado []map[string]interface{}
-	//resultado dato adicional formacion academica
-	var resultado2 []map[string]interface{}
+	idStr := c.Ctx.Input.Param(":id")
+	fmt.Println("El id es: " + idStr)
+	//resultado resultado final
+	var resultado map[string]interface{}
+	//resultado formacion
+	var formacion map[string]interface{}
 
-	var resultado3 []map[string]interface{}
+	errFormacion := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica/"+idStr, &formacion)
+	if errFormacion == nil && fmt.Sprintf("%v", formacion["System"]) != "map[]" {
+		if formacion["Status"] != 404 {
+			//resultado programa
+			var programa []map[string]interface{}
 
-	var resultado4 []map[string]interface{}
-	var resultadof []map[string]interface{}
-	//resultado dato adicional formacion academica
-	//var resultado3 map[string]interface{}
+			errPrograma := request.GetJson("http://"+beego.AppConfig.String("ProgramaAcademicoService")+"/programa_academico/?query=Id:"+
+				fmt.Sprintf("%v", formacion["Titulacion"]), &programa)
+			if errPrograma == nil && fmt.Sprintf("%v", programa[0]["System"]) != "map[]" {
+				if programa[0]["Status"] != 404 {
+					//resultado institucion
+					var institucion []map[string]interface{}
+					formacion["Titulacion"] = programa[0]
 
-	errFormacion := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica/?query=Persona:"+idStr+"&fields=Id,FechaInicio,FechaFinalizacion,Titulacion", &resultado)
+					errInstitucion := request.GetJson("http://"+beego.AppConfig.String("OrganizacionService")+"/organizacion/?query=Id:"+
+						fmt.Sprintf("%v", programa[0]["Institucion"]), &institucion)
+					if errInstitucion == nil && fmt.Sprintf("%v", institucion[0]["System"]) != "map[]" {
+						if institucion[0]["Status"] != 404 {
+							//resultado dato adicional
+							var dato []map[string]interface{}
+							var soporte []map[string]interface{}
+							formacion["Institucion"] = institucion[0]
 
-	//fmt.Println("el resultado de la consulta es: ", resultado)
-	if errFormacion == nil && resultado != nil {
-		if resultado[0]["Type"] != "error" {
+							errDato := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/?query=FormacionAcademica:"+idStr, &dato)
+							if errDato == nil && fmt.Sprintf("%v", dato[0]["System"]) != "map[]" {
+								if dato[0]["Status"] != 404 {
 
-			resultado[0]["Ente"] = idStr
-			for u := 0; u < len(resultado); u++ {
+									for i := 0; i < len(dato); i++ {
+										if dato[i]["TipoDatoAdicional"].(float64) == 1 {
+											formacion["TituloTrabajoGrado"] = dato[i]["Valor"]
+										}
+										if dato[i]["TipoDatoAdicional"].(float64) == 2 {
+											formacion["DescripcionTrabajoGrado"] = dato[i]["Valor"]
+										}
+									}
 
-				errTitulacion := request.GetJson("http://"+beego.AppConfig.String("ProgramaAcademicoService")+"/programa_academico/?query=Id:"+fmt.Sprintf("%.f", resultado[u]["Titulacion"].(float64)), &resultado2)
-				if errTitulacion == nil {
+									errSoporte := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/soporte_formacion_academica/?query=FormacionAcademica:"+
+										idStr+"&fields=Documento", &soporte)
+									if errSoporte == nil && fmt.Sprintf("%v", soporte[0]["System"]) != "map[]" {
+										if soporte[0]["Status"] != 404 {
+											formacion["Documento"] = soporte[0]["Documento"]
+										} else {
+											if soporte[0]["Message"] == "Not found resource" {
+												c.Data["json"] = nil
+											} else {
+												logs.Error(soporte)
+												//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+												c.Data["system"] = errSoporte
+												c.Abort("404")
+											}
+										}
+									} else {
+										logs.Error(soporte)
+										//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+										c.Data["system"] = errSoporte
+										c.Abort("404")
+									}
 
-					//fmt.Println("la titulacion de esa persona es: ", resultado2[0]["Institucion"])
-
-					errOrganizacion := request.GetJson("http://"+beego.AppConfig.String("OrganizacionService")+"/organizacion/?query=id:"+fmt.Sprintf("%.f", resultado2[0]["Institucion"].(float64)), &resultadof)
-					if errOrganizacion == nil && resultadof != nil {
-						//fmt.Println("la universidad es: ", resultadof[0])
-						resultado[u]["Institucion"] = resultadof[0]
-					} else {
-						//fmt.Println(errOrganizacion)
-					}
-					resultado[u]["Titulacion"] = resultado2
-				} else {
-					alertas = append(alertas, errTitulacion.Error())
-					alerta.Code = "400"
-					alerta.Type = "error"
-					alerta.Body = alertas
-					c.Data["json"] = alerta
-				}
-
-				errFormacionAdicional := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/?query=FormacionAcademica:"+fmt.Sprintf("%.f", resultado[u]["Id"].(float64))+"&fields=TipoDatoAdicional,Valor,Id", &resultado3)
-
-				if errFormacionAdicional == nil {
-					//fmt.Println("los datos adicionales de la formacion son: ", resultado3)
-					for i := 0; i < len(resultado3); i++ {
-
-						if resultado3[i]["TipoDatoAdicional"].(float64) == 1 {
-
-							resultado[u]["TituloTrabajoGrado"] = resultado3[i]["Valor"]
+									resultado = formacion
+									c.Data["json"] = resultado
+								} else {
+									if dato[0]["Message"] == "Not found resource" {
+										c.Data["json"] = nil
+									} else {
+										logs.Error(dato)
+										//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+										c.Data["system"] = errDato
+										c.Abort("404")
+									}
+								}
+							} else {
+								logs.Error(dato)
+								//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+								c.Data["system"] = errDato
+								c.Abort("404")
+							}
+						} else {
+							if institucion[0]["Message"] == "Not found resource" {
+								c.Data["json"] = nil
+							} else {
+								logs.Error(institucion)
+								//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+								c.Data["system"] = errInstitucion
+								c.Abort("404")
+							}
 						}
-						if resultado3[i]["TipoDatoAdicional"].(float64) == 2 {
-							resultado[u]["DescripcionTrabajoGrado"] = resultado3[i]["Valor"]
-						}
-					}
-
-				} else {
-					//fmt.Println("el error de adicional formacion academica es: ", errFormacionAdicional.Error())
-				}
-
-				errDatoAdicional := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/soporte_formacion_academica/?query=FormacionAcademica:"+fmt.Sprintf("%.f", resultado[u]["Id"].(float64))+"&fields=Documento", &resultado4)
-				if errDatoAdicional == nil && resultado4 != nil {
-					//fmt.Println("el resultado de los documentos es: ", resultado4)
-					resultado[u]["Documento"] = resultado4[0]["Documento"]
-				} else {
-					if errDatoAdicional != nil {
-						//fmt.Println("el error es: ", errDatoAdicional.Error())
-					}
-
-				}
-			}
-			if idFor != 0 {
-				for u := 0; u < len(resultado); u++ {
-
-					fmt.Println("el id de la formacion es ", resultado[u]["Id"], "y el de la consulta: ", idFor)
-					if resultado[u]["Id"].(float64) == idFor {
-						c.Data["json"] = resultado[u]
 					} else {
-
+						logs.Error(institucion)
+						//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+						c.Data["system"] = errInstitucion
+						c.Abort("404")
 					}
-
+				} else {
+					if programa[0]["Message"] == "Not found resource" {
+						c.Data["json"] = nil
+					} else {
+						logs.Error(programa)
+						//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+						c.Data["system"] = errPrograma
+						c.Abort("404")
+					}
 				}
-
 			} else {
-				c.Data["json"] = resultado
+				logs.Error(programa)
+				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+				c.Data["system"] = errPrograma
+				c.Abort("404")
 			}
-
+		} else {
+			if formacion["Message"] == "Not found resource" {
+				c.Data["json"] = nil
+			} else {
+				logs.Error(formacion)
+				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+				c.Data["system"] = errFormacion
+				c.Abort("404")
+			}
 		}
 	} else {
-		fmt.Println("entro al error")
-		if errFormacion != nil {
-			c.Data["json"] = nil
-		} else {
-
-			c.Data["json"] = nil
-		}
-
+		logs.Error(formacion)
+		//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = errFormacion
+		c.Abort("404")
 	}
-
 	c.ServeJSON()
 }
 
 // GetFormacionAcademicaByEnte ...
 // @Title GetFormacionAcademicaByEnte
-// @Description consultar Fromacion Academica por userid
-// @Param	Ente		query 	string	true		"The key for staticblock"
+// @Description consultar Fromacion Academica por id de ente
+// @Param	Ente		query 	int	true		"Id del ente"
 // @Success 200 {}
-// @Failure 403 :id is empty
-// @router /formacionacademicaente/ [get]
+// @Failure 404 not found resource
+// @router / [get]
 func (c *FormacionController) GetFormacionAcademicaByEnte() {
-	//Id de la persona
-	var idStr = ""
-
-	idStr = c.GetString("Ente")
-
-	//formacion academica
-	//var formacion map[string]interface{}
-	//alerta que retorna la funcion PostFormacionAcademica
-	var alerta models.Alert
-	//cadena de alertas
-	alertas := append([]interface{}{"Cadena de respuestas: "})
-	//resultado formacion academica
+	//Captura de parámetros
+	idEnte := c.GetString("Ente")
+	fmt.Println("Id de ente: " + idEnte)
+	//resultado resultado final
 	var resultado []map[string]interface{}
-	//resultado dato adicional formacion academica
-	var resultado2 []map[string]interface{}
+	//resultado formacion
+	var formacion []map[string]interface{}
 
-	var resultado3 []map[string]interface{}
+	errFormacion := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica/?query=Persona:"+idEnte, &formacion)
+	if errFormacion == nil && fmt.Sprintf("%v", formacion[0]["System"]) != "map[]" {
+		if formacion[0]["Status"] != 404 {
 
-	var resultado4 []map[string]interface{}
-	var resultadof []map[string]interface{}
-	//resultado dato adicional formacion academica
-	//var resultado3 map[string]interface{}
+			for u := 0; u < len(formacion); u++ {
+				//resultado programa
+				var programa []map[string]interface{}
 
-	errFormacion := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica/?query=Persona:"+idStr+"&fields=Id,FechaInicio,FechaFinalizacion,Titulacion", &resultado)
+				errPrograma := request.GetJson("http://"+beego.AppConfig.String("ProgramaAcademicoService")+"/programa_academico/?query=Id:"+
+					fmt.Sprintf("%v", formacion[u]["Titulacion"]), &programa)
+				if errPrograma == nil && fmt.Sprintf("%v", programa[0]["System"]) != "map[]" {
+					if programa[0]["Status"] != 404 {
+						//resultado institucion
+						var institucion []map[string]interface{}
+						formacion[u]["Titulacion"] = programa[0]
 
-	//fmt.Println("el resultado de la consulta es: ", resultado)
-	if errFormacion == nil && resultado != nil {
-		if resultado[0]["Type"] != "error" {
+						errInstitucion := request.GetJson("http://"+beego.AppConfig.String("OrganizacionService")+"/organizacion/?query=Id:"+
+							fmt.Sprintf("%v", programa[0]["Institucion"]), &institucion)
+						if errInstitucion == nil && fmt.Sprintf("%v", institucion[0]["System"]) != "map[]" {
+							if institucion[0]["Status"] != 404 {
+								//resultado dato adicional
+								var dato []map[string]interface{}
+								var soporte []map[string]interface{}
+								formacion[u]["Institucion"] = institucion[0]
 
-			resultado[0]["Ente"] = idStr
-			for u := 0; u < len(resultado); u++ {
+								errDato := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/?query=FormacionAcademica:"+
+									fmt.Sprintf("%v", formacion[u]["Id"]), &dato)
+								if errDato == nil && fmt.Sprintf("%v", dato[0]["System"]) != "map[]" {
+									if dato[0]["Status"] != 404 {
 
-				errTitulacion := request.GetJson("http://"+beego.AppConfig.String("ProgramaAcademicoService")+"/programa_academico/?query=Id:"+fmt.Sprintf("%.f", resultado[u]["Titulacion"].(float64)), &resultado2)
-				if errTitulacion == nil {
+										for i := 0; i < len(dato); i++ {
+											if dato[i]["TipoDatoAdicional"].(float64) == 1 {
+												formacion[u]["TituloTrabajoGrado"] = dato[i]["Valor"]
+											}
+											if dato[i]["TipoDatoAdicional"].(float64) == 2 {
+												formacion[u]["DescripcionTrabajoGrado"] = dato[i]["Valor"]
+											}
+										}
 
-					//fmt.Println("la titulacion de esa persona es: ", resultado2[0]["Institucion"])
+										errSoporte := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/soporte_formacion_academica/?query=FormacionAcademica:"+
+											fmt.Sprintf("%v", formacion[u]["Id"])+"&fields=Documento", &soporte)
+										if errSoporte == nil && fmt.Sprintf("%v", soporte[0]["System"]) != "map[]" {
+											if soporte[0]["Status"] != 404 {
+												formacion[u]["Documento"] = soporte[0]["Documento"]
+											} else {
+												if soporte[0]["Message"] == "Not found resource" {
+													c.Data["json"] = nil
+												} else {
+													logs.Error(soporte)
+													//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+													c.Data["system"] = errSoporte
+													c.Abort("404")
+												}
+											}
+										} else {
+											logs.Error(soporte)
+											//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+											c.Data["system"] = errSoporte
+											c.Abort("404")
+										}
 
-					errOrganizacion := request.GetJson("http://"+beego.AppConfig.String("OrganizacionService")+"/organizacion/?query=id:"+fmt.Sprintf("%.f", resultado2[0]["Institucion"].(float64)), &resultadof)
-					if errOrganizacion == nil && resultadof != nil {
-						//fmt.Println("la universidad es: ", resultadof[0])
-						resultado[u]["Institucion"] = resultadof[0]
+										resultado = formacion
+										c.Data["json"] = resultado
+									} else {
+										if dato[0]["Message"] == "Not found resource" {
+											c.Data["json"] = nil
+										} else {
+											logs.Error(dato)
+											//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+											c.Data["system"] = errDato
+											c.Abort("404")
+										}
+									}
+								} else {
+									logs.Error(dato)
+									//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+									c.Data["system"] = errDato
+									c.Abort("404")
+								}
+							} else {
+								if institucion[0]["Message"] == "Not found resource" {
+									c.Data["json"] = nil
+								} else {
+									logs.Error(institucion)
+									//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+									c.Data["system"] = errInstitucion
+									c.Abort("404")
+								}
+							}
+						} else {
+							logs.Error(institucion)
+							//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+							c.Data["system"] = errInstitucion
+							c.Abort("404")
+						}
 					} else {
-						//fmt.Println(errOrganizacion)
-					}
-					resultado[u]["Titulacion"] = resultado2
-				} else {
-					alertas = append(alertas, errTitulacion.Error())
-					alerta.Code = "400"
-					alerta.Type = "error"
-					alerta.Body = alertas
-					c.Data["json"] = alerta
-				}
-
-				errFormacionAdicional := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/?query=FormacionAcademica:"+fmt.Sprintf("%.f", resultado[u]["Id"].(float64))+"&fields=TipoDatoAdicional,Valor,Id", &resultado3)
-
-				if errFormacionAdicional == nil {
-					//fmt.Println("los datos adicionales de la formacion son: ", resultado3)
-					for i := 0; i < len(resultado3); i++ {
-
-						if resultado3[i]["TipoDatoAdicional"].(float64) == 1 {
-
-							resultado[u]["TituloTrabajoGrado"] = resultado3[i]["Valor"]
-						}
-						if resultado3[i]["TipoDatoAdicional"].(float64) == 2 {
-							resultado[u]["DescripcionTrabajoGrado"] = resultado3[i]["Valor"]
+						if programa[0]["Message"] == "Not found resource" {
+							c.Data["json"] = nil
+						} else {
+							logs.Error(programa)
+							//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+							c.Data["system"] = errPrograma
+							c.Abort("404")
 						}
 					}
-
 				} else {
-					//fmt.Println("el error de adicional formacion academica es: ", errFormacionAdicional.Error())
+					logs.Error(programa)
+					//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+					c.Data["system"] = errPrograma
+					c.Abort("404")
 				}
 
-				errDatoAdicional := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/soporte_formacion_academica/?query=FormacionAcademica:"+fmt.Sprintf("%.f", resultado[u]["Id"].(float64))+"&fields=Documento", &resultado4)
-				if errDatoAdicional == nil && resultado4 != nil {
-					//fmt.Println("el resultado de los documentos es: ", resultado4)
-					resultado[u]["Documento"] = resultado4[0]["Documento"]
-				} else {
-					if errDatoAdicional != nil {
-						//fmt.Println("el error es: ", errDatoAdicional.Error())
-					}
-
-				}
 			}
-
-			c.Data["json"] = resultado
-
+		} else {
+			if formacion[0]["Message"] == "Not found resource" {
+				c.Data["json"] = nil
+			} else {
+				logs.Error(formacion)
+				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+				c.Data["system"] = errFormacion
+				c.Abort("404")
+			}
 		}
 	} else {
-		fmt.Println("entro al error")
-		if errFormacion != nil {
-			c.Data["json"] = nil
-		} else {
-
-			c.Data["json"] = nil
-		}
-
+		logs.Error(formacion)
+		//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = errFormacion
+		c.Abort("404")
 	}
-
 	c.ServeJSON()
 }
 
 // DeleteFormacionAcademica ...
 // @Title DeleteFormacionAcademica
 // @Description eliminar Formacion Academica por id de la formacion
-// @Param	id		path 	string	true		"Id de la formacion academica"
-// @Success 200 {}
-// @Failure 403 :id is empty
-// @router /formacionacademica/:id [delete]
+// @Param	id		path 	int	true		"Id de la formacion academica"
+// @Success 200 {string} delete success!
+// @Failure 404 not found resource
+// @router /:id [delete]
 func (c *FormacionController) DeleteFormacionAcademica() {
 	idStr := c.Ctx.Input.Param(":id")
-	var alerta models.Alert
-	//cadena de alertas
-	alertas := append([]interface{}{"Cadena de respuestas: "})
-	//resultado formacion academica
-	var resultado map[string]interface{}
-	//resultado dato adiconal formacion academica
-	var resultado2 []map[string]interface{}
-	var resultado3 map[string]interface{}
-	var resultado4 []map[string]interface{}
-	var resultado5 map[string]interface{}
-	var resultado6 map[string]interface{}
-	//fmt.Println("el id de la formacion a borrar es: ", idStr)
-	errFormacion := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica/"+idStr, &resultado)
-	if errFormacion == nil {
-		//fmt.Println("la formacion es: ", resultado)
-		errFormacion := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/?query=FormacionAcademica:"+idStr, &resultado2)
-		if errFormacion == nil {
-			//fmt.Println("el dato adicional es: ", resultado2)
-			for i := 0; i < len(resultado2); i++ {
-				//fmt.Println("el id del dato adicional a borrar es: ", resultado2[i]["Id"])
-				err := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/"+fmt.Sprintf("%.f", resultado2[i]["Id"].(float64)), "DELETE", &resultado3, nil)
+	//resultado soporte
+	var soporte []map[string]interface{}
+	fmt.Println(idStr)
 
-				if err == nil {
-					//fmt.Println("el resultado  del delete es:", resultado3)
-					alertas = append(alertas, "OK DELETE dato_adicional_formacion_academica")
-				}
+	errSoporte := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/soporte_formacion_academica/?query=FormacionAcademica:"+idStr, &soporte)
+	if errSoporte == nil && fmt.Sprintf("%v", soporte[0]["System"]) != "map[]" {
+		if soporte[0]["Status"] != 404 {
+			//resultados eliminacion
+			var resultado map[string]interface{}
+			var borrado map[string]interface{}
+			var datos []map[string]interface{}
 
-			}
-
-			errFormacion := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/soporte_formacion_academica/?query=FormacionAcademica:"+idStr, &resultado4)
-			if errFormacion == nil {
-				//fmt.Println("el documento a borrar es ", resultado4[0]["Id"])
-				err := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/soporte_formacion_academica/"+fmt.Sprintf("%.f", resultado4[0]["Id"].(float64)), "DELETE", &resultado5, nil)
-				if err == nil {
-					//fmt.Println("el resultado  del delete es:", resultado5)
-					alertas = append(alertas, "OK DELETE soporte_formacion_academica")
+			errDelete := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/soporte_formacion_academica/"+fmt.Sprintf("%v", soporte[0]["Id"]), "DELETE", &borrado, nil)
+			if errDelete == nil && fmt.Sprintf("%v", borrado["System"]) != "map[]" {
+				if borrado["Status"] != 404 {
+					fmt.Println(borrado)
+					resultado = map[string]interface{}{"Documento": borrado["Id"]}
+				} else {
+					logs.Error(borrado)
+					//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+					c.Data["system"] = errDelete
+					c.Abort("404")
 				}
 			} else {
-				alertas = append(alertas, errFormacion.Error())
+				logs.Error(borrado)
+				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+				c.Data["system"] = errDelete
+				c.Abort("404")
 			}
-			err := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica/"+idStr, "DELETE", &resultado6, nil)
-			if err == nil {
-				//fmt.Println("el resultado del DELETE es: ", resultado6)
-				alertas = append(alertas, "OK DELETE formacion_academica")
+
+			errDatos := request.GetJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/?query=FormacionAcademica:"+idStr, &datos)
+			if errDatos == nil && fmt.Sprintf("%v", datos[0]["System"]) != "map[]" {
+				if datos[0]["Status"] != 404 {
+					//resultados eliminacion
+					var borrado2 map[string]interface{}
+					var formacion map[string]interface{}
+
+					for i := 0; i < len(datos); i++ {
+						errDelete2 := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/dato_adicional_formacion_academica/"+fmt.Sprintf("%v", datos[i]["Id"]), "DELETE", &borrado2, nil)
+						if errDelete2 == nil && fmt.Sprintf("%v", borrado2["System"]) != "map[]" {
+							if borrado2["Status"] != 404 {
+
+								if datos[i]["TipoDatoAdicional"].(float64) == 1 {
+									resultado["TituloTrabajoGrado"] = datos[i]["Id"]
+								}
+								if datos[i]["TipoDatoAdicional"].(float64) == 2 {
+									resultado["DescripcionTrabajoGrado"] = datos[i]["Id"]
+								}
+
+							} else {
+								logs.Error(borrado2)
+								//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+								c.Data["system"] = errDelete2
+								c.Abort("404")
+							}
+						} else {
+							logs.Error(borrado2)
+							//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+							c.Data["system"] = errDelete2
+							c.Abort("404")
+						}
+
+					}
+
+					errFormacion := request.SendJson("http://"+beego.AppConfig.String("FormacionAcademicaService")+"/formacion_academica/"+idStr, "DELETE", &formacion, nil)
+					if errFormacion == nil && fmt.Sprintf("%v", formacion["System"]) != "map[]" {
+						if formacion["Status"] != 404 {
+
+							resultado["Formacion"] = formacion["Id"]
+							c.Data["json"] = resultado
+
+						} else {
+							logs.Error(formacion)
+							//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+							c.Data["system"] = errFormacion
+							c.Abort("404")
+						}
+					} else {
+						logs.Error(formacion)
+						//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+						c.Data["system"] = errFormacion
+						c.Abort("404")
+					}
+				} else {
+					logs.Error(datos)
+					//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+					c.Data["system"] = errDatos
+					c.Abort("404")
+				}
+			} else {
+				logs.Error(datos)
+				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+				c.Data["system"] = errDatos
+				c.Abort("404")
 			}
-			alerta.Body = alertas
-			alerta.Code = "200"
-			alerta.Type = "success"
-			c.Data["json"] = alerta
+		} else {
+			logs.Error(soporte)
+			//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = errSoporte
+			c.Abort("404")
 		}
 	} else {
-		alertas = append(alertas, errFormacion.Error())
-		alerta.Body = alertas
-		alerta.Code = "400"
-		alerta.Type = "error"
-		c.Data["json"] = alerta
-
+		logs.Error(soporte)
+		//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = errSoporte
+		c.Abort("404")
 	}
 	c.ServeJSON()
 }
