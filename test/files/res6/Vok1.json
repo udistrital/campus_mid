@@ -1,0 +1,105 @@
+{
+  "title": "Example Schema",
+  "type": "object",
+  "properties": {
+    "Id": { "type": "integer" },
+    "Ente": { "type": "integer" },
+    "Nombre": { "type": "string" },
+    "NumeroIdentificacion": { "type": "string" },
+    "FechaCreacion": { "type": "string" },
+    "FechaModificacion": { "type": "string" },
+    "TipoIdentificacion": {
+      "type": "object",
+      "properties": {
+        "Id": { "type": "integer" },
+        "NumeroOrden": { "type": "integer" },
+        "Nombre": { "type": "string" },
+        "Descripcion": { "type": "string" },
+        "CodigoAbreviacion": { "type": "string" },
+        "Activo": { "type": "boolean" },
+        "FechaCreacion": { "type": "string" },
+        "FechaModificacion": { "type": "string" }
+      }
+    },
+    "TipoOrganizacion": {
+      "type": "object",
+      "properties": {
+        "Id": { "type": "integer" },
+        "NumeroOrden": { "type": "integer" },
+        "Nombre": { "type": "string" },
+        "Descripcion": { "type": "string" },
+        "CodigoAbreviacion": { "type": "string" },
+        "Activo": { "type": "boolean" },
+        "FechaCreacion": { "type": "string" },
+        "FechaModificacion": { "type": "string" }
+      }
+    },
+    "Contacto": { "type": "array" },
+    "Ubicacion": {
+      "type": "object",
+      "properties": {
+        "FechaCreacion": { "type": "string" },
+        "FechaModificacion": { "type": "string" },
+        "Valor": { "type": "string" },
+        "Id": { "type": "integer" },
+        "AtributoUbicacion": {
+          "type": "object",
+          "properties": {
+            "Id": { "type": "integer" },
+            "NumeroOrden": { "type": "integer" },
+            "Nombre": { "type": "string" },
+            "Descripcion": { "type": "string" },
+            "CodigoAbreviacion": { "type": "string" },
+            "Activo": { "type": "boolean" },
+            "FechaCreacion": { "type": "string" },
+            "FechaModificacion": { "type": "string" }
+          }
+        },
+        "UbicacionEnte": {
+          "type": "object",
+          "properties": {
+            "Activo": { "type": "boolean" },
+            "Ente": {
+              "type": "object",
+              "properties": {
+                "FechaCreacion": { "type": "string" },
+                "FechaModificacion": { "type": "string" },
+                "Id": { "type": "integer" },
+                "TipoEnte": {
+                  "type": "object",
+                  "properties": {
+                    "Id": { "type": "integer" },
+                    "NumeroOrden": { "type": "integer" },
+                    "Nombre": { "type": "string" },
+                    "Descripcion": { "type": "string" },
+                    "CodigoAbreviacion": { "type": "string" },
+                    "Activo": { "type": "boolean" },
+                    "FechaCreacion": { "type": "string" },
+                    "FechaModificacion": { "type": "string" }
+                  }
+                } 
+              }
+            },
+            "FechaCreacion": { "type": "string" },
+            "FechaModificacion": { "type": "string" },
+            "Id": { "type": "integer" },
+            "Lugar": { "type": "integer" },
+            "TipoRelacionUbicacionEnte": {
+              "type": "object",
+              "properties": {
+                "Id": { "type": "integer" },
+                "NumeroOrden": { "type": "integer" },
+                "Nombre": { "type": "string" },
+                "Descripcion": { "type": "string" },
+                "CodigoAbreviacion": { "type": "string" },
+                "Activo": { "type": "boolean" },
+                "FechaCreacion": { "type": "string" },
+                "FechaModificacion": { "type": "string" }
+              }
+            }            
+          }
+        }        
+      }
+    }
+  }
+}

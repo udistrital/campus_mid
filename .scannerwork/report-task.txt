@@ -1,6 +1,6 @@
-projectKey=scaner:campus_mid20180516
-serverUrl=http://10.20.0.77:9000
+projectKey=campus_mid
+serverUrl=http://sonarqube.planestic.udistrital.edu.co:9005
 serverVersion=7.0.0.36138
-dashboardUrl=http://10.20.0.77:9000/dashboard/index/scaner:campus_mid20180516
-ceTaskId=AWNp4FXNehz9wCZ_SCQc
-ceTaskUrl=http://10.20.0.77:9000/api/ce/task?id=AWNp4FXNehz9wCZ_SCQc
+dashboardUrl=http://sonarqube.planestic.udistrital.edu.co:9005/dashboard/index/campus_mid
+ceTaskId=AW1zyl8ClGVdvusbrOLR
+ceTaskUrl=http://sonarqube.planestic.udistrital.edu.co:9005/api/ce/task?id=AW1zyl8ClGVdvusbrOLR
