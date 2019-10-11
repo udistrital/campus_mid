@@ -15,52 +15,168 @@
     },
     "basePath": "/v1",
     "paths": {
-        "/admision/{id}": {
+        "/descuento_academico/": {
             "get": {
                 "tags": [
-                    "admision"
+                    "descuento_academico"
                 ],
-                "description": "consultar admision por id",
-                "operationId": "AdmisionController.GetAdmision",
+                "description": "consultar Descuento Academico por userid",
+                "operationId": "DescuentoController.GetDescuentoAcademico",
                 "parameters": [
                     {
-                        "in": "path",
-                        "name": "id",
-                        "description": "The key for staticblock",
+                        "in": "query",
+                        "name": "PersonaId",
+                        "description": "Id de la persona",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "SolicitudId",
+                        "description": "Id de la solicitud",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "{}"
                     },
-                    "403": {
-                        "description": ":id is empty"
+                    "404": {
+                        "description": "not found resource"
                     }
                 }
             },
+            "post": {
+                "tags": [
+                    "descuento_academico"
+                ],
+                "description": "Agregar Descuento Academico",
+                "operationId": "DescuentoController.PostDescuentoAcademico",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Agregar Descuento Academico content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "{int}"
+                    },
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            }
+        },
+        "/descuento_academico/descuentodependenciaperiodo/": {
+            "get": {
+                "tags": [
+                    "descuento_academico"
+                ],
+                "description": "consultar Descuento Academico por userid",
+                "operationId": "DescuentoController.GetDescuentoByDependenciaPeriodo",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "DependenciaId",
+                        "description": "Id de la dependencia",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "PeriodoId",
+                        "description": "Id del periodo académico",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/descuento_academico/descuentopersonaperiododependencia/": {
+            "get": {
+                "tags": [
+                    "descuento_academico"
+                ],
+                "description": "consultar Descuento Academico por userid",
+                "operationId": "DescuentoController.GetDescuentoByPersonaPeriodoDependencia",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "PersonaId",
+                        "description": "Id de la persona",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "DependenciaId",
+                        "description": "Id de la dependencia",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "PeriodoId",
+                        "description": "Id del periodo académico",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/descuento_academico/{id}": {
             "put": {
                 "tags": [
-                    "admision"
+                    "descuento_academico"
                 ],
-                "description": "Modificar datos de la admisión",
-                "operationId": "AdmisionController.PutAdmision",
+                "description": "Modificar Descuento Academico",
+                "operationId": "DescuentoController.PutDescuentoAcademico",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "id",
-                        "description": "el id de la admisión a modificar",
+                        "description": "el id de la solicitud de descuento a modificar",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "body",
                         "name": "body",
-                        "description": "body Modificar Admisión content",
+                        "description": "body Modificar Descuento Academico content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.{}"
+                            "$ref": "#/definitions/{}"
                         }
                     }
                 ],
@@ -68,13 +184,117 @@
                     "200": {
                         "description": "{}"
                     },
-                    "403": {
-                        "description": ":id is empty"
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "descuento_academico"
+                ],
+                "description": "eliminar Descuento por id de la solicitud",
+                "operationId": "DescuentoController.DeleteDescuentoAcademico",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Id de la solicitud",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} delete success!"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/descuento_academico/{persona_id}": {
+            "get": {
+                "tags": [
+                    "descuento_academico"
+                ],
+                "description": "consultar Descuento Academico por userid",
+                "operationId": "DescuentoController.GetDescuentoAcademicoByPersona",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "persona_id",
+                        "description": "Id de la persona",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/evaluacion_inscripcion/{inscripcion_id}": {
+            "get": {
+                "tags": [
+                    "evaluacion_inscripcion"
+                ],
+                "description": "consultar evaluacion por inscripcion_id",
+                "operationId": "EvaluacionInscripcionController.GetEvaluacionInscripcion",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "inscripcion_id",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "404": {
+                        "description": "not found resource"
                     }
                 }
             }
         },
         "/experiencia_laboral/": {
+            "get": {
+                "tags": [
+                    "experiencia_laboral"
+                ],
+                "description": "consultar Experiencia Laboral por id de ente",
+                "operationId": "ExperienciaLaboralController.GetExperienciaLaboralByEnte",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "Ente",
+                        "description": "Id del ente",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "experiencia_laboral"
@@ -85,19 +305,19 @@
                     {
                         "in": "body",
                         "name": "body",
-                        "description": "body Agregar EXperiencia Laboral content",
+                        "description": "body Agregar Experiencia Laboral content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.{}"
+                            "$ref": "#/definitions/{}"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "{}"
+                    "201": {
+                        "description": "{int}"
                     },
-                    "403": {
-                        "description": "body is empty"
+                    "400": {
+                        "description": "the request contains incorrect syntax"
                     }
                 }
             }
@@ -107,23 +327,24 @@
                 "tags": [
                     "experiencia_laboral"
                 ],
-                "description": "consultar Experiencia Laboral por userid",
+                "description": "consultar Experiencia Laboral por id",
                 "operationId": "ExperienciaLaboralController.GetExperienciaLaboral",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "id",
-                        "description": "The key for staticblock",
+                        "description": "Id de la experiencia",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "{}"
                     },
-                    "403": {
-                        "description": ":id is empty"
+                    "404": {
+                        "description": "not found resource"
                     }
                 }
             },
@@ -139,7 +360,8 @@
                         "name": "id",
                         "description": "el id de la experiencia laboral a modificar",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "body",
@@ -147,7 +369,7 @@
                         "description": "body Modificar Experiencia Laboral content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.{}"
+                            "$ref": "#/definitions/{}"
                         }
                     }
                 ],
@@ -155,8 +377,8 @@
                     "200": {
                         "description": "{}"
                     },
-                    "403": {
-                        "description": ":id is empty"
+                    "400": {
+                        "description": "the request contains incorrect syntax"
                     }
                 }
             },
@@ -172,23 +394,49 @@
                         "name": "id",
                         "description": "Id de la Experiencia Laboral",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} delete success!"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/formacion_academica/": {
+            "get": {
+                "tags": [
+                    "formacion_academica"
+                ],
+                "description": "consultar Fromacion Academica por id de ente",
+                "operationId": "FormacionController.GetFormacionAcademicaByEnte",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "Ente",
+                        "description": "Id del ente",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "{}"
                     },
-                    "403": {
-                        "description": ":id is empty"
+                    "404": {
+                        "description": "not found resource"
                     }
                 }
-            }
-        },
-        "/formacion/formacionacademica": {
+            },
             "post": {
                 "tags": [
-                    "formacion"
+                    "formacion_academica"
                 ],
                 "description": "Agregar Formacion Academica ud",
                 "operationId": "FormacionController.PostFormacionAcademica",
@@ -199,56 +447,49 @@
                         "description": "body Agregar Formacion Academica content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.'hola'"
+                            "$ref": "#/definitions/{}"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "{}"
+                    "201": {
+                        "description": "{int}"
                     },
-                    "403": {
-                        "description": "body is empty"
+                    "400": {
+                        "description": "the request contains incorrect syntax"
                     }
                 }
             }
         },
-        "/formacion/formacionacademica/": {
+        "/formacion_academica/{id}": {
             "get": {
                 "tags": [
-                    "formacion"
+                    "formacion_academica"
                 ],
-                "description": "consultar Fromacion Academica por userid",
+                "description": "consultar Fromacion Academica por id",
                 "operationId": "FormacionController.GetFormacionAcademica",
                 "parameters": [
                     {
-                        "in": "query",
+                        "in": "path",
                         "name": "id",
-                        "description": "The key for staticblock",
+                        "description": "Id de la experiencia",
                         "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "idformacion",
-                        "description": "The key for staticblock",
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "{}"
                     },
-                    "403": {
-                        "description": ":id is empty"
+                    "404": {
+                        "description": "not found resource"
                     }
                 }
-            }
-        },
-        "/formacion/formacionacademica/{id}": {
+            },
             "put": {
                 "tags": [
-                    "formacion"
+                    "formacion_academica"
                 ],
                 "description": "Modificar Formacion Academica",
                 "operationId": "FormacionController.PutFormacionAcademica",
@@ -258,7 +499,8 @@
                         "name": "id",
                         "description": "el id de la formacion academica a modificar",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "body",
@@ -266,7 +508,7 @@
                         "description": "body Modificar Formacion Academica content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.{}"
+                            "$ref": "#/definitions/{}"
                         }
                     }
                 ],
@@ -274,14 +516,14 @@
                     "200": {
                         "description": "{}"
                     },
-                    "403": {
-                        "description": ":id is empty"
+                    "400": {
+                        "description": "the request contains incorrect syntax"
                     }
                 }
             },
             "delete": {
                 "tags": [
-                    "formacion"
+                    "formacion_academica"
                 ],
                 "description": "eliminar Formacion Academica por id de la formacion",
                 "operationId": "FormacionController.DeleteFormacionAcademica",
@@ -291,41 +533,162 @@
                         "name": "id",
                         "description": "Id de la formacion academica",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{}"
+                        "description": "{string} delete success!"
                     },
-                    "403": {
-                        "description": ":id is empty"
+                    "404": {
+                        "description": "not found resource"
                     }
                 }
             }
         },
-        "/formacion/formacionacademicaente/": {
+        "/inscripcion/": {
             "get": {
                 "tags": [
-                    "formacion"
+                    "inscripcion"
                 ],
-                "description": "consultar Fromacion Academica por userid",
-                "operationId": "FormacionController.GetFormacionAcademicaByEnte",
+                "description": "consultar Inscripcion por id",
+                "operationId": "InscripcionController.GetInscripcionByPeriodoPrograma",
                 "parameters": [
                     {
                         "in": "query",
-                        "name": "Ente",
-                        "description": "The key for staticblock",
+                        "name": "Id",
+                        "description": "Id de la inscripción",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "ProgramaId",
+                        "description": "Id del programa académico",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "PeriodoId",
+                        "description": "Id del periodo académico",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "{}"
                     },
-                    "403": {
-                        "description": ":id is empty"
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/inscripcion/identificacion/": {
+            "get": {
+                "tags": [
+                    "inscripcion"
+                ],
+                "description": "get Inscripcion by Identificacion",
+                "operationId": "InscripcionController.GetByIdentificacion",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "Identificacion",
+                        "description": "Identificación de la persona",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "ProgramaId",
+                        "description": "Id del programa académico",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "PeriodoId",
+                        "description": "Id del periodo académico",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/inscripcion/{id}": {
+            "get": {
+                "tags": [
+                    "inscripcion"
+                ],
+                "description": "consultar Inscripcion por id",
+                "operationId": "InscripcionController.GetInscripcion",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Id de la inscripción",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "inscripcion"
+                ],
+                "description": "Modificar datos de la admisión",
+                "operationId": "InscripcionController.PutInscripcion",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Id de la inscripción a modificar",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Modificar inscripción content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "400": {
+                        "description": "the request contains incorrect syntax"
                     }
                 }
             }
@@ -341,19 +704,19 @@
                     {
                         "in": "body",
                         "name": "body",
-                        "description": "body for Organizaciona scontent",
+                        "description": "body for Organizacion content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.interface"
+                            "$ref": "#/definitions/interface"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "{}"
+                    "201": {
+                        "description": "{int}"
                     },
-                    "403": {
-                        "description": "body is empty"
+                    "400": {
+                        "description": "the request contains incorrect syntax"
                     }
                 }
             }
@@ -368,33 +731,60 @@
                 "parameters": [
                     {
                         "in": "query",
-                        "name": "id",
+                        "name": "Id",
                         "description": "Identification number as id",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "query",
-                        "name": "tipoid",
+                        "name": "TipoId",
                         "description": "TipoIdentificacion number as nit",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/.Organizacion"
-                        }
+                        "description": "{}"
                     },
-                    "403": {
-                        "description": ":id is empty"
+                    "404": {
+                        "description": "not found resource"
                     }
                 }
             }
         },
-        "/organizacion/identificacionente/": {
+        "/organizacion/registar_ubicacion": {
+            "post": {
+                "tags": [
+                    "organizacion"
+                ],
+                "description": "Registrar Ubicacion Organizacion",
+                "operationId": "OrganizacionController.RegistrarUbicacion",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Ubicacion Organizacion content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/interface"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "{int}"
+                    },
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            }
+        },
+        "/organizacion/{ente}": {
             "get": {
                 "tags": [
                     "organizacion"
@@ -403,33 +793,31 @@
                 "operationId": "OrganizacionController.GetByEnte",
                 "parameters": [
                     {
-                        "in": "query",
-                        "name": "Ente",
-                        "description": "id del ente",
+                        "in": "path",
+                        "name": "ente",
+                        "description": "The key for staticblock",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/.Organizacion"
-                        }
+                        "description": "{}"
                     },
-                    "403": {
-                        "description": ":Ente is empty"
+                    "404": {
+                        "description": "not found resource"
                     }
                 }
             }
         },
-        "/persona/ActualizarPersona": {
+        "/persona/actualizar_complementarios": {
             "put": {
                 "tags": [
                     "persona"
                 ],
-                "description": "Actualizar Persona",
-                "operationId": "PersonaController.ActualizarPersona",
+                "description": "Actualizar Informacion Datos Complementarios Persona",
+                "operationId": "PersonaController.ActualizarDatosComplementarios",
                 "parameters": [
                     {
                         "in": "body",
@@ -437,7 +825,7 @@
                         "description": "body for Actualizar Persona content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.PersonaDatosBasicos"
+                            "$ref": "#/definitions/{}"
                         }
                     }
                 ],
@@ -445,138 +833,18 @@
                     "200": {
                         "description": "{}"
                     },
-                    "403": {
-                        "description": "body is empty"
+                    "400": {
+                        "description": "the request contains incorrect syntax"
                     }
                 }
             }
         },
-        "/persona/ConsultaPersona/": {
-            "get": {
-                "tags": [
-                    "persona"
-                ],
-                "description": "get ConsultaPersona by userid",
-                "operationId": "PersonaController.Get One",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "id",
-                        "description": "busca por  id del ente",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "userid",
-                        "description": "busca por nombre de usuario",
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/.interface{}"
-                        }
-                    },
-                    "403": {
-                        "description": ":id is empty"
-                    }
-                }
-            }
-        },
-        "/persona/DatosComplementarios": {
+        "/persona/actualizar_contacto": {
             "put": {
                 "tags": [
                     "persona"
                 ],
-                "description": "Guardar Persona",
-                "operationId": "PersonaController.PostPersona",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for Guardar Persona content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/.PersonaDatosBasicos"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} models.Persona.Id"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "persona"
-                ],
-                "description": "Guardar Persona",
-                "operationId": "PersonaController.PostPersona",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for Guardar Persona content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/.PersonaDatosBasicos"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} models.Persona.Id"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/persona/DatosComplementarios/{id}": {
-            "get": {
-                "tags": [
-                    "persona"
-                ],
-                "description": "conultar datos complementarios",
-                "operationId": "PersonaController.Getdatoscomplementarios",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "description": "consulta de datos complementarios por el Id del ente",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "query",
-                        "description": "Filter. e.g. col1:v1,col2:v2 ...",
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} models.Persona.Id"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/persona/DatosContacto": {
-            "put": {
-                "tags": [
-                    "persona"
-                ],
-                "description": "Actualizar Datos de Contacto",
+                "description": "Actualizar Informacion Datos Contacto Persona",
                 "operationId": "PersonaController.ActualizarDatosContacto",
                 "parameters": [
                     {
@@ -585,65 +853,115 @@
                         "description": "body for Actualizar Persona content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.PersonaDatosBasicos"
+                            "$ref": "#/definitions/{}"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{string} models.Persona.Id"
+                        "description": "{}"
                     },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "persona"
-                ],
-                "description": "Guardar Datos de Contacto",
-                "operationId": "PersonaController.PostDatosContacto",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for Guardar datos contacto content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/.PersonaDatosBasicos"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} models.Persona.Id"
-                    },
-                    "403": {
-                        "description": "body is empty"
+                    "400": {
+                        "description": "the request contains incorrect syntax"
                     }
                 }
             }
         },
-        "/persona/DatosContacto/{id}": {
+        "/persona/actualizar_persona": {
+            "put": {
+                "tags": [
+                    "persona"
+                ],
+                "description": "Actualizar Informacion Basica Persona",
+                "operationId": "PersonaController.ActualizarPersona",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Actualizar Persona content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            }
+        },
+        "/persona/consultar_complementarios/{ente_id}": {
             "get": {
                 "tags": [
                     "persona"
                 ],
-                "description": "Datos de contacto",
-                "operationId": "PersonaController.DatosContacto",
+                "description": "get ConsultarDatosComplementarios by id",
+                "operationId": "PersonaController.ConsultarDatosComplementarios",
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "id",
-                        "description": "The key for staticblock",
+                        "name": "ente_id",
+                        "description": "Id del ente",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
                     },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/persona/consultar_contacto/{ente_id}": {
+            "get": {
+                "tags": [
+                    "persona"
+                ],
+                "description": "get ConsultarDatosContacto by id",
+                "operationId": "PersonaController.ConsultarDatosContacto",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "ente_id",
+                        "description": "Id del ente",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/persona/consultar_persona/": {
+            "get": {
+                "tags": [
+                    "persona"
+                ],
+                "description": "get ConsultarPersonaByUser by username",
+                "operationId": "PersonaController.ConsultarPersonaByUser",
+                "parameters": [
                     {
                         "in": "query",
-                        "name": "query",
-                        "description": "Filter. e.g. col1:v1,col2:v2 ...",
+                        "name": "User",
+                        "description": "Usuario de la persona",
+                        "required": true,
                         "type": "string"
                     }
                 ],
@@ -651,13 +969,96 @@
                     "200": {
                         "description": "{}"
                     },
-                    "403": {
-                        "description": "body is empty"
+                    "404": {
+                        "description": "not found resource"
                     }
                 }
             }
         },
-        "/persona/GuardarPersona": {
+        "/persona/consultar_persona/{ente_id}": {
+            "get": {
+                "tags": [
+                    "persona"
+                ],
+                "description": "get ConsultaPersona by id",
+                "operationId": "PersonaController.ConsultarPersona",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "ente_id",
+                        "description": "Id del ente",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/persona/guardar_complementarios": {
+            "post": {
+                "tags": [
+                    "persona"
+                ],
+                "description": "Guardar Datos Complementarios Persona",
+                "operationId": "PersonaController.GuardarDatosComplementarios",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Guardar Datos Complementarios Persona content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "{int}"
+                    },
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            }
+        },
+        "/persona/guardar_contacto": {
+            "post": {
+                "tags": [
+                    "persona"
+                ],
+                "description": "Guardar Datos Contacto Persona",
+                "operationId": "PersonaController.GuardarDatosContacto",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Guardar Datos Contacto Persona content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "{int}"
+                    },
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            }
+        },
+        "/persona/guardar_persona": {
             "post": {
                 "tags": [
                     "persona"
@@ -671,35 +1072,71 @@
                         "description": "body for Guardar Persona content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.{}"
+                            "$ref": "#/definitions/{}"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "{}"
+                    "201": {
+                        "description": "{int}"
                     },
-                    "403": {
-                        "description": "body is empty"
+                    "400": {
+                        "description": "the request contains incorrect syntax"
                     }
                 }
             }
         },
-        "/persona/RegistrarUbicaciones": {
+        "/produccion_academica/": {
             "post": {
                 "tags": [
-                    "persona"
+                    "produccion_academica"
                 ],
-                "description": "Registrar Ubicaciones",
-                "operationId": "PersonaController.RegistrarUbicaciones",
+                "description": "Agregar Producción academica",
+                "operationId": "ProduccionAcademicaController.PostProduccionAcademica",
                 "parameters": [
                     {
                         "in": "body",
                         "name": "body",
-                        "description": "body for Registrar Ubicaciones content",
+                        "description": "body Agregar ProduccionAcademica content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.map[string]interface{}"
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "{int}"
+                    },
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            }
+        },
+        "/produccion_academica/estado_autor_produccion/{id}": {
+            "put": {
+                "tags": [
+                    "produccion_academica"
+                ],
+                "description": "Modificar Estado de Autor de Producción Academica",
+                "operationId": "ProduccionAcademicaController.PutEstadoAutorProduccionAcademica",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "el id del autor a modificar",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Modificar AutorProduccionAcademica content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
                         }
                     }
                 ],
@@ -707,33 +1144,108 @@
                     "200": {
                         "description": "{}"
                     },
-                    "403": {
-                        "description": "body is empty"
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            }
+        },
+        "/produccion_academica/{id}": {
+            "put": {
+                "tags": [
+                    "produccion_academica"
+                ],
+                "description": "Modificar Producción Academica",
+                "operationId": "ProduccionAcademicaController.PutProduccionAcademica",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "el id de la Produccion academica a modificar",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Modificar ProduccionAcademica content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "400": {
+                        "description": "the request contains incorrect syntax"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "produccion_academica"
+                ],
+                "description": "eliminar Produccion Academica por id",
+                "operationId": "ProduccionAcademicaController.DeleteProduccionAcademica",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Id de la Produccion Academica",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} delete success!"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/produccion_academica/{persona}": {
+            "get": {
+                "tags": [
+                    "produccion_academica"
+                ],
+                "description": "consultar Produccion Academica por persona",
+                "operationId": "ProduccionAcademicaController.GetProduccionAcademica",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "persona",
+                        "description": "Persona",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "404": {
+                        "description": "not found resource"
                     }
                 }
             }
         }
     },
     "definitions": {
-        ".'hola'": {
+        "interface": {
+            "title": "interface",
             "type": "object"
         },
-        ".Organizacion": {
-            "type": "object"
-        },
-        ".PersonaDatosBasicos": {
-            "type": "object"
-        },
-        ".interface": {
-            "type": "object"
-        },
-        ".interface{}": {
-            "type": "object"
-        },
-        ".map[string]interface{}": {
-            "type": "object"
-        },
-        ".{}": {
+        "{}": {
+            "title": "{}",
             "type": "object"
         }
     },
@@ -743,20 +1255,32 @@
             "description": "PersonaController ...\n"
         },
         {
-            "name": "formacion",
+            "name": "formacion_academica",
             "description": "FormacionController ...\n"
         },
         {
+            "name": "descuento_academico",
+            "description": "DescuentoController ...\n"
+        },
+        {
             "name": "experiencia_laboral",
-            "description": "FormacionController ...\n"
+            "description": "ExperienciaLaboralController ...\n"
         },
         {
             "name": "organizacion",
             "description": "OrganizacionController operations for Organizacion\n"
         },
         {
-            "name": "admision",
-            "description": "AdmisionController ...\n"
+            "name": "inscripcion",
+            "description": "InscripcionController ...\n"
+        },
+        {
+            "name": "produccion_academica",
+            "description": "ProduccionAcademicaController ...\n"
+        },
+        {
+            "name": "evaluacion_inscripcion",
+            "description": "EvaluacionInscripcionController ...\n"
         }
     ]
 }

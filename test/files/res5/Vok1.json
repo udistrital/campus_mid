@@ -1,0 +1,74 @@
+{
+  "title": "Example Schema",
+  "type": "object",
+  "properties": {
+    "AceptaTerminos": { "type": "boolean" },
+    "Activo": { "type": "boolean" },
+    "EnfasisId": { "type": "integer" },
+    "EstadoInscripcionId": {
+      "type": "object",
+      "properties": {
+        "Id": { "type": "integer" },
+        "NumeroOrden": { "type": "integer" },
+        "Nombre": { "type": "string" },
+        "Descripcion": { "type": "string" },
+        "CodigoAbreviacion": { "type": "string" },
+        "Activo": { "type": "boolean" },
+        "FechaCreacion": { "type": "string" },
+        "FechaModificacion": { "type": "string" }
+      }
+    },
+    "FechaAceptaTerminos": { "type": "string" },
+    "FechaCreacion": { "type": "string" },
+    "FechaModificacion": { "type": "string" },
+    "Id": { "type": "integer" },
+    "PeriodoId": { "type": "integer" },
+    "PersonaId": {
+      "type": "object",
+      "properties": {
+        "Id": { "type": "integer" },
+        "Ente": { "type": "integer" },
+        "Foto": { "type": "integer" },
+        "FechaCreacion": { "type": "string" },
+        "FechaModificacion": { "type": "string" },        
+        "FechaNacimiento": { "type": "string" },
+        "NumeroDocumento": { "type": "string" },
+        "PrimerApellido": { "type": "string" },
+        "PrimerNombre": { "type": "string" },
+        "SegundoApellido": { "type": "string" },
+        "SegundoNombre": { "type": "string" },
+        "Usuario": { "type": "string" },
+        "TipoIdentificacion": {
+          "type": "object",
+          "properties": {
+            "Id": { "type": "integer" },
+            "NumeroOrden": { "type": "integer" },
+            "Nombre": { "type": "string" },
+            "Descripcion": { "type": "string" },
+            "CodigoAbreviacion": { "type": "string" },
+            "Activo": { "type": "boolean" },
+            "FechaCreacion": { "type": "string" },
+            "FechaModificacion": { "type": "string" }
+          }
+        }
+      }
+    },
+    "ProgramaAcademicoId": { "type": "integer" },
+    "PuntajeTotal": { "type": "number" },
+    "ReciboInscripcionId": { "type": "integer" },
+    "ReciboMatriculaId": { "type": "integer" },
+    "TipoInscripcionId": {
+      "type": "object",
+      "properties": {
+        "Id": { "type": "integer" },
+        "NumeroOrden": { "type": "integer" },
+        "Nombre": { "type": "string" },
+        "Descripcion": { "type": "string" },
+        "CodigoAbreviacion": { "type": "string" },
+        "Activo": { "type": "boolean" },
+        "FechaCreacion": { "type": "string" },
+        "FechaModificacion": { "type": "string" }
+      }
+    }    
+  }
+}

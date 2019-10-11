@@ -3,14 +3,13 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"strconv"
 
 	"github.com/astaxie/beego"
-	"github.com/udistrital/campus_mid/models"
+	"github.com/astaxie/beego/logs"
 	"github.com/udistrital/utils_oas/request"
 )
 
-// FormacionController ...
+// ExperienciaLaboralController ...
 type ExperienciaLaboralController struct {
 	beego.Controller
 }
@@ -20,27 +19,23 @@ func (c *ExperienciaLaboralController) URLMapping() {
 	c.Mapping("PostExperienciaLaboral", c.PostExperienciaLaboral)
 	c.Mapping("PutExperienciaLaboral", c.PutExperienciaLaboral)
 	c.Mapping("GetExperienciaLaboral", c.GetExperienciaLaboral)
+	c.Mapping("GetExperienciaLaboralByEnte", c.GetExperienciaLaboralByEnte)
 	c.Mapping("DeleteExperienciaLaboral", c.DeleteExperienciaLaboral)
 }
 
 // PostExperienciaLaboral ...
 // @Title PostExperienciaLaboral
 // @Description Agregar Experiencia Laboral
-// @Param   body        body    {}  true        "body Agregar EXperiencia Laboral content"
-// @Success 200 {}
-// @Failure 403 body is empty
+// @Param   body        body    {}  true        "body Agregar Experiencia Laboral content"
+// @Success 201 {int}
+// @Failure 400 the request contains incorrect syntax
 // @router / [post]
 func (c *ExperienciaLaboralController) PostExperienciaLaboral() {
-	//experiencia laboral
-	var experiencia map[string]interface{}
-	//alerta que retorna la funcion PostExperienciaLaboral
-	var alerta models.Alert
-	//cadena de alertas
-	alertas := append([]interface{}{"Cadena de respuestas: "})
-	//resultado formacion academica
+	//resultado experiencia
 	var resultado map[string]interface{}
-	//resultado soporte experiencia laboral
-	var resultado2 map[string]interface{}
+	//experiencia
+	var experiencia map[string]interface{}
+	var experienciaPost map[string]interface{}
 
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &experiencia); err == nil {
 		experienciaLaboral := map[string]interface{}{
@@ -53,211 +48,282 @@ func (c *ExperienciaLaboralController) PostExperienciaLaboral() {
 			"Cargo":             experiencia["Cargo"],
 			"TipoVinculacion":   experiencia["TipoVinculacion"],
 		}
-		errExperienciaLaboral := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/experiencia_laboral", "POST", &resultado, experienciaLaboral)
 
-		if errExperienciaLaboral == nil && resultado["Type"] != "error" {
-			alertas = append(alertas, "se agrego la experiencia laboral")
+		errExperiencia := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/experiencia_laboral", "POST", &experienciaPost, experienciaLaboral)
+		if errExperiencia == nil && fmt.Sprintf("%v", experienciaPost["System"]) != "map[]" && experienciaPost["Id"] != nil {
+			if experienciaPost["Status"] != 400 {
+				//soporte
+				var soporte map[string]interface{}
 
-			//si se envía algún soporte en la experiencia laboral
-			if experiencia["Soporte"] != nil {
-				experienciaLaboralSoporte := map[string]interface{}{
-					"Documento":          experiencia["Soporte"],
-					"ExperienciaLaboral": resultado["Body"],
+				soporteexperiencia := map[string]interface{}{
+					"Documento":          experiencia["Documento"],
+					"ExperienciaLaboral": experienciaPost,
 				}
-				errExperienciaLaboralSoporte := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_experiencia_laboral", "POST", &resultado2, experienciaLaboralSoporte)
-				if errExperienciaLaboralSoporte == nil && resultado2["Type"] != "error" {
-					alerta.Type = "success"
-					alerta.Code = "200"
-					alertas = append(alertas, "se agrego el soporte correctamente")
+
+				errSoporte := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_experiencia_laboral", "POST", &soporte, soporteexperiencia)
+				if errSoporte == nil && fmt.Sprintf("%v", soporte["System"]) != "map[]" && soporte["Id"] != nil {
+					if soporte["Status"] != 400 {
+						resultado = experienciaPost
+						resultado["Documento"] = soporte["Documento"]
+						c.Data["json"] = resultado
+					} else {
+						//resultado solicitud de descuento
+						var resultado2 map[string]interface{}
+						request.SendJson(fmt.Sprintf("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/experiencia_laboral/%.f", experienciaPost["Id"]), "DELETE", &resultado2, nil)
+						logs.Error(errSoporte)
+						//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
+						c.Data["system"] = soporte
+						c.Abort("400")
+					}
 				} else {
-					alerta.Type = "error"
-					alerta.Code = "400"
-					alertas = append(alertas, errExperienciaLaboralSoporte.Error())
+					logs.Error(errSoporte)
+					//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+					c.Data["system"] = soporte
+					c.Abort("400")
 				}
+			} else {
+				logs.Error(errExperiencia)
+				//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
+				c.Data["system"] = experienciaPost
+				c.Abort("400")
 			}
 		} else {
-			alerta.Type = "error"
-			alerta.Code = "400"
-			if errExperienciaLaboral != nil {
-				alertas = append(alertas, errExperienciaLaboral.Error())
-			}
-			if resultado["Type"] == "error" {
-				alertas = append(alertas, resultado["Body"])
-			}
+			logs.Error(errExperiencia)
+			//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = experienciaPost
+			c.Abort("400")
 		}
-
 	} else {
-		alerta.Type = "error"
-		alerta.Code = "400"
-		alertas = append(alertas, err.Error())
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("400")
 	}
-	alerta.Body = alertas
-	c.Data["json"] = alerta
 	c.ServeJSON()
 }
 
 // PutExperienciaLaboral ...
 // @Title PutExperienciaLaboral
 // @Description Modificar Experiencia Laboral
-// @Param   id      path    string  true        "el id de la experiencia laboral a modificar"
+// @Param   id      path    int  true        "el id de la experiencia laboral a modificar"
 // @Param   body        body    {}  true        "body Modificar Experiencia Laboral content"
 // @Success 200 {}
-// @Failure 403 :id is empty
+// @Failure 400 the request contains incorrect syntax
 // @router /:id [put]
 func (c *ExperienciaLaboralController) PutExperienciaLaboral() {
 	idStr := c.Ctx.Input.Param(":id")
-	//experiencia laboral
-	var experiencia map[string]interface{}
-	//alerta que retorna la funcion PutExperienciaLaboral
-	var alerta models.Alert
-	//cadena de alertas
-	alertas := append([]interface{}{"Cadena de respuestas: "})
-	//resultado experiencia laboral
+	//resultado experiencia
 	var resultado map[string]interface{}
-	//resultado dato adicional experiencia laboral
-	var resultado2 map[string]interface{}
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &experiencia); err == nil {
+	//experiencia
+	var experiencia map[string]interface{}
+	var experienciaPut map[string]interface{}
 
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &experiencia); err == nil {
 		experienciaLaboral := map[string]interface{}{
+			"Id":                experiencia["Id"],
+			"Persona":           experiencia["Persona"],
 			"Actividades":       experiencia["Actividades"],
 			"FechaInicio":       experiencia["FechaInicio"],
 			"FechaFinalizacion": experiencia["FechaFinalizacion"],
-			"Organizacion":      experiencia["Organizacion"].(map[string]interface{})["Id"],
+			"Organizacion":      experiencia["Organizacion"],
 			"TipoDedicacion":    experiencia["TipoDedicacion"],
 			"Cargo":             experiencia["Cargo"],
 			"TipoVinculacion":   experiencia["TipoVinculacion"],
 		}
 
-		errExperienciaLaboral := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/experiencia_laboral/"+idStr, "PUT", &resultado, experienciaLaboral)
-		if errExperienciaLaboral == nil && resultado["Type"] == "success" {
-
-			alertas = append(alertas, "OK UPDATE experiencia laboral")
-			alerta.Code = "200"
-			alerta.Type = "success"
-
-			//si se envía algún soporte en la experiencia laboral a modificar
-			if experiencia["Soporte"] != nil {
-
-				//buscar el soporte de la experiencia laboral
+		errExperiencia := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/experiencia_laboral/"+idStr, "PUT", &experienciaPut, experienciaLaboral)
+		if errExperiencia == nil && fmt.Sprintf("%v", experienciaPut["System"]) != "map[]" && experienciaPut["Id"] != nil {
+			if experienciaPut["Status"] != 400 {
+				//soporte de descuento
 				var soporte []map[string]interface{}
-				errSoportes := request.GetJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_experiencia_laboral/?query=ExperienciaLaboral:"+idStr, &soporte)
+				var soportePut map[string]interface{}
 
-				//si la experiencia laboral tiene soporte: Actualizarlo
-				if errSoportes == nil && soporte != nil {
-					soporteExperienciaLaboral := map[string]interface{}{
-						"Documento":   experiencia["Soporte"],
-					}
+				errSoporte := request.GetJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_experiencia_laboral/?query=ExperienciaLaboral:"+idStr, &soporte)
+				if errSoporte == nil && fmt.Sprintf("%v", soporte[0]["System"]) != "map[]" {
+					if soporte[0]["Status"] != 404 {
+						soporte[0]["Documento"] = experiencia["Documento"]
 
-					errSoporteExperienciaLaboral := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_experiencia_laboral/"+fmt.Sprintf("%.f", soporte[0]["Id"]), "PUT", &resultado2, soporteExperienciaLaboral)
-					if errSoporteExperienciaLaboral == nil {
-						if resultado2["Type"] == "success" {
-							alertas = append(alertas, "OK UPDATE Soporte")
-							alerta.Code = "200"
-							alerta.Type = "success"
+						errSoportePut := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_experiencia_laboral/"+
+							fmt.Sprintf("%v", soporte[0]["Id"]), "PUT", &soportePut, soporte[0])
+						if errSoportePut == nil && fmt.Sprintf("%v", soportePut["System"]) != "map[]" && soportePut["Id"] != nil {
+							if soportePut["Status"] != 400 {
+								resultado = experiencia
+								c.Data["json"] = resultado
+							} else {
+								logs.Error(errSoportePut)
+								//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
+								c.Data["system"] = soportePut
+								c.Abort("400")
+							}
 						} else {
-							alertas = append(alertas, resultado2["Body"])
-							alerta.Code = "400"
-							alerta.Type = "error"
+							logs.Error(errSoportePut)
+							//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+							c.Data["system"] = soportePut
+							c.Abort("400")
 						}
+
 					} else {
-						alertas = append(alertas, errSoporteExperienciaLaboral.Error())
-						alerta.Code = "400"
-						alerta.Type = "error"
+						if soporte[0]["Message"] == "Not found resource" {
+							c.Data["json"] = nil
+						} else {
+							logs.Error(soporte)
+							//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+							c.Data["system"] = errSoporte
+							c.Abort("404")
+						}
 					}
 				} else {
-					//si no tiene soporte, se registra
-					id, _ := strconv.Atoi(idStr)
-					experienciaLaboralSoporte := map[string]interface{}{
-						"Documento":          experiencia["Soporte"].(map[string]interface{})["Documento"],
-						"Descripcion":        experiencia["Soporte"].(map[string]interface{})["Descripcion"],
-						"ExperienciaLaboral": map[string]interface{}{"Id": id},
-					}
-					errExperienciaLaboralSoporte := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_experiencia_laboral", "POST", &resultado2, experienciaLaboralSoporte)
-					if errExperienciaLaboralSoporte == nil {
-						if resultado2["Type"] != "error" {
-							alerta.Type = "success"
-							alerta.Code = "200"
-							alertas = append(alertas, "se agrego el soporte correctamente")
-						} else {
-							alertas = append(alertas, resultado2["Body"])
-							alerta.Code = "400"
-							alerta.Type = "error"
-						}
-					} else {
-						alerta.Type = "error"
-						alerta.Code = "400"
-						alertas = append(alertas, errExperienciaLaboralSoporte.Error())
-					}
+					logs.Error(soporte)
+					//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+					c.Data["system"] = errSoporte
+					c.Abort("404")
 				}
+			} else {
+				logs.Error(errExperiencia)
+				//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
+				c.Data["system"] = experienciaPut
+				c.Abort("400")
 			}
 		} else {
-			alertas = append(alertas, errExperienciaLaboral.Error())
-			alerta.Code = "400"
-			alerta.Type = "error"
+			logs.Error(errExperiencia)
+			//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = experienciaPut
+			c.Abort("400")
 		}
-
 	} else {
-		alertas = append(alertas, err.Error())
-		alerta.Code = "400"
-		alerta.Type = "error"
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "400", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("400")
 	}
-	alerta.Body = alertas
-	c.Data["json"] = alerta
 	c.ServeJSON()
 }
 
 // GetExperienciaLaboral ...
 // @Title GetExperienciaLaboral
-// @Description consultar Experiencia Laboral por userid
-// @Param   id      path    string  true        "The key for staticblock"
+// @Description consultar Experiencia Laboral por id
+// @Param	id		path 	int	true		"Id de la experiencia"
 // @Success 200 {}
-// @Failure 403 :id is empty
+// @Failure 404 not found resource
 // @router /:id [get]
 func (c *ExperienciaLaboralController) GetExperienciaLaboral() {
-	//Id de la experiencia a consultar
+	//Id de la experiencia
 	idStr := c.Ctx.Input.Param(":id")
-	//alerta que retorna la funcion GetExperienciaLaboral
-	var alerta models.Alert
-	//cadena de alertas
-	alertas := append([]interface{}{"Cadena de respuestas: "})
-	//resultado experiencia laboral
+	fmt.Println("El id es: " + idStr)
+	//resultado resultado final
 	var resultado map[string]interface{}
+	//resultado experiencia
+	var experiencia []map[string]interface{}
 
-	errExperienciaLaboral := request.GetJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/experiencia_laboral/"+idStr, &resultado)
-	fmt.Println(idStr)
-	if errExperienciaLaboral == nil && resultado != nil {
-		if resultado["Type"] != "error" {
+	errExperiencia := request.GetJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/experiencia_laboral/?query=Id:"+idStr, &experiencia)
+	if errExperiencia == nil && fmt.Sprintf("%v", experiencia[0]["System"]) != "map[]" {
+		if experiencia[0]["Status"] != 404 {
 			//buscar soporte_experiencia_laboral
 			var soporte []map[string]interface{}
-			errSoportes := request.GetJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_experiencia_laboral/?query=ExperienciaLaboral:"+idStr+"&fields=Id,Documento", &soporte)
-			if errSoportes == nil {
-				resultado["Soporte"] = soporte[0]["Documento"]
-				c.Data["json"] = resultado
-				fmt.Println(resultado["Soporte"])
+
+			errSoporte := request.GetJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_experiencia_laboral/?query=ExperienciaLaboral:"+idStr+"&fields=Documento", &soporte)
+			if errSoporte == nil && fmt.Sprintf("%v", soporte[0]["System"]) != "map[]" {
+				if soporte[0]["Status"] != 404 {
+					experiencia[0]["Documento"] = soporte[0]["Documento"]
+					resultado = experiencia[0]
+					c.Data["json"] = resultado
+				} else {
+					if soporte[0]["Message"] == "Not found resource" {
+						c.Data["json"] = nil
+					} else {
+						logs.Error(soporte)
+						//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+						c.Data["system"] = errSoporte
+						c.Abort("404")
+					}
+				}
 			} else {
-				alertas = append(alertas, errSoportes.Error())
-				alerta.Code = "400"
-				alerta.Type = "error"
-				alerta.Body = alertas
-				c.Data["json"] = alerta
+				logs.Error(soporte)
+				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+				c.Data["system"] = errSoporte
+				c.Abort("404")
 			}
 		} else {
-			if resultado["Body"] == "<QuerySeter> no row found" {
+			if experiencia[0]["Message"] == "Not found resource" {
 				c.Data["json"] = nil
 			} else {
-				alertas = append(alertas, resultado["Body"])
-				alerta.Code = "400"
-				alerta.Type = "error"
-				alerta.Body = alertas
-				c.Data["json"] = alerta
+				logs.Error(experiencia)
+				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+				c.Data["system"] = errExperiencia
+				c.Abort("404")
 			}
 		}
 	} else {
-		alertas = append(alertas, errExperienciaLaboral.Error())
-		alerta.Code = "400"
-		alerta.Type = "error"
-		alerta.Body = alertas
-		c.Data["json"] = alerta
+		logs.Error(experiencia)
+		//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = errExperiencia
+		c.Abort("404")
+	}
+	c.ServeJSON()
+}
+
+// GetExperienciaLaboralByEnte ...
+// @Title GetExperienciaLaboralByEnte
+// @Description consultar Experiencia Laboral por id de ente
+// @Param	Ente		query 	int	true		"Id del ente"
+// @Success 200 {}
+// @Failure 404 not found resource
+// @router / [get]
+func (c *ExperienciaLaboralController) GetExperienciaLaboralByEnte() {
+	//Captura de parámetros
+	idEnte := c.GetString("Ente")
+	//resultado resultado final
+	var resultado []map[string]interface{}
+	//resultado experiencia
+	var experiencia []map[string]interface{}
+	fmt.Println(idEnte)
+
+	errExperiencia := request.GetJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/experiencia_laboral/?Persona:"+idEnte, &experiencia)
+	if errExperiencia == nil && fmt.Sprintf("%v", experiencia[0]["System"]) != "map[]" {
+		if experiencia[0]["Status"] != 404 {
+			for u := 0; u < len(experiencia); u++ {
+				//buscar soporte_experiencia_laboral
+				var soporte []map[string]interface{}
+
+				errSoporte := request.GetJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_experiencia_laboral/?query=ExperienciaLaboral:"+
+					fmt.Sprintf("%v", experiencia[u]["Id"])+"&fields=Documento", &soporte)
+				if errSoporte == nil && fmt.Sprintf("%v", soporte[0]["System"]) != "map[]" {
+					if soporte[0]["Status"] != 404 {
+						experiencia[u]["Documento"] = soporte[0]["Documento"]
+						resultado = experiencia
+						c.Data["json"] = resultado
+					} else {
+						if soporte[0]["Message"] == "Not found resource" {
+							c.Data["json"] = nil
+						} else {
+							logs.Error(soporte)
+							//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+							c.Data["system"] = errSoporte
+							c.Abort("404")
+						}
+					}
+				} else {
+					logs.Error(soporte)
+					//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+					c.Data["system"] = errSoporte
+					c.Abort("404")
+				}
+			}
+		} else {
+			if experiencia[0]["Message"] == "Not found resource" {
+				c.Data["json"] = nil
+			} else {
+				logs.Error(experiencia)
+				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+				c.Data["system"] = errExperiencia
+				c.Abort("404")
+			}
+		}
+	} else {
+		logs.Error(experiencia)
+		//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = errExperiencia
+		c.Abort("404")
 	}
 	c.ServeJSON()
 }
@@ -265,39 +331,70 @@ func (c *ExperienciaLaboralController) GetExperienciaLaboral() {
 // DeleteExperienciaLaboral ...
 // @Title DeleteExperienciaLaboral
 // @Description eliminar Experiencia Laboral por id
-// @Param   id      path    string  true        "Id de la Experiencia Laboral"
-// @Success 200 {}
-// @Failure 403 :id is empty
+// @Param   id      path    int  true        "Id de la Experiencia Laboral"
+// @Success 200 {string} delete success!
+// @Failure 404 not found resource
 // @router /:id [delete]
 func (c *ExperienciaLaboralController) DeleteExperienciaLaboral() {
 	idStr := c.Ctx.Input.Param(":id")
-	var alerta models.Alert
-	//cadena de alertas
-	alertas := append([]interface{}{"Cadena de respuestas: "})
-	//resultado experiencia laboral
-	var resultado []map[string]interface{}
-	var resultado2 map[string]interface{}
-	var resultado3 map[string]interface{}
+	//resultado soporte
+	var soporte []map[string]interface{}
+	fmt.Println(idStr)
 
-	errSoporteExperienciaLaboral := request.GetJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_experiencia_laboral/?query=ExperienciaLaboral:"+idStr, &resultado)
-	if errSoporteExperienciaLaboral == nil {
-		errDeleteSoporte := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_experiencia_laboral/"+fmt.Sprintf("%.f", resultado[0]["Id"].(float64)), "DELETE", &resultado2, nil)
-		if errDeleteSoporte == nil {
-			alertas = append(alertas, "OK DELETE soporte_experiencia_laboral")
+	errSoporte := request.GetJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_experiencia_laboral/?query=ExperienciaLaboral:"+idStr, &soporte)
+	if errSoporte == nil && fmt.Sprintf("%v", soporte[0]["System"]) != "map[]" {
+		if soporte[0]["Status"] != 404 {
+			//resultados eliminacion
+			var borrado map[string]interface{}
+			var experiencia map[string]interface{}
+
+			errDelete := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/soporte_experiencia_laboral/"+fmt.Sprintf("%v", soporte[0]["Id"]), "DELETE", &borrado, nil)
+			if errDelete == nil && fmt.Sprintf("%v", borrado["System"]) != "map[]" {
+				if borrado["Status"] != 404 {
+					fmt.Println(borrado)
+					c.Data["json"] = map[string]interface{}{"Documento": borrado["Id"]}
+				} else {
+					logs.Error(borrado)
+					//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+					c.Data["system"] = errDelete
+					c.Abort("404")
+				}
+			} else {
+				logs.Error(borrado)
+				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+				c.Data["system"] = errDelete
+				c.Abort("404")
+			}
+
+			errExperiencia := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/experiencia_laboral/"+idStr, "DELETE", &experiencia, nil)
+			fmt.Println(experiencia)
+			if errExperiencia == nil && fmt.Sprintf("%v", experiencia["System"]) != "map[]" {
+				if experiencia["Status"] != 404 {
+					c.Data["json"] = map[string]interface{}{"Experiencia": experiencia["Id"], "Documento": borrado["Id"]}
+				} else {
+					logs.Error(experiencia)
+					//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+					c.Data["system"] = errExperiencia
+					c.Abort("404")
+				}
+			} else {
+				logs.Error(experiencia)
+				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+				c.Data["system"] = errExperiencia
+				c.Abort("404")
+			}
+
+		} else {
+			logs.Error(soporte)
+			//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = errSoporte
+			c.Abort("404")
 		}
-		errDeleteExperiencia := request.SendJson("http://"+beego.AppConfig.String("ExperienciaLaboralService")+"/experiencia_laboral/"+idStr, "DELETE", &resultado3, nil)
-		if errDeleteExperiencia == nil {
-			fmt.Println(resultado3)
-			alertas = append(alertas, "OK DELETE experiencia_laboral")
-		}
-		alerta.Code = "200"
-		alerta.Type = "success"
 	} else {
-		alertas = append(alertas, errSoporteExperienciaLaboral.Error())
-		alerta.Code = "400"
-		alerta.Type = "error"
+		logs.Error(soporte)
+		//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = errSoporte
+		c.Abort("404")
 	}
-	alerta.Body = alertas
-	c.Data["json"] = alerta
 	c.ServeJSON()
 }

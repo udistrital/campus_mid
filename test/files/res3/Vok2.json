@@ -1,0 +1,78 @@
+{
+  "title": "Example Schema",
+  "type": "object",
+  "properties": {
+    "Id": { "type": "integer" },
+    "PersonaId": { "type": "integer" },
+    "PeriodoId": { "type": "integer" },
+    "DocumentoId": { "type": "integer" },
+    "Estado": { "type": "string" },
+    "DescuentosDependenciaId": { 
+      "type": "object",
+      "properties": {
+        "Id": { "type": "integer" },
+        "DependenciaId": { "type": "integer" },
+        "PeriodoId": { "type": "integer" },
+        "Activo": { "type": "boolean" },
+        "FechaCreacion": { "type": "string" },
+        "FechaModificacion": { "type": "string" },
+        "TipoDescuentoId": {
+          "type": "object",
+          "properties": {
+            "Id": { "type": "integer" },
+            "NumeroOrden": { "type": "integer" },
+            "ConceptoAcademicoId": { "type": "integer" },
+            "Nombre": { "type": "string" },
+            "Descripcion": { "type": "string" },
+            "CodigoAbreviacion": { "type": "string" },
+            "Activo": { "type": "boolean" },
+            "General": { "type": "boolean" },
+            "FechaCreacion": { "type": "string" },
+            "FechaModificacion": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}
+{
+  "Actividades": "Operaciones básicas",
+  "Cargo": {
+    "Activo": true,
+    "CodigoAbreviacion": "NA",
+    "Descripcion": "Cargo Diputado",
+    "FechaCreacion": "2019-07-12 12:45:59.555543 -0500 -05",
+    "FechaModificacion": "2019-07-12 12:45:59.555543 -0500 -05",
+    "Id": 4,
+    "Nombre": "Diputado",
+    "NumeroOrden": 4
+  },
+  "Documento": 50,
+  "FechaCreacion": "2019-08-01 10:00:03.423815 -0500 -05",
+  "FechaFinalizacion": "2019-08-30T19:00:00-05:00",
+  "FechaInicio": "2019-08-10T19:00:00-05:00",
+  "FechaModificacion": "2019-08-01 10:00:03 -0500 -05",
+  "Id": 1,
+  "Organizacion": 19,
+  "Persona": 28,
+  "TipoDedicacion": {
+    "Activo": true,
+    "CodigoAbreviacion": "TC",
+    "Descripcion": "Tiempo Completo",
+    "FechaCreacion": "2019-07-12 12:38:13.148875 -0500 -05",
+    "FechaModificacion": "2019-07-12 12:38:13.148875 -0500 -05",
+    "Id": 1,
+    "Nombre": "Tiempo Completo",
+    "NumeroOrden": 1
+  },
+  "TipoVinculacion": {
+    "Activo": true,
+    "CodigoAbreviacion": "CTI",
+    "Descripcion": "Duración no determinada por la obra obra o la naturaleza de la labor contratada",
+    "FechaCreacion": "2019-07-12 12:37:11.236164 -0500 -05",
+    "FechaModificacion": "2019-07-12 12:37:11.236164 -0500 -05",
+    "Id": 1,
+    "Nombre": "Contrato a término indefinido",
+    "NumeroOrden": 1
+  }
+}
