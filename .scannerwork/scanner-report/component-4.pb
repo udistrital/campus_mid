@@ -1,1 +1,0 @@
-interceptor.go 2goXhrinterceptor.go
