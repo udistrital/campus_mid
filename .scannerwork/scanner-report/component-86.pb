@@ -1,1 +1,0 @@
-Vcontrollers/inscripcion.go 2goXÿhrcontrollers/inscripcion.go

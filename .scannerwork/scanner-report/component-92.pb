@@ -1,1 +1,0 @@
-\controllers/formacion.go 2goXÍhrcontrollers/formacion.go
