@@ -5,6 +5,7 @@ import (
 	//notificacionlib "github.com/udistrital/notificaciones_lib"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
+	"github.com/udistrital/auditoria"
 	apistatus "github.com/udistrital/utils_oas/apiStatusLib"
 	"github.com/udistrital/utils_oas/customerror"
 )
@@ -29,7 +30,7 @@ func main() {
 	}))
 
 	apistatus.Init()
-	//auditoria.InitMiddleware()
+	auditoria.InitMiddleware()
 	beego.ErrorController(&customerror.CustomErrorController{})
 	beego.Run()
 }
