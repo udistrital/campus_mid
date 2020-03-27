@@ -706,43 +706,51 @@ func (c *PersonaController) ConsultarDatosContacto() {
 
 							errAtributos := request.GetJson("http://"+beego.AppConfig.String("EnteService")+"/valor_atributo_ubicacion/?query=UbicacionEnte.Id:"+
 								fmt.Sprintf("%v", ubicacionEnte[0]["Id"])+"&fields=Id,AtributoUbicacion,Valor", &atributosEnte)
-							if errAtributos == nil && fmt.Sprintf("%v", atributosEnte[0]["System"]) != "map[]" {
-								if atributosEnte[0]["Status"] != 404 {
-									var lugar map[string]interface{}
-									ubicacionEnte[0]["Atributos"] = atributosEnte
 
-									errLugar := request.GetJson("http://"+beego.AppConfig.String("UbicacionesService")+"/relacion_lugares/jerarquia_lugar/"+
-										fmt.Sprintf("%v", ubicacionEnte[0]["Lugar"]), &lugar)
-									if errLugar == nil && fmt.Sprintf("%v", lugar["System"]) != "map[]" {
-										if lugar["Status"] != 404 {
-											ubicacionEnte[0]["Lugar"] = lugar
-											resultado["UbicacionEnte"] = ubicacionEnte[0]
-											c.Data["json"] = resultado
-										} else {
-											if lugar["Message"] == "Not found resource" {
-												c.Data["json"] = nil
+							if errAtributos == nil && fmt.Sprintf("%v", atributosEnte) != "[]" {
+								if errAtributos == nil && fmt.Sprintf("%v", atributosEnte[0]["System"]) != "map[]" {
+									if atributosEnte[0]["Status"] != 404 {
+										var lugar map[string]interface{}
+										ubicacionEnte[0]["Atributos"] = atributosEnte
+
+										errLugar := request.GetJson("http://"+beego.AppConfig.String("UbicacionesService")+"/relacion_lugares/jerarquia_lugar/"+
+											fmt.Sprintf("%v", ubicacionEnte[0]["Lugar"]), &lugar)
+										if errLugar == nil && fmt.Sprintf("%v", lugar["System"]) != "map[]" {
+											if lugar["Status"] != 404 {
+												ubicacionEnte[0]["Lugar"] = lugar
+												resultado["UbicacionEnte"] = ubicacionEnte[0]
+												c.Data["json"] = resultado
 											} else {
-												logs.Error(lugar)
-												//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-												c.Data["system"] = errLugar
-												c.Abort("404")
+												if lugar["Message"] == "Not found resource" {
+													c.Data["json"] = nil
+												} else {
+													logs.Error(lugar)
+													//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+													c.Data["system"] = errLugar
+													c.Abort("404")
+												}
 											}
+										} else {
+											logs.Error(lugar)
+											//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+											c.Data["system"] = errLugar
+											c.Abort("404")
 										}
 									} else {
-										logs.Error(lugar)
-										//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-										c.Data["system"] = errLugar
-										c.Abort("404")
+										if atributosEnte[0]["Message"] == "Not found resource" {
+											c.Data["json"] = nil
+										} else {
+											logs.Error(atributosEnte)
+											//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+											c.Data["system"] = errAtributos
+											c.Abort("404")
+										}
 									}
 								} else {
-									if atributosEnte[0]["Message"] == "Not found resource" {
-										c.Data["json"] = nil
-									} else {
-										logs.Error(atributosEnte)
-										//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-										c.Data["system"] = errAtributos
-										c.Abort("404")
-									}
+									logs.Error(atributosEnte)
+									//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+									c.Data["system"] = errAtributos
+									c.Abort("404")
 								}
 							} else {
 								logs.Error(atributosEnte)
@@ -817,21 +825,21 @@ func (c *PersonaController) ConsultarDatosComplementarios() {
 	var persona []map[string]interface{}
 
 	errPersona := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona/?query=Ente:"+idStr, &persona)
-	if errPersona == nil && fmt.Sprintf("%v", persona[0]["System"]) != "map[]" {
+	if errPersona == nil && fmt.Sprintf("%v", persona[0]) != "map[]" {
 		if persona[0]["Status"] != 404 {
 			var grupoEtnico []map[string]interface{}
 			resultado = map[string]interface{}{"Ente": persona[0]["Ente"], "Persona": persona[0]["Id"]}
 
 			errGrupoEtnico := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_grupo_etnico/?query=Persona:"+
 				fmt.Sprintf("%v", persona[0]["Id"]), &grupoEtnico)
-			if errGrupoEtnico == nil && fmt.Sprintf("%v", grupoEtnico[0]["System"]) != "map[]" {
+			if errGrupoEtnico == nil && fmt.Sprintf("%v", grupoEtnico[0]) != "map[]" {
 				if grupoEtnico[0]["Status"] != 404 {
 					var grupoSanguineo []map[string]interface{}
 					resultado["GrupoEtnico"] = grupoEtnico[0]["GrupoEtnico"]
 
 					errGrupoSanguineo := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/grupo_sanguineo_persona/?query=Persona:"+
 						fmt.Sprintf("%v", persona[0]["Id"]), &grupoSanguineo)
-					if errGrupoSanguineo == nil && fmt.Sprintf("%v", grupoSanguineo[0]["System"]) != "map[]" {
+					if errGrupoSanguineo == nil && fmt.Sprintf("%v", grupoSanguineo[0]) != "map[]" {
 						if grupoSanguineo[0]["Status"] != 404 {
 							var discapacidades []map[string]interface{}
 							resultado["GrupoSanguineo"] = grupoSanguineo[0]["GrupoSanguineo"]
@@ -839,7 +847,7 @@ func (c *PersonaController) ConsultarDatosComplementarios() {
 
 							errDiscapacidad := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_tipo_discapacidad/?query=Persona:"+
 								fmt.Sprintf("%v", persona[0]["Id"])+",Activo:true", &discapacidades)
-							if errDiscapacidad == nil && fmt.Sprintf("%v", discapacidades[0]["System"]) != "map[]" {
+							if errDiscapacidad == nil && fmt.Sprintf("%v", discapacidades[0]) != "map[]" {
 								if discapacidades[0]["Status"] != 404 {
 									var tipoDiscapacidad []map[string]interface{}
 									var ubicacionEnte []map[string]interface{}
@@ -853,7 +861,7 @@ func (c *PersonaController) ConsultarDatosComplementarios() {
 
 									errUbicacion := request.GetJson("http://"+beego.AppConfig.String("EnteService")+"/ubicacion_ente/?query=Ente:"+idStr+
 										",TipoRelacionUbicacionEnte:1,Activo:true&fields=Id,TipoRelacionUbicacionEnte,Lugar", &ubicacionEnte)
-									if errUbicacion == nil && fmt.Sprintf("%v", ubicacionEnte[0]["System"]) != "map[]" {
+									if errUbicacion == nil && fmt.Sprintf("%v", ubicacionEnte[0]) != "map[]" {
 										if ubicacionEnte[0]["Status"] != 404 {
 											var lugar map[string]interface{}
 
@@ -979,7 +987,7 @@ func (c *PersonaController) ConsultarPersona() {
 	var persona []map[string]interface{}
 
 	errPersona := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona/?query=Ente:"+idStr, &persona)
-	if errPersona == nil && fmt.Sprintf("%v", persona[0]["System"]) != "map[]" {
+	if errPersona == nil && fmt.Sprintf("%v", persona[0]) != "map[]" {
 		if persona[0]["Status"] != 404 {
 			var identificacion []map[string]interface{}
 
@@ -996,7 +1004,7 @@ func (c *PersonaController) ConsultarPersona() {
 
 					errEstado := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_estado_civil/?query=Persona:"+
 						fmt.Sprintf("%v", persona[0]["Id"]), &estado)
-					if errEstado == nil && fmt.Sprintf("%v", estado[0]["System"]) != "map[]" {
+					if errEstado == nil && fmt.Sprintf("%v", estado[0]) != "map[]" {
 						if estado[0]["Status"] != 404 {
 							resultado["EstadoCivil"] = estado[0]["EstadoCivil"]
 						} else {
@@ -1018,7 +1026,7 @@ func (c *PersonaController) ConsultarPersona() {
 
 					errGenero := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_genero/?query=Persona:"+
 						fmt.Sprintf("%v", persona[0]["Id"]), &genero)
-					if errGenero == nil && fmt.Sprintf("%v", genero[0]["System"]) != "map[]" {
+					if errGenero == nil && fmt.Sprintf("%v", genero[0]) != "map[]" {
 						if genero[0]["Status"] != 404 {
 							resultado["Genero"] = genero[0]["Genero"]
 						} else {
@@ -1091,7 +1099,9 @@ func (c *PersonaController) ConsultarPersonaByUser() {
 	var persona []map[string]interface{}
 
 	errPersona := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona/?query=Usuario:"+user, &persona)
-	if errPersona == nil && fmt.Sprintf("%v", persona[0]["System"]) != "map[]" {
+	fmt.Println(errPersona)
+	fmt.Println(persona)
+	if errPersona == nil && fmt.Sprintf("%v", persona[0]) != "map[]" {
 		if persona[0]["Status"] != 404 {
 			var identificacion []map[string]interface{}
 
@@ -1109,7 +1119,7 @@ func (c *PersonaController) ConsultarPersonaByUser() {
 
 					errEstado := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_estado_civil/?query=Persona:"+
 						fmt.Sprintf("%v", persona[0]["Id"]), &estado)
-					if errEstado == nil && fmt.Sprintf("%v", estado[0]["System"]) != "map[]" {
+					if errEstado == nil && fmt.Sprintf("%v", estado[0]) != "map[]" {
 						if estado[0]["Status"] != 404 {
 							resultado["EstadoCivil"] = estado[0]["EstadoCivil"]
 						} else {
@@ -1131,7 +1141,7 @@ func (c *PersonaController) ConsultarPersonaByUser() {
 
 					errGenero := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona_genero/?query=Persona:"+
 						fmt.Sprintf("%v", persona[0]["Id"]), &genero)
-					if errGenero == nil && fmt.Sprintf("%v", genero[0]["System"]) != "map[]" {
+					if errGenero == nil && fmt.Sprintf("%v", genero[0]) != "map[]" {
 						if genero[0]["Status"] != 404 {
 							resultado["Genero"] = genero[0]["Genero"]
 						} else {
