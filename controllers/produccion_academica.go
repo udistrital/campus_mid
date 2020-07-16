@@ -51,7 +51,7 @@ func (c *ProduccionAcademicaController) PostProduccionAcademica() {
 		for _, autorTemp := range produccionAcademica["Autores"].([]interface{}) {
 			autor := autorTemp.(map[string]interface{})
 			autores = append(autores, map[string]interface{}{
-				"PersonaId":               autor["PersonaId"],
+				"PersonaId":               autor["Persona"],
 				"EstadoAutorProduccionId": autor["EstadoAutorProduccionId"],
 				"ProduccionAcademicaId":   map[string]interface{}{"Id": 0},
 				"Activo":                  true,
@@ -164,7 +164,7 @@ func (c *ProduccionAcademicaController) PutEstadoAutorProduccionAcademica() {
 // @Param   body        body    {}  true        "body Modificar ProduccionAcademica content"
 // @Success 200 {}
 // @Failure 400 the request contains incorrect syntax
-// @router /:id [put]
+// @route				"PersonaId":               autor["PersonaId"],r /:id [put]
 func (c *ProduccionAcademicaController) PutProduccionAcademica() {
 	idStr := c.Ctx.Input.Param(":id")
 	fmt.Println("Id es: " + idStr)
@@ -255,35 +255,37 @@ func (c *ProduccionAcademicaController) GetProduccionAcademica() {
 	if errProduccion == nil && fmt.Sprintf("%v", producciones[0]["System"]) != "map[]" {
 		if producciones[0]["Status"] != 404 {
 			for _, produccion := range producciones {
-				autores := produccion["Autores"].([]interface{})
-				for _, autorTemp := range autores {
-					autor := autorTemp.(map[string]interface{})
-					if autor["PersonaId"] == idPersona {
-						produccion["EstadoEnteAutorId"] = autor
-					}
-					//cargar nombre del autor
-					var autorProduccion map[string]interface{}
-
-					errAutor := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona/"+fmt.Sprintf("%v", autor["PersonaId"]), &autorProduccion)
-					if errAutor == nil && fmt.Sprintf("%v", autorProduccion["System"]) != "map[]" {
-						if autorProduccion["Status"] != 404 {
-							autor["Nombre"] = autorProduccion["PrimerNombre"].(string) + " " + autorProduccion["SegundoNombre"].(string) + " " +
-								autorProduccion["PrimerApellido"].(string) + " " + autorProduccion["SegundoApellido"].(string)
-						} else {
-							if autorProduccion["Message"] == "Not found resource" {
-								c.Data["json"] = nil
-							} else {
-								logs.Error(autorProduccion)
-								//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-								c.Data["system"] = errAutor
-								c.Abort("404")
-							}
+				if produccion["Autores"] != nil {
+					autores := produccion["Autores"].([]interface{})
+					for _, autorTemp := range autores {
+						autor := autorTemp.(map[string]interface{})
+						if autor["PersonaId"] == idPersona {
+							produccion["EstadoEnteAutorId"] = autor
 						}
-					} else {
-						logs.Error(autorProduccion)
-						//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-						c.Data["system"] = errAutor
-						c.Abort("404")
+						//cargar nombre del autor
+						var autorProduccion map[string]interface{}
+
+						errAutor := request.GetJson("http://"+beego.AppConfig.String("PersonaService")+"/persona/"+fmt.Sprintf("%v", autor["PersonaId"]), &autorProduccion)
+						if errAutor == nil && fmt.Sprintf("%v", autorProduccion["System"]) != "map[]" {
+							if autorProduccion["Status"] != 404 {
+								autor["Nombre"] = autorProduccion["PrimerNombre"].(string) + " " + autorProduccion["SegundoNombre"].(string) + " " +
+									autorProduccion["PrimerApellido"].(string) + " " + autorProduccion["SegundoApellido"].(string)
+							} else {
+								if autorProduccion["Message"] == "Not found resource" {
+									c.Data["json"] = nil
+								} else {
+									logs.Error(autorProduccion)
+									//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+									c.Data["system"] = errAutor
+									c.Abort("404")
+								}
+							}
+						} else {
+							logs.Error(autorProduccion)
+							//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+							c.Data["system"] = errAutor
+							c.Abort("404")
+						}
 					}
 				}
 			}
