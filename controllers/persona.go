@@ -785,10 +785,12 @@ func (c *PersonaController) ConsultarDatosContacto() {
 					}
 				}
 			} else {
+				l := append(l, map[string]interface{}{})
+				c.Data["json"] = l
 				logs.Error(contactoEnte)
-				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-				c.Data["system"] = errContacto
-				c.Abort("404")
+				////c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+				//c.Data["system"] = errContacto
+				//c.Abort("404")
 			}
 		} else {
 			if persona[0]["Message"] == "Not found resource" {
