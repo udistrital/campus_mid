@@ -785,8 +785,7 @@ func (c *PersonaController) ConsultarDatosContacto() {
 					}
 				}
 			} else {
-				var l = make(map[string]interface{}{})
-				c.Data["json"] = l
+				c.Data["json"] = [{}]
 				logs.Error(contactoEnte)
 				////c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
 				//c.Data["system"] = errContacto
