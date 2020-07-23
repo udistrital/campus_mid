@@ -779,14 +779,14 @@ func (c *PersonaController) ConsultarDatosContacto() {
 						c.Data["json"] = nil
 					} else {
 						logs.Error(contactoEnte)
-						//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+						c.Data["Development"] = map[string]interface{}{"Code": "404", "Body": "", "Type": "error"}
 						c.Data["system"] = errContacto
 						c.Abort("404")
 					}
 				}
 			} else {
 				logs.Error(contactoEnte)
-				c.Data["development"] = map[string]interface{}{"Code": "404", "Body": "", "Type": "error"}
+				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": "", "Type": "error"}
 				c.Data["system"] = errContacto
 				c.Abort("404")
 			}
