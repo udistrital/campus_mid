@@ -753,10 +753,7 @@ func (c *PersonaController) ConsultarDatosContacto() {
 									c.Abort("404")
 								}
 							} else {
-								fmt.Println("El error es aqui 6")
-								fmt.Println(errAtributos)
-								fmt.Println(fmt.Sprintf("%v", atributosEnte))
-								if errAtributos == nil && fmt.Sprintf("%v", atributosEnte) == "[]" {
+								if fmt.Sprintf("%v", atributosEnte) == "[]" {
 									fmt.Println("El error esta aqui")
 									atributosEnte = append(atributosEnte, map[string]interface{}{})
 									c.Data["json"] = atributosEnte
