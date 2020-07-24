@@ -753,10 +753,16 @@ func (c *PersonaController) ConsultarDatosContacto() {
 									c.Abort("404")
 								}
 							} else {
-								logs.Error(atributosEnte)
-								//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
-								c.Data["system"] = errAtributos
-								c.Abort("404")
+								if errAtributos == nil && fmt.Sprintf("%v", atributosEnte) == "[]" {
+									fmt.Println("El error esta aqui")
+									atributosEnte = append(atributosEnte, map[string]interface{}{})
+									c.Data["json"] = atributosEnte
+								} else {
+									logs.Error(atributosEnte)
+									//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+									c.Data["system"] = errAtributos
+									c.Abort("404")
+								}
 							}
 						} else {
 							if ubicacionEnte[0]["Message"] == "Not found resource" {
@@ -775,25 +781,16 @@ func (c *PersonaController) ConsultarDatosContacto() {
 						c.Abort("404")
 					}
 				} else {
-					if contactoEnte[0]["Message"] == "Not found resource" {
-						c.Data["json"] = nil
-					} else {
-						logs.Error(contactoEnte)
-						c.Data["Development"] = map[string]interface{}{"Code": "404", "Body": "", "Type": "error"}
-						c.Data["system"] = errContacto
-						c.Abort("404")
-					}
-				}
-			} else {
-        			if errContacto == nil && fmt.Sprintf("%v", contactoEnte[0]) == "map[]" {
-					fmt.Println("El error esta aqui")
-					c.Data["json"] = contactoEnte
-				} else {
 					logs.Error(contactoEnte)
-					//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+					//c.Data["Development"] = map[string]interface{}{"Code": "404", "Body": "", "Type": "error"}
 					c.Data["system"] = errContacto
 					c.Abort("404")
-				}				
+				}
+			} else {
+        			logs.Error(contactoEnte)
+				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
+				c.Data["system"] = errContacto
+				c.Abort("404")				
 			}
 		} else {
 			if persona[0]["Message"] == "Not found resource" {
