@@ -721,6 +721,7 @@ func (c *PersonaController) ConsultarDatosContacto() {
 												resultado["UbicacionEnte"] = ubicacionEnte[0]
 												c.Data["json"] = resultado
 											} else {
+												fmt.Println("El error es aqui 10")
 												if lugar["Message"] == "Not found resource" {
 													c.Data["json"] = nil
 												} else {
@@ -731,12 +732,14 @@ func (c *PersonaController) ConsultarDatosContacto() {
 												}
 											}
 										} else {
+											fmt.Println("El error es aqui 9")
 											logs.Error(lugar)
 											//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
 											c.Data["system"] = errLugar
 											c.Abort("404")
 										}
 									} else {
+										fmt.Println("El error es aqui 8")
 										if atributosEnte[0]["Message"] == "Not found resource" {
 											c.Data["json"] = nil
 										} else {
@@ -747,12 +750,14 @@ func (c *PersonaController) ConsultarDatosContacto() {
 										}
 									}
 								} else {
+									fmt.Println("El error es aqui 7")
 									logs.Error(atributosEnte)
 									//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
 									c.Data["system"] = errAtributos
 									c.Abort("404")
 								}
 							} else {
+								fmt.Println("El error es aqui 6")
 								if errAtributos == nil && fmt.Sprintf("%v", atributosEnte) == "[]" {
 									fmt.Println("El error esta aqui")
 									atributosEnte = append(atributosEnte, map[string]interface{}{})
@@ -765,6 +770,7 @@ func (c *PersonaController) ConsultarDatosContacto() {
 								}
 							}
 						} else {
+							fmt.Println("El error es aqui 5")
 							if ubicacionEnte[0]["Message"] == "Not found resource" {
 								c.Data["json"] = nil
 							} else {
@@ -775,24 +781,28 @@ func (c *PersonaController) ConsultarDatosContacto() {
 							}
 						}
 					} else {
+						fmt.Println("El error es aqui 4")
 						logs.Error(ubicacionEnte)
 						//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
 						c.Data["system"] = errUbicacion
 						c.Abort("404")
 					}
 				} else {
+					fmt.Println("El error es aqui 3")
 					logs.Error(contactoEnte)
 					//c.Data["Development"] = map[string]interface{}{"Code": "404", "Body": "", "Type": "error"}
 					c.Data["system"] = errContacto
 					c.Abort("404")
 				}
 			} else {
+				fmt.Println("El error es aqui 2")
         			logs.Error(contactoEnte)
 				//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
 				c.Data["system"] = errContacto
 				c.Abort("404")				
 			}
 		} else {
+			fmt.Println("El error es aqui 1")
 			if persona[0]["Message"] == "Not found resource" {
 				c.Data["json"] = nil
 			} else {
@@ -803,6 +813,7 @@ func (c *PersonaController) ConsultarDatosContacto() {
 			}
 		}
 	} else {
+		fmt.Println("El error es aqui 0")
 		logs.Error(persona)
 		//c.Data["development"] = map[string]interface{}{"Code": "404", "Body": err.Error(), "Type": "error"}
 		c.Data["system"] = errPersona
