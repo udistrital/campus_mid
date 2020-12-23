@@ -8,7 +8,7 @@
 package routers
 
 import (
-	"github.com/udistrital/campus_mid/controllers"
+	"github.com/planesticud/campus_mid/controllers"
 
 	"github.com/astaxie/beego"
 )
@@ -18,6 +18,41 @@ func init() {
 		beego.NSNamespace("/persona",
 			beego.NSInclude(
 				&controllers.PersonaController{},
+			),
+		),
+		beego.NSNamespace("/formacion_academica",
+			beego.NSInclude(
+				&controllers.FormacionController{},
+			),
+		),
+		beego.NSNamespace("/descuento_academico",
+			beego.NSInclude(
+				&controllers.DescuentoController{},
+			),
+		),
+		beego.NSNamespace("/experiencia_laboral",
+			beego.NSInclude(
+				&controllers.ExperienciaLaboralController{},
+			),
+		),
+		beego.NSNamespace("/organizacion",
+			beego.NSInclude(
+				&controllers.OrganizacionController{},
+			),
+		),
+		beego.NSNamespace("/inscripcion",
+			beego.NSInclude(
+				&controllers.InscripcionController{},
+			),
+		),
+		beego.NSNamespace("/produccion_academica",
+			beego.NSInclude(
+				&controllers.ProduccionAcademicaController{},
+			),
+		),
+		beego.NSNamespace("/evaluacion_inscripcion",
+			beego.NSInclude(
+				&controllers.EvaluacionInscripcionController{},
 			),
 		),
 	)

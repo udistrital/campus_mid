@@ -1,0 +1,38 @@
+{
+  "title": "Example Schema",
+  "type": "object",
+  "properties": {
+    "Id": { "type": "integer" },
+    "Autores": { "type": "array" },
+    "Fecha": { "type": "string" },
+    "Metadatos": { "type": "array" },
+    "Titulo": { "type": "string" },
+    "Resumen": { "type": "string" },
+    "SubtipoProduccionId": {
+      "type": "object",
+      "properties": {
+        "Id": { "type": "integer" },
+        "NumeroOrden": { "type": "integer" },
+        "Nombre": { "type": "string" },
+        "Descripcion": { "type": "string" },
+        "CodigoAbreviacion": { "type": "string" },
+        "Activo": { "type": "boolean" },
+        "FechaCreacion": { "type": "string" },
+        "FechaModificacion": { "type": "string" },
+        "TipoProduccionId": {
+          "type": "object",
+          "properties": {
+            "Id": { "type": "integer" },
+            "NumeroOrden": { "type": "integer" },
+            "Nombre": { "type": "string" },
+            "Descripcion": { "type": "string" },
+            "CodigoAbreviacion": { "type": "string" },
+            "Activo": { "type": "boolean" },
+            "FechaCreacion": { "type": "string" },
+            "FechaModificacion": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

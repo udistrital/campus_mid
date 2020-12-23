@@ -1,0 +1,91 @@
+{
+  "title": "Example Schema",
+  "type": "object",
+  "properties": {
+    "Id": { "type": "integer" },
+    "Persona": { "type": "integer" },
+    "FechaInicio": { "type": "string" },
+    "FechaFinalizacion": { "type": "string" },
+    "FechaCreacion": { "type": "string" },
+    "FechaModificacion": { "type": "string" },
+    "Titulacion": {
+      "type": "object",
+      "properties": {
+        "Id": { "type": "integer" },
+        "Codigo": { "type": "integer" },
+        "Institucion": { "type": "integer" },
+        "UnidadTiempo": { "type": "integer" },
+        "NucleoBasicoConocimiento": { "type": "integer" },
+        "Nombre": { "type": "string" },
+        "Duracion": { "type": "number" },
+        "FechaCreacion": { "type": "string" },
+        "FechaModificacion": { "type": "string" },
+        "Titulacion": {
+          "type": "object",
+          "properties": {
+            "Id": { "type": "integer" },
+            "NumeroOrden": { "type": "integer" },
+            "Nombre": { "type": "string" },
+            "Descripcion": { "type": "string" },
+            "CodigoAbreviacion": { "type": "string" },
+            "Activo": { "type": "boolean" },
+            "FechaCreacion": { "type": "string" },
+            "FechaModificacion": { "type": "string" }
+          }
+        },
+        "NivelFormacion": {
+          "type": "object",
+          "properties": {
+            "Id": { "type": "integer" },
+            "NumeroOrden": { "type": "integer" },
+            "Nombre": { "type": "string" },
+            "Descripcion": { "type": "string" },
+            "CodigoAbreviacion": { "type": "string" },
+            "Activo": { "type": "boolean" },
+            "FechaCreacion": { "type": "string" },
+            "FechaModificacion": { "type": "string" }
+          }
+        },
+        "Metodologia": {
+          "type": "object",
+          "properties": {
+            "Id": { "type": "integer" },
+            "NumeroOrden": { "type": "integer" },
+            "Nombre": { "type": "string" },
+            "Descripcion": { "type": "string" },
+            "CodigoAbreviacion": { "type": "string" },
+            "Activo": { "type": "boolean" },
+            "FechaCreacion": { "type": "string" },
+            "FechaModificacion": { "type": "string" }
+          }
+        }
+      }
+    },
+    "Institucion": {
+      "type": "object",
+      "properties": {
+        "Id": { "type": "integer" },
+        "Ente": { "type": "integer" },
+        "Documento": { "type": "integer" },
+        "Nombre": { "type": "string" },
+        "FechaCreacion": { "type": "string" },
+        "FechaModificacion": { "type": "string" },
+        "TipoOrganizacion": {
+          "type": "object",
+          "properties": {
+            "Id": { "type": "integer" },
+            "NumeroOrden": { "type": "integer" },
+            "Nombre": { "type": "string" },
+            "Descripcion": { "type": "string" },
+            "CodigoAbreviacion": { "type": "string" },
+            "Activo": { "type": "boolean" },
+            "FechaCreacion": { "type": "string" },
+            "FechaModificacion": { "type": "string" }
+          }
+        }
+      }
+    },
+    "TituloTrabajoGrado": { "type": "string" },
+    "DescripcionTrabajoGrado": { "type": "string" }
+  }
+}

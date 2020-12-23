@@ -1,0 +1,58 @@
+{
+  "title": "Example Schema",
+  "type": "object",
+  "properties": {
+    "Id": { "type": "integer" },
+    "Ente": { "type": "integer" },
+    "Usuario": { "type": "string" },
+    "PrimerApellido": { "type": "string" },
+    "PrimerNombre": { "type": "string" },
+    "SegundoApellido": { "type": "string" },
+    "SegundoNombre": { "type": "string" },
+    "NumeroIdentificacion": { "type": "string" },
+    "SoporteDocumento": { "type": "integer" },
+    "Foto": { "type": "integer" },
+    "FechaCreacion": { "type": "string" },
+    "FechaModificacion": { "type": "string" },
+    "FechaNacimiento": { "type": "string" },
+    "TipoIdentificacion": {
+      "type": "object",
+      "properties": {
+        "Id": { "type": "integer" },
+        "NumeroOrden": { "type": "integer" },
+        "Nombre": { "type": "string" },
+        "Descripcion": { "type": "string" },
+        "CodigoAbreviacion": { "type": "string" },
+        "Activo": { "type": "boolean" },
+        "FechaCreacion": { "type": "string" },
+        "FechaModificacion": { "type": "string" }
+      }
+    },
+    "Genero": {
+      "type": "object",
+      "properties": {
+        "Id": { "type": "integer" },
+        "NumeroOrden": { "type": "integer" },
+        "Nombre": { "type": "string" },
+        "Descripcion": { "type": "string" },
+        "CodigoAbreviacion": { "type": "string" },
+        "Activo": { "type": "boolean" },
+        "FechaCreacion": { "type": "string" },
+        "FechaModificacion": { "type": "string" }
+      }
+    },
+    "EstadoCivil": {
+      "type": "object",
+      "properties": {
+        "Id": { "type": "integer" },
+        "NumeroOrden": { "type": "integer" },
+        "Nombre": { "type": "string" },
+        "Descripcion": { "type": "string" },
+        "CodigoAbreviacion": { "type": "string" },
+        "Activo": { "type": "boolean" },
+        "FechaCreacion": { "type": "string" },
+        "FechaModificacion": { "type": "string" }
+      }
+    }
+  }
+}
