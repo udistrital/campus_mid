@@ -1,0 +1,117 @@
+{
+  "title": "Example Schema",
+  "type": "object",
+  "properties": {
+    "Ente": { "type": "integer" },
+    "Persona": { "type": "integer" },
+    "GrupoSanguineo": { "type": "string" },
+    "Rh": { "type": "string" },
+    "GrupoEtnico": {
+      "type": "object",
+      "properties": {
+        "Id": { "type": "integer" },
+        "NumeroOrden": { "type": "integer" },
+        "Nombre": { "type": "string" },
+        "Descripcion": { "type": "string" },
+        "CodigoAbreviacion": { "type": "string" },
+        "Activo": { "type": "boolean" },
+        "FechaCreacion": { "type": "string" },
+        "FechaModificacion": { "type": "string" }
+      }
+    },
+    "TipoDiscapacidad": { "type": "array" },
+    "Lugar": {
+      "type": "object",
+      "properties": {
+        "Id": { "type": "integer" },
+        "Lugar": {
+          "type": "object",
+          "properties": {
+            "CIUDAD": {
+              "type": "object",
+              "properties": {
+                "Activo": { "type": "boolean" },
+                "Id": { "type": "integer" },
+                "Nombre": { "type": "string" },
+                "FechaCreacion": { "type": "string" },
+                "FechaModificacion": { "type": "string" },
+                "TipoLugar": {
+                  "type": "object",
+                  "properties": {
+                    "Id": { "type": "integer" },
+                    "NumeroOrden": { "type": "integer" },
+                    "Nombre": { "type": "string" },
+                    "Descripcion": { "type": "string" },
+                    "CodigoAbreviacion": { "type": "string" },
+                    "Activo": { "type": "boolean" },
+                    "FechaCreacion": { "type": "string" },
+                    "FechaModificacion": { "type": "string" }
+                  }
+                }
+              }
+            },
+            "DEPARTAMENTO": {
+              "type": "object",
+              "properties": {
+                "Activo": { "type": "boolean" },
+                "Id": { "type": "integer" },
+                "Nombre": { "type": "string" },
+                "FechaCreacion": { "type": "string" },
+                "FechaModificacion": { "type": "string" },
+                "TipoLugar": {
+                  "type": "object",
+                  "properties": {
+                    "Id": { "type": "integer" },
+                    "NumeroOrden": { "type": "integer" },
+                    "Nombre": { "type": "string" },
+                    "Descripcion": { "type": "string" },
+                    "CodigoAbreviacion": { "type": "string" },
+                    "Activo": { "type": "boolean" },
+                    "FechaCreacion": { "type": "string" },
+                    "FechaModificacion": { "type": "string" }
+                  }
+                }
+              }
+            },
+            "PAIS": {
+              "type": "object",
+              "properties": {
+                "Activo": { "type": "boolean" },
+                "Id": { "type": "integer" },
+                "Nombre": { "type": "string" },
+                "FechaCreacion": { "type": "string" },
+                "FechaModificacion": { "type": "string" },
+                "TipoLugar": {
+                  "type": "object",
+                  "properties": {
+                    "Id": { "type": "integer" },
+                    "NumeroOrden": { "type": "integer" },
+                    "Nombre": { "type": "string" },
+                    "Descripcion": { "type": "string" },
+                    "CodigoAbreviacion": { "type": "string" },
+                    "Activo": { "type": "boolean" },
+                    "FechaCreacion": { "type": "string" },
+                    "FechaModificacion": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "TipoRelacionUbicacionEnte": {
+          "type": "object",
+          "properties": {
+            "Id": { "type": "integer" },
+            "NumeroOrden": { "type": "integer" },
+            "Nombre": { "type": "string" },
+            "Descripcion": { "type": "string" },
+            "CodigoAbreviacion": { "type": "string" },
+            "Activo": { "type": "boolean" },
+            "FechaCreacion": { "type": "string" },
+            "FechaModificacion": { "type": "string" }
+          }
+        }         
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "title": "Example Schema",
+  "type": "object",
+  "properties": {
+    "Id": { "type": "integer" },
+    "PersonaId": { "type": "integer" },
+    "PeriodoId": { "type": "integer" },
+    "DocumentoId": { "type": "integer" },
+    "Estado": { "type": "string" },
+    "DescuentosDependenciaId": { 
+      "type": "object",
+      "properties": {
+        "Id": { "type": "integer" },
+        "DependenciaId": { "type": "integer" },
+        "PeriodoId": { "type": "integer" },
+        "Activo": { "type": "boolean" },
+        "FechaCreacion": { "type": "string" },
+        "FechaModificacion": { "type": "string" },
+        "TipoDescuentoId": {
+          "type": "object",
+          "properties": {
+            "Id": { "type": "integer" },
+            "NumeroOrden": { "type": "integer" },
+            "ConceptoAcademicoId": { "type": "integer" },
+            "Nombre": { "type": "string" },
+            "Descripcion": { "type": "string" },
+            "CodigoAbreviacion": { "type": "string" },
+            "Activo": { "type": "boolean" },
+            "General": { "type": "boolean" },
+            "FechaCreacion": { "type": "string" },
+            "FechaModificacion": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}
